@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: May 17, 2020 at 02:23 PM
+-- Generation Time: May 17, 2020 at 03:29 PM
 -- Server version: 8.0.18
 -- PHP Version: 7.3.12
 
@@ -33,7 +33,19 @@ CREATE TABLE IF NOT EXISTS `cours` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NOM` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `cours`
+--
+
+INSERT INTO `cours` (`ID`, `NOM`) VALUES
+(1, 'Electromagnetisme'),
+(2, 'POO Java'),
+(3, 'Robotique'),
+(4, 'Optique'),
+(5, 'Programmation C++'),
+(6, 'Electronique');
 
 -- --------------------------------------------------------
 
@@ -48,6 +60,18 @@ CREATE TABLE IF NOT EXISTS `enseignant` (
   PRIMARY KEY (`ID_UTILISATEUR`,`ID_COURS`),
   KEY `ID_COURS` (`ID_COURS`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `enseignant`
+--
+
+INSERT INTO `enseignant` (`ID_UTILISATEUR`, `ID_COURS`) VALUES
+(2, 1),
+(3, 2),
+(1, 3),
+(2, 4),
+(3, 5),
+(1, 6);
 
 -- --------------------------------------------------------
 
@@ -64,6 +88,24 @@ CREATE TABLE IF NOT EXISTS `etudiant` (
   KEY `ID_GROUPE` (`ID_GROUPE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `etudiant`
+--
+
+INSERT INTO `etudiant` (`ID_UTILISATEUR`, `NUMERO`, `ID_GROUPE`) VALUES
+(6, 1, 1),
+(7, 2, 1),
+(8, 3, 2),
+(9, 4, 2),
+(10, 5, 3),
+(11, 6, 3),
+(12, 7, 4),
+(13, 8, 4),
+(14, 9, 5),
+(15, 10, 5),
+(16, 11, 6),
+(17, 12, 6);
+
 -- --------------------------------------------------------
 
 --
@@ -77,7 +119,19 @@ CREATE TABLE IF NOT EXISTS `groupe` (
   `IDPROMOTION` int(11) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `IDPROMOTION` (`IDPROMOTION`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `groupe`
+--
+
+INSERT INTO `groupe` (`ID`, `NOM`, `IDPROMOTION`) VALUES
+(1, 'TD1', 1),
+(2, 'TD2', 1),
+(3, 'TD3', 2),
+(4, 'TD4', 2),
+(5, 'TD5', 3),
+(6, 'TD6', 3);
 
 -- --------------------------------------------------------
 
@@ -90,7 +144,16 @@ CREATE TABLE IF NOT EXISTS `promotion` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NOM` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `promotion`
+--
+
+INSERT INTO `promotion` (`ID`, `NOM`) VALUES
+(1, '2022'),
+(2, '2023'),
+(3, '2024');
 
 -- --------------------------------------------------------
 
@@ -106,7 +169,19 @@ CREATE TABLE IF NOT EXISTS `salle` (
   `ID_SITE` int(11) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `ID_SITE` (`ID_SITE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `salle`
+--
+
+INSERT INTO `salle` (`ID`, `NOM`, `CAPACITE`, `ID_SITE`) VALUES
+(1, 'EM 0009', 100, 1),
+(2, 'EM 0010', 100, 1),
+(3, 'P445', 75, 2),
+(4, 'P440', 35, 2),
+(5, 'G 0002', 60, 4),
+(6, 'G 0010', 30, 4);
 
 -- --------------------------------------------------------
 
@@ -182,7 +257,17 @@ CREATE TABLE IF NOT EXISTS `site` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NOM` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `site`
+--
+
+INSERT INTO `site` (`ID`, `NOM`) VALUES
+(1, 'Eiffel 1'),
+(2, 'Eiffel 2'),
+(3, 'Eiffel 3'),
+(4, 'Eiffel 4');
 
 -- --------------------------------------------------------
 
@@ -195,7 +280,20 @@ CREATE TABLE IF NOT EXISTS `type_cours` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NOM` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `type_cours`
+--
+
+INSERT INTO `type_cours` (`ID`, `NOM`) VALUES
+(1, 'Cours interactif'),
+(2, 'Cours magistral'),
+(3, 'TP'),
+(4, 'TD'),
+(5, 'Soutenance de projet'),
+(6, 'Soutien'),
+(7, 'Devoir sur table');
 
 -- --------------------------------------------------------
 
@@ -212,7 +310,30 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
   `PRENOM` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `DROIT` tinyint(1) UNSIGNED NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `utilisateur`
+--
+
+INSERT INTO `utilisateur` (`ID`, `EMAIL`, `PASSWD`, `NOM`, `PRENOM`, `DROIT`) VALUES
+(1, 'tminot@gmail.com', 'tm', 'Minot', 'Thierry', 3),
+(2, 'waleed.mouhali@ece.fr', 'wm', 'Mouhali', 'Waleed', 3),
+(3, 'jean-pierre.segado@ece.fr', 'jps', 'Segado', 'Jean-Pierre', 3),
+(4, 'simon.jolly.92@gmail.com', 'admin', 'Admin', 'Admin', 1),
+(5, 'edt@ece.fr', 'gestion', 'ECE', 'Paris', 2),
+(6, 'simon.jolly@edu.ece.fr', 'password', 'Jolly', 'Simon', 4),
+(7, 'pierre.duong@edu.ece.fr', 'motdepasse', 'Duong', 'Pierre', 4),
+(8, 'gilles.liso@edu.ece.fr', 'mdp', 'Liso', 'Gilles', 4),
+(9, 'bob.kek@edu.ece.fr', 'azerty', 'Kek', 'Bob', 4),
+(10, 'john.doe@edu.ece.fr', '123', 'Doe', 'John', 4),
+(11, 'armand.rousseau@edu.ece.fr', '010199', 'Rousseau', 'Armand', 4),
+(12, 'pascal.rodrigue@edu.ece.fr', 'ytreza', 'Rodrigue', 'Pascal', 4),
+(13, 'cerise.parrot@edu.ece.fr', 'azertyuiop', 'Parrot', 'Cerise', 4),
+(14, 'daniel.louis@edu.ece.fr', '2468', 'Louis', 'Daniel', 4),
+(15, 'laurent.dastous@edu.ece.fr', '123456789', 'Dastous', 'Laurent', 4),
+(16, 'yves.vaillancourt@edu.ece.fr', 'pwd', 'Vaillantcourt', 'Yves', 4),
+(17, 'adrien.dupuis@edu.ece.fr', 'passwd', 'Dupuis', 'Adrien', 4);
 
 --
 -- Constraints for dumped tables
