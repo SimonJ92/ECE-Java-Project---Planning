@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: May 17, 2020 at 03:29 PM
+-- Generation Time: May 20, 2020 at 06:56 AM
 -- Server version: 8.0.18
 -- PHP Version: 7.3.12
 
@@ -215,7 +215,7 @@ CREATE TABLE IF NOT EXISTS `seance_enseignants` (
   `ID_SEANCE` int(11) NOT NULL,
   `ID_ENSEIGNANT` int(11) NOT NULL,
   PRIMARY KEY (`ID_SEANCE`,`ID_ENSEIGNANT`),
-  KEY `ID_ENSEIGNANT` (`ID_ENSEIGNANT`)
+  KEY `seance_enseignants_ibfk_2` (`ID_ENSEIGNANT`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -377,7 +377,7 @@ ALTER TABLE `seance`
 --
 ALTER TABLE `seance_enseignants`
   ADD CONSTRAINT `seance_enseignants_ibfk_1` FOREIGN KEY (`ID_SEANCE`) REFERENCES `seance` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `seance_enseignants_ibfk_2` FOREIGN KEY (`ID_ENSEIGNANT`) REFERENCES `enseignant` (`ID_UTILISATEUR`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `seance_enseignants_ibfk_2` FOREIGN KEY (`ID_ENSEIGNANT`) REFERENCES `utilisateur` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `seance_groupes`
