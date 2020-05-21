@@ -60,8 +60,8 @@ public class Etudiant extends Utilisateur{
         super.setDroit(droit);
     }
     
-    public int getidUtilisateur(){
-        return super.getid();
+    public int getIdUtilisateur(){
+        return super.getId();
     }
     
     public int getNumero(){
@@ -93,7 +93,7 @@ public class Etudiant extends Utilisateur{
     }
     
     @Override
-    public int getdroit(){
-        return super.getdroit();
+    public int getDroit(){
+        return super.getDroit();
     }
 }

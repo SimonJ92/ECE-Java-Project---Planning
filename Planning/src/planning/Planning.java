@@ -4,12 +4,9 @@
  * and open the template in the editor.
  */
 package planning;
-import java.text.ParseException;
 import modele.*;
 import controleur.*;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -22,8 +19,11 @@ public class Planning {
      */
     public static void main(String[] args) {
        try{
-           DAO<Cours> coursDAO = new CoursDAO(new Connexion("planning", "root", ""));
-           System.out.println(coursDAO.delete(new Cours(7,"Prog C")));
+           DAO<Utilisateur> utilisateurDAO = new UtilisateurDAO(new Connexion("planning", "root", ""));
+           System.out.println(utilisateurDAO.create(new Utilisateur(18,"empty","empty","empty","empty",4)));
+           System.out.println(utilisateurDAO.update(new Utilisateur(18,"empty","empty","moi","empty",4)));
+           System.out.println(utilisateurDAO.find(18).getNom());
+           System.out.println(utilisateurDAO.delete(new Utilisateur(18,"empty","empty","empty","empty",4)));
        } catch (SQLException e) {
             System.out.println(e.toString());
         } catch (ClassNotFoundException e) {

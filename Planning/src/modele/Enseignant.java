@@ -54,8 +54,8 @@ public class Enseignant extends Utilisateur{
         super.setDroit(droit);
     }
     
-    public int getidUtilisateur(){
-        return super.getid();
+    public int getIdUtilisateur(){
+        return super.getId();
     }
     
     public Cours getCours(){
@@ -83,7 +83,7 @@ public class Enseignant extends Utilisateur{
     }
     
     @Override
-    public int getdroit(){
-        return super.getdroit();
+    public int getDroit(){
+        return super.getDroit();
     }
 }

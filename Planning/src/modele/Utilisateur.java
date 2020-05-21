@@ -52,7 +52,7 @@ public class Utilisateur {
         this.droit = droit;
     }
     
-    public int getid(){
+    public int getId(){
         return this.id;
     }
     
@@ -72,7 +72,7 @@ public class Utilisateur {
         return this.prenom;
     }
     
-    public int getdroit(){
+    public int getDroit(){
         return this.droit;
     }
 }

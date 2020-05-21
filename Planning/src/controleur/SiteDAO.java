@@ -5,21 +5,31 @@
  */
 package controleur;
 import java.sql.*;
-import modele.Cours;
+import modele.Site;
 /**
  *
  * @author simon
  */
-public class CoursDAO extends DAO<Cours>{
+public class SiteDAO extends DAO<Site>{
     
-    public CoursDAO(Connexion connexion){
+    public SiteDAO(Connexion connexion){
         super(connexion);
     }
     
     @Override
-    public boolean create(Cours obj) {
+    public boolean create(Site obj) {
         try{
-            return connexion.effectuerUpdate("INSERT INTO cours VALUES('"+obj.getId()+"', '"+obj.getNom()+"')");
+            return connexion.effectuerUpdate("INSERT INTO site VALUES('"+obj.getId()+"', '"+obj.getNom()+"')");
+        }
+        catch(SQLException e){
+            System.out.println(e.toString());
+            return false;
+        }    }
+
+    @Override
+    public boolean delete(Site obj) {
+        try{
+            return connexion.effectuerUpdate("DELETE FROM site WHERE id = "+obj.getId());
         }
         catch(SQLException e){
             System.out.println(e.toString());
@@ -28,9 +38,9 @@ public class CoursDAO extends DAO<Cours>{
     }
 
     @Override
-    public boolean delete(Cours obj) {
+    public boolean update(Site obj) {
         try{
-            return connexion.effectuerUpdate("DELETE FROM cours WHERE id = "+obj.getId());
+            return connexion.effectuerUpdate("UPDATE site SET nom = '"+obj.getNom()+"' where id = "+obj.getId());
         }
         catch(SQLException e){
             System.out.println(e.toString());
@@ -39,24 +49,13 @@ public class CoursDAO extends DAO<Cours>{
     }
 
     @Override
-    public boolean update(Cours obj) {
-        try{
-            return connexion.effectuerUpdate("UPDATE cours SET nom = '"+obj.getNom()+"' where id = "+obj.getId());
-        }
-        catch(SQLException e){
-            System.out.println(e.toString());
-            return false;
-        }
-    }
-
-    @Override
-    public Cours find(int id) {
-        Cours cours = new Cours();
+    public Site find(int id) {
+        Site site = new Site();
         
         try{
-            ResultSet resultat = connexion.effectuerRequete("SELECT * FROM cours WHERE id = "+id);
+            ResultSet resultat = connexion.effectuerRequete("SELECT * FROM site WHERE id = "+id);
             if(resultat.first()){
-                cours = new Cours(
+                site = new Site(
                         id,
                         resultat.getString("NOM")
                 );
@@ -66,7 +65,7 @@ public class CoursDAO extends DAO<Cours>{
             System.out.println(e.toString());
         }
         
-        return cours;
+        return site;
     }
     
 }

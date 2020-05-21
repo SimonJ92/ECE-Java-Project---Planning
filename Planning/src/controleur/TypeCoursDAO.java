@@ -5,21 +5,22 @@
  */
 package controleur;
 import java.sql.*;
-import modele.Cours;
+import modele.TypeCours;
+
 /**
  *
  * @author simon
  */
-public class CoursDAO extends DAO<Cours>{
+public class TypeCoursDAO extends DAO<TypeCours>{
     
-    public CoursDAO(Connexion connexion){
+    public TypeCoursDAO(Connexion connexion){
         super(connexion);
     }
     
     @Override
-    public boolean create(Cours obj) {
+    public boolean create(TypeCours obj) {
         try{
-            return connexion.effectuerUpdate("INSERT INTO cours VALUES('"+obj.getId()+"', '"+obj.getNom()+"')");
+            return connexion.effectuerUpdate("INSERT INTO type_cours VALUES('"+obj.getId()+"', '"+obj.getNom()+"')");
         }
         catch(SQLException e){
             System.out.println(e.toString());
@@ -28,9 +29,9 @@ public class CoursDAO extends DAO<Cours>{
     }
 
     @Override
-    public boolean delete(Cours obj) {
+    public boolean delete(TypeCours obj) {
         try{
-            return connexion.effectuerUpdate("DELETE FROM cours WHERE id = "+obj.getId());
+            return connexion.effectuerUpdate("DELETE FROM type_cours WHERE id = "+obj.getId());
         }
         catch(SQLException e){
             System.out.println(e.toString());
@@ -39,9 +40,9 @@ public class CoursDAO extends DAO<Cours>{
     }
 
     @Override
-    public boolean update(Cours obj) {
+    public boolean update(TypeCours obj) {
         try{
-            return connexion.effectuerUpdate("UPDATE cours SET nom = '"+obj.getNom()+"' where id = "+obj.getId());
+            return connexion.effectuerUpdate("UPDATE type_cours SET nom = '"+obj.getNom()+"' where id = "+obj.getId());
         }
         catch(SQLException e){
             System.out.println(e.toString());
@@ -50,13 +51,13 @@ public class CoursDAO extends DAO<Cours>{
     }
 
     @Override
-    public Cours find(int id) {
-        Cours cours = new Cours();
+    public TypeCours find(int id) {
+        TypeCours typeCours = new TypeCours();
         
         try{
-            ResultSet resultat = connexion.effectuerRequete("SELECT * FROM cours WHERE id = "+id);
+            ResultSet resultat = connexion.effectuerRequete("SELECT * FROM type_cours WHERE id = "+id);
             if(resultat.first()){
-                cours = new Cours(
+                typeCours = new TypeCours(
                         id,
                         resultat.getString("NOM")
                 );
@@ -66,7 +67,7 @@ public class CoursDAO extends DAO<Cours>{
             System.out.println(e.toString());
         }
         
-        return cours;
+        return typeCours;
     }
     
 }
