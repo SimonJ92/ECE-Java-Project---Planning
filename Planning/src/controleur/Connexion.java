@@ -32,4 +32,8 @@ public class Connexion {
          // récupération de l'ordre de la requete
         return stmt.executeQuery(requete);
      }
+     
+     public boolean effectuerUpdate(String requete) throws SQLException{
+        return stmt.executeUpdate(requete) != 0;
+     }
 }

@@ -17,17 +17,35 @@ public class CoursDAO extends DAO<Cours>{
     
     @Override
     public boolean create(Cours obj) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try{
+            return connexion.effectuerUpdate("INSERT INTO cours VALUES('"+obj.getId()+"', '"+obj.getNom()+"')");
+        }
+        catch(SQLException e){
+            System.out.println(e.toString());
+            return false;
+        }
     }
 
     @Override
-    public boolean delet(Cours obj) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean delete(Cours obj) {
+        try{
+            return connexion.effectuerUpdate("DELETE FROM cours WHERE id = "+obj.getId());
+        }
+        catch(SQLException e){
+            System.out.println(e.toString());
+            return false;
+        }
     }
 
     @Override
     public boolean update(Cours obj) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try{
+            return connexion.effectuerUpdate("UPDATE cours SET nom = '"+obj.getNom()+"' where id = "+obj.getId());
+        }
+        catch(SQLException e){
+            System.out.println(e.toString());
+            return false;
+        }
     }
 
     @Override

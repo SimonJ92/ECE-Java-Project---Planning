@@ -23,8 +23,7 @@ public class Planning {
     public static void main(String[] args) {
        try{
            DAO<Cours> coursDAO = new CoursDAO(new Connexion("planning", "root", ""));
-           Cours cours = coursDAO.find(1);
-           System.out.println(cours.getNom());
+           System.out.println(coursDAO.delete(new Cours(7,"Prog C")));
        } catch (SQLException e) {
             System.out.println(e.toString());
         } catch (ClassNotFoundException e) {
