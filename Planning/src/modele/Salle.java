@@ -13,16 +13,18 @@ public class Salle {
     private int id = 0;
     private String nom = "";
     private int capacite = 0;
-    private int idSite = 0;
+    private Site site;
     
-    public Salle(int id, String nom, int capacite, int idSite){
+    public Salle(int id, String nom, int capacite, Site site){
         this.id = id;
         this.nom = nom;
         this.capacite = capacite;
-        this.idSite = idSite;
+        this.site = site;
     }
     
-    public Salle()  {};
+    public Salle(){
+        this.site = new Site();
+    }
     
     public void setId(int id){
         this.id = id;
@@ -36,8 +38,8 @@ public class Salle {
         this.capacite = capacite;
     }
     
-    public void setIdSite(int idSite){
-        this.idSite = idSite;
+    public void setSite(Site site){
+        this.site = site;
     }
     
     public int getId(){
@@ -52,7 +54,7 @@ public class Salle {
         return this.capacite;
     }
     
-    public int getIdSite(){
-        return this.idSite;
+    public Site getSite(){
+        return this.site;
     }
 }

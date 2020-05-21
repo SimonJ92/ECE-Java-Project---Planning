@@ -9,20 +9,16 @@ package modele;
  *
  * @author simon
  */
-public class Groupe {
+public class TypeCours {
     private int id = 0;
     private String nom = "";
-    private Promotion promotion;
     
-    public Groupe(int id, String nom, Promotion promotion){
+    public TypeCours(int id, String nom){
         this.id = id;
         this.nom = nom;
-        this.promotion = promotion;
     }
     
-    public Groupe(){
-        this.promotion = new Promotion();
-    };
+    public TypeCours()  {};
     
     public void setId(int id){
         this.id = id;
@@ -32,19 +28,11 @@ public class Groupe {
         this.nom = nom;
     }
     
-    public void setPromotion(Promotion promotion){
-        this.promotion = promotion;
-    }
-    
     public int getId(){
         return this.id;
     }
     
     public String getNom(){
         return this.nom;
-    }
-    
-    public Promotion getPromotion(){
-        return this.promotion;
     }
 }

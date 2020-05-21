@@ -25,7 +25,7 @@ public class MyHour {
     }
     
     public MyHour(){
-        date = new Date();
+        this.date = new Date();
     }
     
     public int getHeure(){

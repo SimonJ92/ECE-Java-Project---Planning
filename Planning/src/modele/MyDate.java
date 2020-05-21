@@ -21,7 +21,7 @@ public class MyDate {
     }
     
     public MyDate(){
-        date = new Date();
+        this.date = new Date();
     }
     
     public int getJour(){

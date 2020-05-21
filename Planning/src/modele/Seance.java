@@ -18,24 +18,26 @@ public class Seance {
     private MyHour heureDebut;
     private MyHour heureFin;
     private int etat = 0;
-    private int idCours = 0;
-    private int idType;
+    private Cours cours;
+    private TypeCours typeCours;
     
-    public Seance(int id, int semaine, MyDate date, MyHour heureDebut, MyHour heureFin, int etat, int idCours, int idType){
+    public Seance(int id, int semaine, MyDate date, MyHour heureDebut, MyHour heureFin, int etat, Cours cours, TypeCours typeCours){
         this.id = id;
         this.semaine = semaine;
         this.date = date;
         this.heureDebut = heureDebut;
         this.heureFin = heureFin;
         this.etat = etat;
-        this.idCours = idCours;
-        this.idType = idType;
+        this.cours = cours;
+        this.typeCours = typeCours;
     }
     
     public Seance(){
         this.date = new MyDate();
         this.heureDebut = new MyHour();
         this.heureFin = new MyHour();
+        this.cours = new Cours();
+        this.typeCours = new TypeCours();
     }
     
     public void setId(int id){
@@ -62,12 +64,12 @@ public class Seance {
         this.etat = etat;
     }
     
-    public void setIdCours(int idCours){
-        this.idCours = idCours;
+    public void setCours(Cours cours){
+        this.cours = cours;
     }
     
-    public void setIdType(int idType){
-        this.idType = idType;
+    public void setTypeCours(TypeCours typeCours){
+        this.typeCours = typeCours;
     }
     
     public int getId(){
@@ -94,11 +96,11 @@ public class Seance {
         return this.etat;
     }
     
-    public int getIdCours(){
-        return this.idCours;
+    public Cours getCours(){
+        return this.cours;
     }
     
-    public int getIdType(){
-        return this.idType;
+    public TypeCours getTypeCours(){
+        return this.typeCours;
     }
 }
