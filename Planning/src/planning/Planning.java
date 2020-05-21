@@ -6,6 +6,10 @@
 package planning;
 import java.text.ParseException;
 import modele.*;
+import controleur.*;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -17,7 +21,15 @@ public class Planning {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-       
+       try{
+           DAO<Cours> coursDAO = new CoursDAO(new Connexion("planning", "root", ""));
+           Cours cours = coursDAO.find(1);
+           System.out.println(cours.getNom());
+       } catch (SQLException e) {
+            System.out.println(e.toString());
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.toString());
+        }
     }
     
 }
