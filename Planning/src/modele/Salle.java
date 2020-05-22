@@ -57,4 +57,9 @@ public class Salle {
     public Site getSite(){
         return this.site;
     }
+    
+    @Override
+    public String toString(){
+        return getNom()+" ("+getSite().toString()+")";
+    }
 }

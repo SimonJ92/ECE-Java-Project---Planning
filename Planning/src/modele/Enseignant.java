@@ -86,4 +86,9 @@ public class Enseignant extends Utilisateur{
     public int getDroit(){
         return super.getDroit();
     }
+    
+    @Override
+    public String toString(){
+        return super.toString()+" : "+getCours().getNom();
+    }
 }

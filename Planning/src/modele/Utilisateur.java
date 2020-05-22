@@ -75,4 +75,9 @@ public class Utilisateur {
     public int getDroit(){
         return this.droit;
     }
+    
+    @Override
+    public String toString(){
+        return getPrenom()+" "+getNom();
+    }
 }

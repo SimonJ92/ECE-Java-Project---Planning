@@ -38,4 +38,9 @@ public class SeanceSalles {
     public Salle getSalle(){
         return this.salle;
     }
+    
+    @Override
+    public String toString(){
+        return getSeance().getCours().getNom()+" - "+getSalle().toString();
+    }
 }

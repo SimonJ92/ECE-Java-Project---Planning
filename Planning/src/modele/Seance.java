@@ -103,4 +103,9 @@ public class Seance {
     public TypeCours getTypeCours(){
         return this.typeCours;
     }
+    
+    @Override
+    public String toString(){
+        return getCours().getNom()+" - "+getTypeCours().getNom()+" : le "+getDate().toString()+"(semaine "+getSemaine()+" de "+getHeureDebut().toString()+" à "+getHeureFin()+" - "+getEtat();
+    }
 }

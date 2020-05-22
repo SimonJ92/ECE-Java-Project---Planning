@@ -47,4 +47,9 @@ public class Groupe {
     public Promotion getPromotion(){
         return this.promotion;
     }
+    
+    @Override
+    public String toString(){
+        return getPromotion().toString()+" "+getNom();
+    }
 }

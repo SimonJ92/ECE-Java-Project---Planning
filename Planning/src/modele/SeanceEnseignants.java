@@ -38,4 +38,9 @@ public class SeanceEnseignants {
     public Utilisateur getUtilisateur(){
         return this.utilisateur;
     }
+    
+    @Override
+    public String toString(){
+        return getSeance().getCours().getNom()+" - "+getUtilisateur().toString();
+    }
 }

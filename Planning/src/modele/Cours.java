@@ -48,4 +48,9 @@ public class Cours {
     public String getNom(){
         return this.nom;
     }
+    
+    @Override
+    public String toString(){
+        return getNom();
+    }
 }

@@ -38,4 +38,9 @@ public class SeanceGroupes {
     public Groupe getGroupe(){
         return this.groupe;
     }
+    
+    @Override
+    public String toString(){
+        return getSeance().getCours().getNom()+" - "+getGroupe().toString();
+    }
 }

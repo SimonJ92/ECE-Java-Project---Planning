@@ -96,4 +96,9 @@ public class Etudiant extends Utilisateur{
     public int getDroit(){
         return super.getDroit();
     }
+    
+    @Override
+    public String toString(){
+        return super.toString()+" - Promo "+getGroupe().getPromotion().getNom()+" "+getGroupe().getNom();
+    }
 }

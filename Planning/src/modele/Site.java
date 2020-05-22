@@ -35,4 +35,9 @@ public class Site {
     public String getNom(){
         return this.nom;
     }
+    
+    @Override
+    public String toString(){
+        return getNom();
+    }
 }

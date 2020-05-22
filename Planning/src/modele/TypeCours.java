@@ -35,4 +35,9 @@ public class TypeCours {
     public String getNom(){
         return this.nom;
     }
+    
+    @Override
+    public String toString(){
+        return getNom();
+    }
 }
