@@ -69,5 +69,10 @@ public class TypeCoursDAO extends DAO<TypeCours>{
         
         return typeCours;
     }
+
+    @Override
+    public TypeCours find(int id1, int id2) {
+        throw new UnsupportedOperationException("The finding method requires 1 argument."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

@@ -23,4 +23,6 @@ public abstract class DAO<T> {
     public abstract boolean update(T obj);
     
     public abstract T find(int id);
+    
+    public abstract T find(int id1, int id2);
 }

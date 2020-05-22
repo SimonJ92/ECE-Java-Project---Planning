@@ -83,5 +83,10 @@ public class UtilisateurDAO extends DAO<Utilisateur>{
         
         return utilisateur;
     }
+
+    @Override
+    public Utilisateur find(int id1, int id2) {
+        throw new UnsupportedOperationException("The finding method requires 1 argument."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

@@ -28,12 +28,16 @@ public class Connexion {
         stmt = conn.createStatement();
     }
      
-     public ResultSet effectuerRequete(String requete) throws SQLException{
+    public Connection getConnection(){
+        return conn;
+    }
+     
+    public ResultSet effectuerRequete(String requete) throws SQLException{
          // récupération de l'ordre de la requete
         return stmt.executeQuery(requete);
-     }
+    }
      
-     public boolean effectuerUpdate(String requete) throws SQLException{
+    public boolean effectuerUpdate(String requete) throws SQLException{
         return stmt.executeUpdate(requete) != 0;
-     }
+    }
 }

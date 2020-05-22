@@ -5,31 +5,22 @@
  */
 package controleur;
 import java.sql.*;
-import modele.Site;
+import modele.Promotion;
+
 /**
  *
  * @author simon
  */
-public class SiteDAO extends DAO<Site>{
-    
-    public SiteDAO(Connexion connexion){
+public class PromotionDAO extends DAO<Promotion>{
+
+    public PromotionDAO(Connexion connexion) {
         super(connexion);
     }
-    
-    @Override
-    public boolean create(Site obj) {
-        try{
-            return connexion.effectuerUpdate("INSERT INTO site VALUES('"+obj.getId()+"', '"+obj.getNom()+"')");
-        }
-        catch(SQLException e){
-            System.out.println(e.toString());
-            return false;
-        }    }
 
     @Override
-    public boolean delete(Site obj) {
+    public boolean create(Promotion obj) {
         try{
-            return connexion.effectuerUpdate("DELETE FROM site WHERE id = "+obj.getId());
+            return connexion.effectuerUpdate("INSERT INTO promotion VALUES('"+obj.getId()+"', '"+obj.getNom()+"')");
         }
         catch(SQLException e){
             System.out.println(e.toString());
@@ -38,9 +29,9 @@ public class SiteDAO extends DAO<Site>{
     }
 
     @Override
-    public boolean update(Site obj) {
+    public boolean delete(Promotion obj) {
         try{
-            return connexion.effectuerUpdate("UPDATE site SET nom = '"+obj.getNom()+"' where id = "+obj.getId());
+            return connexion.effectuerUpdate("DELETE FROM promotion WHERE id = "+obj.getId());
         }
         catch(SQLException e){
             System.out.println(e.toString());
@@ -49,13 +40,24 @@ public class SiteDAO extends DAO<Site>{
     }
 
     @Override
-    public Site find(int id) {
-        Site site = new Site();
+    public boolean update(Promotion obj) {
+        try{
+            return connexion.effectuerUpdate("UPDATE promotion SET nom = '"+obj.getNom()+"' where id = "+obj.getId());
+        }
+        catch(SQLException e){
+            System.out.println(e.toString());
+            return false;
+        }
+    }
+
+    @Override
+    public Promotion find(int id) {
+        Promotion promotion = new Promotion();
         
         try{
-            ResultSet resultat = connexion.effectuerRequete("SELECT * FROM site WHERE id = "+id);
+            ResultSet resultat = connexion.effectuerRequete("SELECT * FROM promotion WHERE id = "+id);
             if(resultat.first()){
-                site = new Site(
+                promotion = new Promotion(
                         id,
                         resultat.getString("NOM")
                 );
@@ -65,11 +67,11 @@ public class SiteDAO extends DAO<Site>{
             System.out.println(e.toString());
         }
         
-        return site;
+        return promotion;
     }
 
     @Override
-    public Site find(int id1, int id2) {
+    public Promotion find(int id1, int id2) {
         throw new UnsupportedOperationException("The finding method requires 1 argument."); //To change body of generated methods, choose Tools | Templates.
     }
     

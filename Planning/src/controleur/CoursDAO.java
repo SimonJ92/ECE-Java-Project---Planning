@@ -68,5 +68,10 @@ public class CoursDAO extends DAO<Cours>{
         
         return cours;
     }
+
+    @Override
+    public Cours find(int id1, int id2) {
+        throw new UnsupportedOperationException("The finding method requires 1 argument."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

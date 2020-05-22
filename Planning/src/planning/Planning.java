@@ -19,14 +19,14 @@ public class Planning {
      */
     public static void main(String[] args) {
        try{
-           DAO<Utilisateur> utilisateurDAO = new UtilisateurDAO(new Connexion("planning", "root", ""));
-           System.out.println(utilisateurDAO.create(new Utilisateur(18,"empty","empty","empty","empty",4)));
-           System.out.println(utilisateurDAO.update(new Utilisateur(18,"empty","empty","moi","empty",4)));
-           System.out.println(utilisateurDAO.find(18).getNom());
-           System.out.println(utilisateurDAO.delete(new Utilisateur(18,"empty","empty","empty","empty",4)));
-       } catch (SQLException e) {
-            System.out.println(e.toString());
-        } catch (ClassNotFoundException e) {
+           DAO<Salle> salleDAO = new SalleDAO(new Connexion("planning", "root", ""));
+           Salle salle = new Salle(6, "G 0010", 30, new Site(4, "Eifeel 4"));
+           System.out.println(salleDAO.delete(salle));
+           System.out.println(salleDAO.create(salle));
+           System.out.println(salleDAO.update(salle));
+           System.out.println(salleDAO.find(6).getSite().getNom());
+           System.out.println(salleDAO.find(6).getNom());
+       } catch (SQLException | ClassNotFoundException e) {
             System.out.println(e.toString());
         }
     }
