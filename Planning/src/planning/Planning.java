@@ -7,6 +7,7 @@ package planning;
 import modele.*;
 import controleur.*;
 import java.sql.SQLException;
+import java.text.ParseException;
 
 /**
  *
@@ -19,14 +20,14 @@ public class Planning {
      */
     public static void main(String[] args) {
        try{
-           DAO<Salle> salleDAO = new SalleDAO(new Connexion("planning", "root", ""));
-           Salle salle = new Salle(6, "G 0010", 30, new Site(4, "Eifeel 4"));
-           System.out.println(salleDAO.delete(salle));
-           System.out.println(salleDAO.create(salle));
-           System.out.println(salleDAO.update(salle));
-           System.out.println(salleDAO.find(6).getSite().getNom());
-           System.out.println(salleDAO.find(6).getNom());
-       } catch (SQLException | ClassNotFoundException e) {
+           DAO<Seance> seanceDAO = new SeanceDAO(new Connexion("planning", "root", ""));
+           Seance seance = new Seance(1, 1, new MyDate(21,05,2020), new MyHour(8,30), new MyHour(10,0), 1, new Cours(1,"Electromagnetisme"), new TypeCours(1,"Cours interactif"));
+           System.out.println(seanceDAO.delete(seance));
+           System.out.println(seanceDAO.create(seance));
+           System.out.println(seanceDAO.update(seance));
+           System.out.println(seanceDAO.find(1).getDate().toString());
+           System.out.println(seanceDAO.find(1).getHeureFin().toString());
+       } catch (SQLException | ClassNotFoundException | ParseException e) {
             System.out.println(e.toString());
         }
     }

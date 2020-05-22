@@ -51,4 +51,9 @@ public class MyHour {
         SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy hh:mm");
         date = sd.parse(currentDateString);
     }
+    
+    @Override
+    public String toString(){
+        return getHeure()+":"+getMinutes()+":00";
+    }
 }

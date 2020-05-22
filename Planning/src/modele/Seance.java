@@ -13,7 +13,7 @@ import java.util.*;
  */
 public class Seance {
     private int id = 0;
-    private int semaine =0;
+    private int semaine = 0;
     private MyDate date;
     private MyHour heureDebut;
     private MyHour heureFin;

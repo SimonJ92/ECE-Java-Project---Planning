@@ -73,4 +73,9 @@ public class MyDate {
         SimpleDateFormat sd = new SimpleDateFormat("MM/dd/yyyy");
         date = sd.parse(currentDateString);
     }
+    
+    @Override
+    public String toString(){
+        return getAnnee()+"-"+getMois()+"-"+getJour();
+    }
 }
