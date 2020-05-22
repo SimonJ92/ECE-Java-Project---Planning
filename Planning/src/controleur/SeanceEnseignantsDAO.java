@@ -5,24 +5,24 @@
  */
 package controleur;
 import java.sql.*;
-import modele.Cours;
-import modele.Enseignant;
+import modele.Seance;
+import modele.SeanceEnseignants;
 import modele.Utilisateur;
 
 /**
  *
  * @author simon
  */
-public class EnseignantDAO extends DAO<Enseignant>{
+public class SeanceEnseignantsDAO extends DAO<SeanceEnseignants>{
 
-    public EnseignantDAO(Connexion connexion) {
+    public SeanceEnseignantsDAO(Connexion connexion) {
         super(connexion);
     }
 
     @Override
-    public boolean create(Enseignant obj) {
+    public boolean create(SeanceEnseignants obj) {
         try{
-            return connexion.effectuerUpdate("INSERT INTO enseignant VALUES('"+obj.getIdUtilisateur()+"', '"+obj.getCours().getId()+"')");
+            return connexion.effectuerUpdate("INSERT INTO seance_enseignants VALUES('"+obj.getSeance().getId()+"', '"+obj.getUtilisateur().getId()+"')");
         }
         catch(SQLException e){
             System.out.println(e.toString());
@@ -31,9 +31,9 @@ public class EnseignantDAO extends DAO<Enseignant>{
     }
 
     @Override
-    public boolean delete(Enseignant obj) {
+    public boolean delete(SeanceEnseignants obj) {
         try{
-            return connexion.effectuerUpdate("DELETE FROM enseignant WHERE id_utilisateur = "+obj.getIdUtilisateur()+" AND id_cours = "+obj.getCours().getId());
+            return connexion.effectuerUpdate("DELETE FROM seance_enseignants WHERE id_seance = "+obj.getSeance().getId()+" AND id_enseignant = "+obj.getUtilisateur().getId());
         }
         catch(SQLException e){
             System.out.println(e.toString());
@@ -42,40 +42,34 @@ public class EnseignantDAO extends DAO<Enseignant>{
     }
 
     @Override
-    public boolean update(Enseignant obj) {
+    public boolean update(SeanceEnseignants obj) {
         throw new UnsupportedOperationException("This method isn't needed."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Enseignant find(int id) {
+    public SeanceEnseignants find(int id) {
         throw new UnsupportedOperationException("The finding method requires 2 arguments."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
+
     @Override
-    public Enseignant find(int idUtilisateur, int idCours) {
-        Enseignant enseignant = new Enseignant();
+    public SeanceEnseignants find(int idSeance, int idUtilisateur) {
+        SeanceEnseignants seanceEnseignants = new SeanceEnseignants();
         
         try{
-            DAO<Cours> coursDAO = new CoursDAO(connexion);
+            DAO<Seance> seanceDAO = new SeanceDAO(connexion);
             DAO<Utilisateur> utilisateurDAO = new UtilisateurDAO(connexion);
-            Cours cours = coursDAO.find(idCours);
+            Seance seance = seanceDAO.find(idSeance);
             Utilisateur utilisateur = utilisateurDAO.find(idUtilisateur);
-            enseignant = new Enseignant(
-                        idUtilisateur,
-                        cours,
-                        utilisateur.getEmail(),
-                        utilisateur.getPasswd(),
-                        utilisateur.getNom(),
-                        utilisateur.getPrenom(),
-                        utilisateur.getDroit()
+            seanceEnseignants = new SeanceEnseignants(
+                        seance,
+                        utilisateur
                 );
         }
         catch(Exception e){
             System.out.println(e.toString());
         }
         
-        return enseignant;
+        return seanceEnseignants;
     }
-
+    
 }

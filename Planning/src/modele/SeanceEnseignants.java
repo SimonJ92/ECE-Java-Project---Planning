@@ -11,31 +11,31 @@ package modele;
  */
 public class SeanceEnseignants {
     private Seance seance;
-    private Enseignant enseignant;
+    private Utilisateur utilisateur;
     
-    public SeanceEnseignants(Seance seance,Enseignant enseignant){
+    public SeanceEnseignants(Seance seance,Utilisateur enseignant){
         this.seance = seance;
-        this.enseignant = enseignant;
+        this.utilisateur = enseignant;
     }
     
     public SeanceEnseignants(){
         this.seance = new Seance();
-        this.enseignant = new Enseignant();
+        this.utilisateur = new Enseignant();
     }
     
     public void setSeance(Seance seance){
         this.seance = seance;
     }
     
-    public void setEnseignant(Enseignant enseignant){
-        this.enseignant = enseignant;
+    public void setEnseignant(Utilisateur enseignant){
+        this.utilisateur = enseignant;
     }
     
     public Seance getSeance(){
         return this.seance;
     }
     
-    public Enseignant getEnseignant(){
-        return this.enseignant;
+    public Utilisateur getUtilisateur(){
+        return this.utilisateur;
     }
 }

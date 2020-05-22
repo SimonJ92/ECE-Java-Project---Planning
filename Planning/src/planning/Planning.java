@@ -20,13 +20,14 @@ public class Planning {
      */
     public static void main(String[] args) {
        try{
-           DAO<Seance> seanceDAO = new SeanceDAO(new Connexion("planning", "root", ""));
+           DAO<SeanceEnseignants> seanceEnseignantsDAO = new SeanceEnseignantsDAO(new Connexion("planning", "root", ""));
            Seance seance = new Seance(1, 1, new MyDate(21,05,2020), new MyHour(8,30), new MyHour(10,0), 1, new Cours(1,"Electromagnetisme"), new TypeCours(1,"Cours interactif"));
-           System.out.println(seanceDAO.delete(seance));
-           System.out.println(seanceDAO.create(seance));
-           System.out.println(seanceDAO.update(seance));
-           System.out.println(seanceDAO.find(1).getDate().toString());
-           System.out.println(seanceDAO.find(1).getHeureFin().toString());
+           Utilisateur utilisateur = new Utilisateur(1, "trminot@gmail.com", "tm", "Minot", "Thierry", 3);
+           SeanceEnseignants seanceEnseignants = new SeanceEnseignants(seance, utilisateur);
+           System.out.println(seanceEnseignantsDAO.delete(seanceEnseignants));
+           System.out.println(seanceEnseignantsDAO.create(seanceEnseignants));
+           System.out.println(seanceEnseignantsDAO.find(1,1).getUtilisateur().getNom());
+           System.out.println(seanceEnseignantsDAO.find(1,1).getSeance().getDate().toString());
        } catch (SQLException | ClassNotFoundException | ParseException e) {
             System.out.println(e.toString());
         }
