@@ -53,16 +53,18 @@ public class Fenetre extends JFrame implements ActionListener{
     
     //ÉLÉMENTS DES PANELS
     
+    private int selectedWeek = 0;
     //Emploi du temps - Grille - Salle
-    Salle salleSelection;
+    private Salle salleSelection;
     
     //Emploi du temps - Grille - Enseignant
-    Utilisateur enseignantSelection;
+    private Utilisateur enseignantSelection;
     
     //Emploi du temps - Grille - Étudiant
-    Etudiant etudiantSelection;
+    private Etudiant etudiantSelection;
     
     //Recherche
+    private JComboBox rechercheChoixSemaine;
     private JComboBox rechercheChoixSite;
     private JComboBox rechercheChoixSalle;
     private JComboBox rechercheChoixEnseignant;
@@ -135,6 +137,7 @@ public class Fenetre extends JFrame implements ActionListener{
             //Panel Recherche
             panneauRecherche = new JPanel();
 
+            rechercheChoixSemaine = new JComboBox();
             rechercheChoixSite = new JComboBox();
             rechercheChoixSalle = new JComboBox();
             rechercheChoixEnseignant = new JComboBox();
@@ -145,6 +148,11 @@ public class Fenetre extends JFrame implements ActionListener{
             boutonRechercherEnseignant = new JButton("Rechercher un enseignant");
             boutonRechercherEtudiant = new JButton("Rechercher un etudiant");
             
+            
+            for(int i = 1 ; i <= 52 ; ++i){
+                rechercheChoixSemaine.addItem(i);
+            }
+            panneauRecherche.add(rechercheChoixSemaine);
             
             resultatFenetre = statementFenetre.executeQuery("SELECT id FROM site");
             while(resultatFenetre.next()){
@@ -256,16 +264,19 @@ public class Fenetre extends JFrame implements ActionListener{
             }
             else if(source == boutonRechercherSalle){
                 salleSelection = (Salle)rechercheChoixSalle.getSelectedItem();
+                selectedWeek = (int)rechercheChoixSemaine.getSelectedItem();
                 remplirEDTGrilleSalle(panneauEDTGrilleSalle);
                 cardLayout.show(global, "EDTGrilleSalle");
             }
             else if(source == boutonRechercherEnseignant){
                 enseignantSelection = (Utilisateur)rechercheChoixEnseignant.getSelectedItem();
+                selectedWeek = (int)rechercheChoixSemaine.getSelectedItem();
                 remplirEDTGrilleEnseignant(panneauEDTGrilleEnseignant);
                 cardLayout.show(global, "EDTGrilleEnseignant");
             }
             else if(source == boutonRechercherEtudiant){
                 etudiantSelection = (Etudiant)rechercheChoixEtudiant.getSelectedItem();
+                selectedWeek = (int)rechercheChoixSemaine.getSelectedItem();
                 remplirEDTGrilleEtudiant(panneauEDTGrilleEtudiant);
                 cardLayout.show(global, "EDTGrilleEtudiant");
             }
@@ -280,15 +291,18 @@ public class Fenetre extends JFrame implements ActionListener{
     private void remplirEDTGrilleSalle(JPanel jpanel){  //TODO
         jpanel.removeAll();
         jpanel.add(new JLabel("EDT Salle : "+salleSelection.toString()));
+        jpanel.add(new JLabel("Semaine : "+selectedWeek));
     }
     
     private void remplirEDTGrilleEnseignant(JPanel jpanel){  //TODO
         jpanel.removeAll();
         jpanel.add(new JLabel("EDT Enseignant : "+enseignantSelection.toString()));
+        jpanel.add(new JLabel("Semaine : "+selectedWeek));
     }
     
     private void remplirEDTGrilleEtudiant(JPanel jpanel){  //TODO
         jpanel.removeAll();
         jpanel.add(new JLabel("EDT Etudiant : "+etudiantSelection.toString()));
+        jpanel.add(new JLabel("Semaine : "+selectedWeek));
     }
 }
