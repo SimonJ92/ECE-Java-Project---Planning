@@ -248,7 +248,7 @@ public class Fenetre extends JFrame implements ActionListener{
     }
     
     //TODO
-    private void remplirEDTGrilleSalle(JPanel jpanel) throws SQLException{
+    private void remplirEDTGrilleSalle(JPanel jpanel){
         jpanel.removeAll();
         jpanel.add(new JLabel("EDT Salle : "+salleSelection.toString()));
         jpanel.add(new JLabel("Semaine : "+selectedWeek));
