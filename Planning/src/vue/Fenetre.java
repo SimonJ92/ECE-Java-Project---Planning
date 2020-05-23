@@ -236,8 +236,19 @@ public class Fenetre extends JFrame implements ActionListener{
         }
     }
     
+    //Fonctions
+    public Utilisateur login(String email, String passwd) throws SQLException{
+        Utilisateur utilisateur = null;
+        resultatFenetre = statementFenetre.executeQuery("SELECT * FROM utilisateur WHERE email = '"+email+"' AND passwd = '"+passwd+"'");
+        if(resultatFenetre.first()){
+            utilisateur = utilisateurDAO.find(resultatFenetre.getInt("ID"));
+        }
+        resultatFenetre.close();
+        return utilisateur;
+    }
+    
     //TODO
-    private void remplirEDTGrilleSalle(JPanel jpanel){
+    private void remplirEDTGrilleSalle(JPanel jpanel) throws SQLException{
         jpanel.removeAll();
         jpanel.add(new JLabel("EDT Salle : "+salleSelection.toString()));
         jpanel.add(new JLabel("Semaine : "+selectedWeek));
