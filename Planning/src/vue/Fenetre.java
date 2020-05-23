@@ -148,59 +148,7 @@ public class Fenetre extends JFrame implements ActionListener{
             boutonRechercherEnseignant = new JButton("Rechercher un enseignant");
             boutonRechercherEtudiant = new JButton("Rechercher un etudiant");
             
-            
-            for(int i = 1 ; i <= 52 ; ++i){
-                rechercheChoixSemaine.addItem(i);
-            }
-            panneauRecherche.add(rechercheChoixSemaine);
-            
-            resultatFenetre = statementFenetre.executeQuery("SELECT id FROM site");
-            while(resultatFenetre.next()){
-                rechercheChoixSite.addItem(siteDAO.find(resultatFenetre.getInt("ID")));
-            }
-            panneauRecherche.add(rechercheChoixSite);
-            rechercheChoixSite.addActionListener(this);
-            
-            resultatFenetre = statementFenetre.executeQuery("SELECT id FROM salle WHERE id_site = "+((Site)rechercheChoixSite.getSelectedItem()).getId());
-            while(resultatFenetre.next()){
-                rechercheChoixSalle.addItem(salleDAO.find(resultatFenetre.getInt("ID")));
-            }
-            panneauRecherche.add(rechercheChoixSalle);
-            
-            resultatFenetre = statementFenetre.executeQuery("SELECT id FROM utilisateur WHERE droit = 3");
-            while(resultatFenetre.next()){
-                rechercheChoixEnseignant.addItem(utilisateurDAO.find(resultatFenetre.getInt("ID")));
-            }
-            panneauRecherche.add(rechercheChoixEnseignant);
-            
-            resultatFenetre = statementFenetre.executeQuery("SELECT id FROM promotion");
-            while(resultatFenetre.next()){
-                rechercheChoixPromotion.addItem(promotionDAO.find(resultatFenetre.getInt("ID")));
-            }
-            panneauRecherche.add(rechercheChoixPromotion);
-            rechercheChoixPromotion.addActionListener(this);
-            
-            resultatFenetre = statementFenetre.executeQuery("SELECT id FROM groupe WHERE idpromotion = "+((Promotion)rechercheChoixPromotion.getSelectedItem()).getId());
-            while(resultatFenetre.next()){
-                rechercheChoixGroupe.addItem(groupeDAO.find(resultatFenetre.getInt("ID")));
-            }
-            panneauRecherche.add(rechercheChoixGroupe);
-            rechercheChoixGroupe.addActionListener(this);
-            
-            resultatFenetre = statementFenetre.executeQuery("SELECT id_utilisateur FROM etudiant WHERE id_groupe = "+((Groupe)rechercheChoixGroupe.getSelectedItem()).getId());
-            while(resultatFenetre.next()){
-                rechercheChoixEtudiant.addItem(etudiantDAO.find(resultatFenetre.getInt("ID_UTILISATEUR")));
-            }
-            panneauRecherche.add(rechercheChoixEtudiant);
-            
-            panneauRecherche.add(boutonRechercherSalle);
-            boutonRechercherSalle.addActionListener(this);
-            
-            panneauRecherche.add(boutonRechercherEnseignant);
-            boutonRechercherEnseignant.addActionListener(this);
-            
-            panneauRecherche.add(boutonRechercherEtudiant);
-            boutonRechercherEtudiant.addActionListener(this);
+            remplirRecherche(panneauRecherche);
             
             //..
 
@@ -288,21 +236,80 @@ public class Fenetre extends JFrame implements ActionListener{
         }
     }
     
-    private void remplirEDTGrilleSalle(JPanel jpanel){  //TODO
+    //TODO
+    private void remplirEDTGrilleSalle(JPanel jpanel){
         jpanel.removeAll();
         jpanel.add(new JLabel("EDT Salle : "+salleSelection.toString()));
         jpanel.add(new JLabel("Semaine : "+selectedWeek));
     }
     
-    private void remplirEDTGrilleEnseignant(JPanel jpanel){  //TODO
+    //TODO
+    private void remplirEDTGrilleEnseignant(JPanel jpanel){
         jpanel.removeAll();
         jpanel.add(new JLabel("EDT Enseignant : "+enseignantSelection.toString()));
         jpanel.add(new JLabel("Semaine : "+selectedWeek));
     }
     
-    private void remplirEDTGrilleEtudiant(JPanel jpanel){  //TODO
+    //TODO
+    private void remplirEDTGrilleEtudiant(JPanel jpanel){
         jpanel.removeAll();
         jpanel.add(new JLabel("EDT Etudiant : "+etudiantSelection.toString()));
         jpanel.add(new JLabel("Semaine : "+selectedWeek));
+    }
+    
+    //TODO
+    private void remplirRecherche(JPanel jpanel) throws SQLException {
+        for (int i = 1; i <= 52; ++i) {
+            rechercheChoixSemaine.addItem(i);
+        }
+        panneauRecherche.add(rechercheChoixSemaine);
+
+        resultatFenetre = statementFenetre.executeQuery("SELECT id FROM site");
+        while (resultatFenetre.next()) {
+            rechercheChoixSite.addItem(siteDAO.find(resultatFenetre.getInt("ID")));
+        }
+        panneauRecherche.add(rechercheChoixSite);
+        rechercheChoixSite.addActionListener(this);
+
+        resultatFenetre = statementFenetre.executeQuery("SELECT id FROM salle WHERE id_site = " + ((Site) rechercheChoixSite.getSelectedItem()).getId());
+        while (resultatFenetre.next()) {
+            rechercheChoixSalle.addItem(salleDAO.find(resultatFenetre.getInt("ID")));
+        }
+        panneauRecherche.add(rechercheChoixSalle);
+
+        resultatFenetre = statementFenetre.executeQuery("SELECT id FROM utilisateur WHERE droit = 3");
+        while (resultatFenetre.next()) {
+            rechercheChoixEnseignant.addItem(utilisateurDAO.find(resultatFenetre.getInt("ID")));
+        }
+        panneauRecherche.add(rechercheChoixEnseignant);
+
+        resultatFenetre = statementFenetre.executeQuery("SELECT id FROM promotion");
+        while (resultatFenetre.next()) {
+            rechercheChoixPromotion.addItem(promotionDAO.find(resultatFenetre.getInt("ID")));
+        }
+        panneauRecherche.add(rechercheChoixPromotion);
+        rechercheChoixPromotion.addActionListener(this);
+
+        resultatFenetre = statementFenetre.executeQuery("SELECT id FROM groupe WHERE idpromotion = " + ((Promotion) rechercheChoixPromotion.getSelectedItem()).getId());
+        while (resultatFenetre.next()) {
+            rechercheChoixGroupe.addItem(groupeDAO.find(resultatFenetre.getInt("ID")));
+        }
+        panneauRecherche.add(rechercheChoixGroupe);
+        rechercheChoixGroupe.addActionListener(this);
+
+        resultatFenetre = statementFenetre.executeQuery("SELECT id_utilisateur FROM etudiant WHERE id_groupe = " + ((Groupe) rechercheChoixGroupe.getSelectedItem()).getId());
+        while (resultatFenetre.next()) {
+            rechercheChoixEtudiant.addItem(etudiantDAO.find(resultatFenetre.getInt("ID_UTILISATEUR")));
+        }
+        panneauRecherche.add(rechercheChoixEtudiant);
+
+        panneauRecherche.add(boutonRechercherSalle);
+        boutonRechercherSalle.addActionListener(this);
+
+        panneauRecherche.add(boutonRechercherEnseignant);
+        boutonRechercherEnseignant.addActionListener(this);
+
+        panneauRecherche.add(boutonRechercherEtudiant);
+        boutonRechercherEtudiant.addActionListener(this);
     }
 }
