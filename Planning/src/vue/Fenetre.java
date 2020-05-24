@@ -9,6 +9,7 @@ import modele.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.sql.*;
+import java.text.ParseException;
 import javax.swing.*;
 import java.util.*;
 
@@ -101,7 +102,8 @@ public class Fenetre extends JFrame implements ActionListener{
     private JComboBox modifChoixGroupe;
     private JComboBox modifChoixSite;
     private JComboBox modifChoixSalle;
-    private JButton modifboutonEnregistrer;
+    private JButton modifBoutonEnregistrer;
+    private JLabel modifErrorField;
     
     
     //Constructeur à appeler pour démarrer l'appli
@@ -191,7 +193,7 @@ public class Fenetre extends JFrame implements ActionListener{
             }
         }
         catch(SQLException e){
-            System.out.println("ici "+e.toString()); 
+            System.out.println(e.toString()); 
         }
         
         //MODIFICATION SEANCE
@@ -221,9 +223,16 @@ public class Fenetre extends JFrame implements ActionListener{
                     modifChoixSalle.addItem(salleDAO.find(resultatFenetre.getInt("ID")));
                 }
             }
+            else if(source == modifBoutonEnregistrer){
+                if(seanceSelection.getId() != 0){ //Cas d'une modification des données
+                    modifEnregistrer();
+                }else{  //Cas d'une création de séance
+                    modifCreer();
+                }
+            }
         }
-        catch(SQLException e){
-            
+        catch(SQLException | ParseException e){
+            System.out.println(e.toString());
         }
     }
     
@@ -316,7 +325,8 @@ public class Fenetre extends JFrame implements ActionListener{
         modifChoixGroupe = new JComboBox();
         modifChoixSite = new JComboBox();
         modifChoixSalle = new JComboBox();
-        modifboutonEnregistrer = new JButton("Enregistrer");
+        modifBoutonEnregistrer = new JButton("Enregistrer");
+        modifErrorField = new JLabel("");
         
         remplirModifSeance();
         
@@ -325,7 +335,7 @@ public class Fenetre extends JFrame implements ActionListener{
         modifChoixCours.addActionListener(this);
         modifChoixPromotion.addActionListener(this);
         modifChoixSite.addActionListener(this);        
-        modifboutonEnregistrer.addActionListener(this);
+        modifBoutonEnregistrer.addActionListener(this);
 
         //Initialisation du conteneur global des panneaux
         cardLayout = new CardLayout();
@@ -373,12 +383,14 @@ public class Fenetre extends JFrame implements ActionListener{
     
     //TODO
     private void remplirRecherche() throws SQLException {
+        //Semaine
         rechercheChoixSemaine.removeAllItems();
         for (int i = 1; i <= 52; ++i) {
             rechercheChoixSemaine.addItem(i);
         }
         panneauRecherche.add(rechercheChoixSemaine);
         
+        //Site de la salle
         rechercheChoixSite.removeAllItems();
         resultatFenetre = statementFenetre.executeQuery("SELECT id FROM site");
         while (resultatFenetre.next()) {
@@ -386,6 +398,7 @@ public class Fenetre extends JFrame implements ActionListener{
         }
         panneauRecherche.add(rechercheChoixSite);
 
+        //Salle
         rechercheChoixSalle.removeAllItems();
         resultatFenetre = statementFenetre.executeQuery("SELECT id FROM salle WHERE id_site = " + ((Site) rechercheChoixSite.getSelectedItem()).getId());
         while (resultatFenetre.next()) {
@@ -393,6 +406,7 @@ public class Fenetre extends JFrame implements ActionListener{
         }
         panneauRecherche.add(rechercheChoixSalle);
 
+        //Enseignant
         rechercheChoixEnseignant.removeAllItems();
         resultatFenetre = statementFenetre.executeQuery("SELECT id FROM utilisateur WHERE droit = 3");
         while (resultatFenetre.next()) {
@@ -400,6 +414,7 @@ public class Fenetre extends JFrame implements ActionListener{
         }
         panneauRecherche.add(rechercheChoixEnseignant);
 
+        //Promotion du groupe de l'élève
         rechercheChoixPromotion.removeAllItems();
         resultatFenetre = statementFenetre.executeQuery("SELECT id FROM promotion");
         while (resultatFenetre.next()) {
@@ -407,6 +422,7 @@ public class Fenetre extends JFrame implements ActionListener{
         }
         panneauRecherche.add(rechercheChoixPromotion);
 
+        //Groupe de l'élève
         rechercheChoixGroupe.removeAllItems();
         resultatFenetre = statementFenetre.executeQuery("SELECT id FROM groupe WHERE idpromotion = " + ((Promotion) rechercheChoixPromotion.getSelectedItem()).getId());
         while (resultatFenetre.next()) {
@@ -414,6 +430,7 @@ public class Fenetre extends JFrame implements ActionListener{
         }
         panneauRecherche.add(rechercheChoixGroupe);
 
+        //Élève
         rechercheChoixEtudiant.removeAllItems();
         resultatFenetre = statementFenetre.executeQuery("SELECT id_utilisateur FROM etudiant WHERE id_groupe = " + ((Groupe) rechercheChoixGroupe.getSelectedItem()).getId());
         while (resultatFenetre.next()) {
@@ -429,7 +446,7 @@ public class Fenetre extends JFrame implements ActionListener{
     
     //TODO (ne pas oublier de définir une taille pour les TextFields)
     private void remplirModifSeance() throws SQLException{
-        //seanceSelection = seanceDAO.find(1); à supprimer, mais pratique pour coder
+        seanceSelection = seanceDAO.find(1); //à supprimer, mais pratique pour coder
         
         panneauModifSeance.removeAll();
         panneauModifSeance.add(new JLabel("Modifier Séance : "+seanceSelection.toString()));
@@ -454,7 +471,7 @@ public class Fenetre extends JFrame implements ActionListener{
         }
         panneauModifSeance.add(modifChoixMois);
         
-        //Jours
+        //Jour
         modifFillDaysOfMonth();
         if(seanceSelection.getId() != 0){   //si une séance a été selectionné = si on est en modification
             modifChoixJour.setSelectedItem(seanceSelection.getDate().getJour());
@@ -618,6 +635,12 @@ public class Fenetre extends JFrame implements ActionListener{
             }
         }
         panneauModifSeance.add(modifChoixSalle);
+        
+        //Bouton d'enregistrement
+        panneauModifSeance.add(modifBoutonEnregistrer);
+        
+        //Affichage d'erreur (qui pourra être modifié dans l'ActionListener du bouton
+        panneauModifSeance.add(modifErrorField);
     }
     
     private void modifFillDaysOfMonth(){
@@ -668,5 +691,28 @@ public class Fenetre extends JFrame implements ActionListener{
                 return 0;   //error case
                      
         }
+    }
+    
+    private void modifEnregistrer() throws SQLException, ParseException{
+        String messageErreur = "";
+        
+        //Date
+        MyDate today = new MyDate();
+        MyDate modifDate = new MyDate((int)modifChoixJour.getSelectedItem(),
+                                        (int)modifChoixMois.getSelectedItem(),
+                                        (int)modifChoixAnnee.getSelectedItem());
+        messageErreur += (modifDate.getAnnee() < today.getAnnee())?"Attention : la nouvelle date est déjà passée.":"";
+
+        //Heure de début
+        MyHour modifHeureDebut = new MyHour((int)modifChoixHeureDebut.getValue(),(int)modifChoixMinutesDebut.getValue());
+        MyHour modifHeureFin = new MyHour((int)modifChoixHeureFin.getValue(),(int)modifChoixMinutesFin.getValue());
+        messageErreur += "  debut : "+modifHeureDebut;
+        messageErreur += "  fin : "+modifHeureFin;
+        
+       modifErrorField.setText(messageErreur);
+    }
+    
+    private void modifCreer() throws SQLException{
+        
     }
 }

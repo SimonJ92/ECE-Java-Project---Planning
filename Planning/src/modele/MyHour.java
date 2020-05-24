@@ -20,7 +20,7 @@ public class MyHour {
     
     public MyHour(int heure,int minutes) throws ParseException{
         String currentDateString = "01/01/2000 "+heure+":"+minutes;
-        SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+        SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         date = sd.parse(currentDateString);
     }
     
@@ -42,18 +42,21 @@ public class MyHour {
     
     public void setHeure(int heure) throws ParseException{
         String currentDateString = "01/01/2000 "+heure+":"+getMinutes();
-        SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+        SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         date = sd.parse(currentDateString);
     }
     
     public void setMinutes(int minutes) throws ParseException{
         String currentDateString = "01/01/2000 "+getHeure()+":"+minutes;
-        SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+        SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         date = sd.parse(currentDateString);
     }
     
     @Override
     public String toString(){
-        return getHeure()+":"+getMinutes()+":00";
+        if(getMinutes()>10)
+            return getHeure()+":"+getMinutes()+":00";
+        else
+            return getHeure()+":0"+getMinutes()+":00";
     }
 }
