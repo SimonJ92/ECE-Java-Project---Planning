@@ -15,7 +15,7 @@ import java.util.TimeZone;
  *
  * @author simon
  */
-public class MyHour {
+public class MyHour implements Comparable<MyHour>{
     private Date date;
     
     public MyHour(int heure,int minutes) throws ParseException{
@@ -58,5 +58,20 @@ public class MyHour {
             return getHeure()+":"+getMinutes()+":00";
         else
             return getHeure()+":0"+getMinutes()+":00";
+    }
+
+    @Override
+    public int compareTo(MyHour t) {
+        if((this.getHeure() == t.getHeure())
+                &&(this.getMinutes() == t.getMinutes())){
+            return 0;
+        }
+        if(this.getHeure() > t.getHeure()){
+            return 1;
+        }
+        if(this.getMinutes() > t.getMinutes()){
+            return 1;
+        }
+        return -1;
     }
 }

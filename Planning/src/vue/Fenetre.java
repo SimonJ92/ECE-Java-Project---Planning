@@ -699,15 +699,18 @@ public class Fenetre extends JFrame implements ActionListener{
         MyDate modifDate = new MyDate((int)modifChoixJour.getSelectedItem(),
                                         (int)modifChoixMois.getSelectedItem(),
                                         (int)modifChoixAnnee.getSelectedItem());
-        messageErreur += (modifDate.getAnnee() < today.getAnnee())?"Attention : la nouvelle date est déjà passée.":"";
+        messageErreur += (modifDate.compareTo(today) == -1)?"Attention : la nouvelle date est déjà passée.":"";
 
         //Heure de début
         MyHour modifHeureDebut = new MyHour((int)modifChoixHeureDebut.getValue(),(int)modifChoixMinutesDebut.getValue());
+        
+        //Heure de fin
         MyHour modifHeureFin = new MyHour((int)modifChoixHeureFin.getValue(),(int)modifChoixMinutesFin.getValue());
-        messageErreur += "  debut : "+modifHeureDebut;
-        messageErreur += "  fin : "+modifHeureFin;
         
         //check que la fin soit après le début
+        messageErreur = (modifHeureFin.compareTo(modifHeureDebut) == -1)?"ERREUR : L'heure de fin doit se situer après l'heure de début":messageErreur;
+        
+        
         
        modifErrorField.setText(messageErreur);
     }

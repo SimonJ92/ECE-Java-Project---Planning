@@ -11,7 +11,7 @@ import java.util.*;
  *
  * @author simon
  */
-public class MyDate {
+public class MyDate implements Comparable<MyDate>{
     private Date date;
     
     public MyDate(int jour,int mois, int annee) throws ParseException{
@@ -77,5 +77,24 @@ public class MyDate {
     @Override
     public String toString(){
         return getAnnee()+"-"+getMois()+"-"+getJour();
+    }
+
+    @Override
+    public int compareTo(MyDate t) {
+        if((this.getAnnee() == t.getAnnee())
+                &&(this.getMois() == t.getMois())
+                &&(this.getJour() == t.getJour())){
+            return 0;
+        }
+        if(this.getAnnee() > t.getAnnee()){
+            return 1;
+        }
+        if(this.getMois() > t.getMois()){
+            return 1;
+        }
+        if(this.getJour() > t.getJour()){
+            return 1;
+        }
+        return -1;
     }
 }
