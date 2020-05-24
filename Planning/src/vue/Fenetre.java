@@ -82,9 +82,6 @@ public class Fenetre extends JFrame implements ActionListener{
     private JButton boutonRechercherSalle;
     private JButton boutonRechercherEnseignant;
     private JButton boutonRechercherEtudiant;
-    private JButton boutonAllerModifierSalle;
-    private JButton boutonAllerModifierEnseignant;
-    private JButton boutonAllerModifierEtudiant;
     
     //Modification de Séance
     private JComboBox modifChoixAnnee;
@@ -129,7 +126,7 @@ public class Fenetre extends JFrame implements ActionListener{
             setContentPane(global);
         }
         catch(SQLException e){
-            System.out.println("la "+e.toString());
+            System.out.println("la "+e.toString()); //Supprimer le là : juste utile pour coder
         }
     }
 
@@ -336,6 +333,8 @@ public class Fenetre extends JFrame implements ActionListener{
         modifChoixPromotion.addActionListener(this);
         modifChoixSite.addActionListener(this);        
         modifBoutonEnregistrer.addActionListener(this);
+        
+        //...
 
         //Initialisation du conteneur global des panneaux
         cardLayout = new CardLayout();
@@ -400,7 +399,7 @@ public class Fenetre extends JFrame implements ActionListener{
 
         //Salle
         rechercheChoixSalle.removeAllItems();
-        resultatFenetre = statementFenetre.executeQuery("SELECT id FROM salle WHERE id_site = " + ((Site) rechercheChoixSite.getSelectedItem()).getId());
+        resultatFenetre = statementFenetre.executeQuery("SELECT id FROM salle WHERE id_site = " + ((Site)rechercheChoixSite.getSelectedItem()).getId());
         while (resultatFenetre.next()) {
             rechercheChoixSalle.addItem(salleDAO.find(resultatFenetre.getInt("ID")));
         }
@@ -688,8 +687,7 @@ public class Fenetre extends JFrame implements ActionListener{
             case "Annulé":
                 return 3;
             default:
-                return 0;   //error case
-                     
+                return 0;   //error case         
         }
     }
     
@@ -708,6 +706,8 @@ public class Fenetre extends JFrame implements ActionListener{
         MyHour modifHeureFin = new MyHour((int)modifChoixHeureFin.getValue(),(int)modifChoixMinutesFin.getValue());
         messageErreur += "  debut : "+modifHeureDebut;
         messageErreur += "  fin : "+modifHeureFin;
+        
+        //check que la fin soit après le début
         
        modifErrorField.setText(messageErreur);
     }
