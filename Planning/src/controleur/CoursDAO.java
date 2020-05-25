@@ -19,7 +19,7 @@ public class CoursDAO extends DAO<Cours>{
     @Override
     public boolean create(Cours obj) {
         try{
-            return connexion.effectuerUpdate("INSERT INTO cours VALUES('"+obj.getId()+"', '"+obj.getNom()+"')");
+            return connexion.effectuerUpdate("INSERT INTO cours VALUES('', '"+obj.getNom()+"')");
         }
         catch(SQLException e){
             System.out.println(e.toString());

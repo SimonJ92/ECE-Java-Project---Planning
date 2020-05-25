@@ -94,14 +94,21 @@ public class Fenetre extends JFrame implements ActionListener{
     private JComboBox modifChoixEtat;
     private JComboBox modifChoixCours;
     private JComboBox modifChoixTypeCours;
-    private JComboBox modifChoixEnseignant;
-    private JComboBox modifChoixPromotion;
-    private JComboBox modifChoixGroupe;
     private JComboBox modifChoixSite;
     private JComboBox modifChoixSalle;
-    private JButton modifBoutonEnregistrer;
     private JLabel modifErrorField;
+    private JList modifChoixEnseignant;
+    private JList modifChoixEnseignantSelection;
+    private JButton modifBoutonAjouterEnseignant;
+    private JButton modifBoutonSupprimerEnseignantSelection;
+    private JComboBox modifChoixPromotion;
+    private JList modifChoixGroupe;
+    private JList modifChoixGroupeSelection;
+    private JButton modifBoutonAjouterGroupe;
+    private JButton modifBoutonSupprimerGroupeSelection;
+    private JButton modifBoutonEnregistrer;
     
+    //...
     
     //Constructeur à appeler pour démarrer l'appli
     public Fenetre(Connexion myConnexion){
@@ -199,25 +206,61 @@ public class Fenetre extends JFrame implements ActionListener{
                 modifFillDaysOfMonth();
             }
             else if(source == modifChoixCours){
-                modifChoixEnseignant.removeAllItems();
+                DefaultListModel modifChoixEnseignantModel = new DefaultListModel();
                 resultatEvent = statementEvent.executeQuery("SELECT id FROM utilisateur JOIN enseignant ON utilisateur.id = enseignant.id_utilisateur "
-                                                            + "WHERE enseignant.ID_COURS = "+((Cours)modifChoixCours.getSelectedItem()).getId());
-                while(resultatEvent.next()){
-                    modifChoixEnseignant.addItem(utilisateurDAO.find(resultatEvent.getInt("ID")));
+                                                                 + "WHERE enseignant.ID_COURS = "+((Cours)modifChoixCours.getSelectedItem()).getId());
+                while (resultatEvent.next()) {
+                    modifChoixEnseignantModel.addElement(utilisateurDAO.find(resultatEvent.getInt("ID")));
                 }
-            }
-            else if(source == modifChoixPromotion){
-                modifChoixGroupe.removeAllItems();
-                resultatFenetre = statementFenetre.executeQuery("SELECT id FROM groupe WHERE idpromotion = "+((Promotion)modifChoixPromotion.getSelectedItem()).getId());
-                while (resultatFenetre.next()) {
-                    modifChoixGroupe.addItem(groupeDAO.find(resultatFenetre.getInt("ID")));
-                }
+                modifChoixEnseignant.setModel(modifChoixEnseignantModel);
+                modifChoixEnseignantSelection.setModel(new DefaultListModel());
             }
             else if(source == modifChoixSite){
                 modifChoixSalle.removeAllItems();
                 resultatFenetre = statementFenetre.executeQuery("SELECT id FROM salle WHERE id_site = "+((Site)modifChoixSite.getSelectedItem()).getId());
                 while (resultatFenetre.next()) {
                     modifChoixSalle.addItem(salleDAO.find(resultatFenetre.getInt("ID")));
+                }
+            }
+            else if(source == modifBoutonAjouterEnseignant){
+                DefaultListModel modifChoixEnseignantModel = (DefaultListModel)modifChoixEnseignant.getModel();
+                DefaultListModel modifChoixEnseignantSelectionModel = (DefaultListModel)modifChoixEnseignantSelection.getModel();
+                for(Object enseignantSelectionne : modifChoixEnseignant.getSelectedValuesList()) {
+                    modifChoixEnseignantSelectionModel.addElement(enseignantSelectionne);
+                    modifChoixEnseignantModel.removeElement(enseignantSelectionne);
+                }
+            }
+            else if(source == modifBoutonSupprimerEnseignantSelection){
+                DefaultListModel modifChoixEnseignantModel = (DefaultListModel)modifChoixEnseignant.getModel();
+                DefaultListModel modifChoixEnseignantSelectionModel = (DefaultListModel)modifChoixEnseignantSelection.getModel();
+                for(Object enseignantSelectionne : modifChoixEnseignantSelection.getSelectedValuesList()) {
+                    modifChoixEnseignantModel.addElement(enseignantSelectionne);
+                    modifChoixEnseignantSelectionModel.removeElement(enseignantSelectionne);
+                }
+            }
+            else if(source == modifChoixPromotion){
+                DefaultListModel modifChoixGroupeModel = new DefaultListModel();
+                resultatEvent = statementEvent.executeQuery("SELECT id FROM groupe WHERE idpromotion = "+((Promotion)modifChoixPromotion.getSelectedItem()).getId());
+                while (resultatEvent.next()) {
+                    modifChoixGroupeModel.addElement(groupeDAO.find(resultatEvent.getInt("ID")));
+                }
+                modifChoixGroupe.setModel(modifChoixGroupeModel);
+                modifChoixGroupeSelection.setModel(new DefaultListModel());
+            }
+            else if(source == modifBoutonAjouterGroupe){
+                DefaultListModel modifChoixGroupeModel = (DefaultListModel)modifChoixGroupe.getModel();
+                DefaultListModel modifChoixGroupeSelectionModel = (DefaultListModel)modifChoixGroupeSelection.getModel();
+                for(Object groupeSelectionne : modifChoixGroupe.getSelectedValuesList()) {
+                    modifChoixGroupeSelectionModel.addElement(groupeSelectionne);
+                    modifChoixGroupeModel.removeElement(groupeSelectionne);
+                }
+            }
+            else if(source == modifBoutonSupprimerGroupeSelection){
+                DefaultListModel modifChoixGroupeModel = (DefaultListModel)modifChoixGroupe.getModel();
+                DefaultListModel modifChoixGroupeSelectionModel = (DefaultListModel)modifChoixGroupeSelection.getModel();
+                for(Object groupeSelectionne : modifChoixGroupeSelection.getSelectedValuesList()) {
+                    modifChoixGroupeModel.addElement(groupeSelectionne);
+                    modifChoixGroupeSelectionModel.removeElement(groupeSelectionne);
                 }
             }
             else if(source == modifBoutonEnregistrer){
@@ -286,53 +329,10 @@ public class Fenetre extends JFrame implements ActionListener{
         remplirEDTGrilleEtudiant();
 
         //Panel Recherche
-        rechercheChoixSemaine = new JComboBox();
-        rechercheChoixSite = new JComboBox();
-        rechercheChoixSalle = new JComboBox();
-        rechercheChoixEnseignant = new JComboBox();
-        rechercheChoixPromotion = new JComboBox();
-        rechercheChoixGroupe = new JComboBox();
-        rechercheChoixEtudiant = new JComboBox();
-        boutonRechercherSalle = new JButton("Rechercher une salle");
-        boutonRechercherEnseignant = new JButton("Rechercher un enseignant");
-        boutonRechercherEtudiant = new JButton("Rechercher un etudiant");
-        
         remplirRecherche();
-        
-        rechercheChoixSite.addActionListener(this);
-        rechercheChoixPromotion.addActionListener(this);
-        rechercheChoixGroupe.addActionListener(this);
-        boutonRechercherSalle.addActionListener(this);
-        boutonRechercherEnseignant.addActionListener(this);
-        boutonRechercherEtudiant.addActionListener(this);
 
         //Panel Modification de Séance
-        modifChoixAnnee = new JComboBox();
-        modifChoixMois = new JComboBox();
-        modifChoixJour = new JComboBox();
-        modifChoixHeureDebut = new JSpinner();
-        modifChoixMinutesDebut = new JSpinner();
-        modifChoixHeureFin = new JSpinner();
-        modifChoixMinutesFin = new JSpinner();
-        modifChoixEtat = new JComboBox();
-        modifChoixCours = new JComboBox();
-        modifChoixTypeCours = new JComboBox();
-        modifChoixEnseignant = new JComboBox();
-        modifChoixPromotion = new JComboBox();
-        modifChoixGroupe = new JComboBox();
-        modifChoixSite = new JComboBox();
-        modifChoixSalle = new JComboBox();
-        modifBoutonEnregistrer = new JButton("Enregistrer");
-        modifErrorField = new JLabel("");
-        
         remplirModifSeance();
-        
-        modifChoixAnnee.addActionListener(this);
-        modifChoixMois.addActionListener(this);
-        modifChoixCours.addActionListener(this);
-        modifChoixPromotion.addActionListener(this);
-        modifChoixSite.addActionListener(this);        
-        modifBoutonEnregistrer.addActionListener(this);
         
         //...
 
@@ -347,7 +347,6 @@ public class Fenetre extends JFrame implements ActionListener{
         global.add(panneauRecherche, "Recherche");
         global.add(panneauModifSeance, "ModifSeance");
     }
-    
     
     private Utilisateur login(String email, String passwd) throws SQLException{
         Utilisateur utilisateur = null;
@@ -382,6 +381,26 @@ public class Fenetre extends JFrame implements ActionListener{
     
     //TODO
     private void remplirRecherche() throws SQLException {
+        //Initialisation des composants du panneau
+        rechercheChoixSemaine = new JComboBox();
+        rechercheChoixSite = new JComboBox();
+        rechercheChoixSalle = new JComboBox();
+        rechercheChoixEnseignant = new JComboBox();
+        rechercheChoixPromotion = new JComboBox();
+        rechercheChoixGroupe = new JComboBox();
+        rechercheChoixEtudiant = new JComboBox();
+        boutonRechercherSalle = new JButton("Rechercher une salle");
+        boutonRechercherEnseignant = new JButton("Rechercher un enseignant");
+        boutonRechercherEtudiant = new JButton("Rechercher un etudiant");
+        
+        //On retire les éventuels ActionListeners
+        rechercheChoixSite.removeActionListener(this);
+        rechercheChoixPromotion.removeActionListener(this);
+        rechercheChoixGroupe.removeActionListener(this);
+        boutonRechercherSalle.removeActionListener(this);
+        boutonRechercherEnseignant.removeActionListener(this);
+        boutonRechercherEtudiant.removeActionListener(this);
+        
         //Semaine
         rechercheChoixSemaine.removeAllItems();
         for (int i = 1; i <= 52; ++i) {
@@ -441,14 +460,60 @@ public class Fenetre extends JFrame implements ActionListener{
         panneauRecherche.add(boutonRechercherSalle);
         panneauRecherche.add(boutonRechercherEnseignant);
         panneauRecherche.add(boutonRechercherEtudiant);
+        
+        //Ré-activation des ActionListeners
+        rechercheChoixSite.addActionListener(this);
+        rechercheChoixPromotion.addActionListener(this);
+        rechercheChoixGroupe.addActionListener(this);
+        boutonRechercherSalle.addActionListener(this);
+        boutonRechercherEnseignant.addActionListener(this);
+        boutonRechercherEtudiant.addActionListener(this);
     }
     
-    //TODO (ne pas oublier de définir une taille pour les TextFields)
+    //TODO (ne pas oublier de définir une taille pour les Jlist : elles peuvent être invisibles si elles sont vides)
     private void remplirModifSeance() throws SQLException{
+        //Initialisation des composants du panneau
+        modifChoixAnnee = new JComboBox();
+        modifChoixMois = new JComboBox();
+        modifChoixJour = new JComboBox();
+        modifChoixHeureDebut = new JSpinner();
+        modifChoixMinutesDebut = new JSpinner();
+        modifChoixHeureFin = new JSpinner();
+        modifChoixMinutesFin = new JSpinner();
+        modifChoixEtat = new JComboBox();
+        modifChoixCours = new JComboBox();
+        modifChoixTypeCours = new JComboBox();
+        modifChoixEnseignant = new JList();
+        modifChoixEnseignantSelection = new JList();
+        modifBoutonAjouterEnseignant = new JButton("Ajouter les enseignants à la séance");
+        modifBoutonSupprimerEnseignantSelection = new JButton("Supprimer les enseignants de la séance");
+        modifChoixPromotion = new JComboBox();
+        modifChoixGroupe = new JList();
+        modifChoixGroupeSelection = new JList();
+        modifBoutonAjouterGroupe = new JButton("Ajouter les groupes à la séance");
+        modifBoutonSupprimerGroupeSelection = new JButton("Supprimer les groupes de la séance");
+        modifChoixSite = new JComboBox();
+        modifChoixSalle = new JComboBox();
+        modifBoutonEnregistrer = new JButton("Enregistrer");
+        modifErrorField = new JLabel("");
+        
+        //On retire les éventuels ActionListeners
+        modifChoixAnnee.removeActionListener(this);
+        modifChoixMois.removeActionListener(this);
+        modifChoixCours.removeActionListener(this);
+        modifChoixSite.removeActionListener(this);
+        modifBoutonAjouterEnseignant.removeActionListener(this);
+        modifBoutonSupprimerEnseignantSelection.removeActionListener(this);
+        modifChoixPromotion.removeActionListener(this);
+        modifBoutonAjouterGroupe.removeActionListener(this);
+        modifBoutonSupprimerGroupeSelection.removeActionListener(this);
+        modifBoutonEnregistrer.removeActionListener(this);
+
+        //CHAMPS SEANCE
         seanceSelection = seanceDAO.find(1); //à supprimer, mais pratique pour coder
         
         panneauModifSeance.removeAll();
-        panneauModifSeance.add(new JLabel("Modifier Séance : "+seanceSelection.toString()));
+        panneauModifSeance.add(new JLabel("Modifier Séance : "+seanceSelection.toString()));    //À supprimer
         
         //Année
         modifChoixAnnee.removeAllItems();
@@ -554,55 +619,6 @@ public class Fenetre extends JFrame implements ActionListener{
         modifChoixCours.setSelectedItem(seanceSelection.getTypeCours());
         panneauModifSeance.add(modifChoixTypeCours);
         
-        //Enseignant
-        modifChoixEnseignant.removeAllItems();
-        resultatFenetre = statementFenetre.executeQuery("SELECT id FROM utilisateur JOIN enseignant ON utilisateur.id = enseignant.id_utilisateur "
-                                                         + "WHERE enseignant.ID_COURS = "+((Cours)modifChoixCours.getSelectedItem()).getId());
-        while (resultatFenetre.next()) {
-            modifChoixEnseignant.addItem(utilisateurDAO.find(resultatFenetre.getInt("ID")));
-        }
-        resultatFenetre = statementFenetre.executeQuery("SELECT id FROM utilisateur JOIN seance_enseignants ON id = id_enseignant where id_seance = "+seanceSelection.getId());
-        if(resultatFenetre.first()){
-            for(int i=0;i<modifChoixEnseignant.getItemCount();++i){
-                if(((Utilisateur)modifChoixEnseignant.getItemAt(i)).getId() == resultatFenetre.getInt("ID")){
-                    modifChoixEnseignant.setSelectedIndex(i);
-                }
-            }
-        }
-        panneauModifSeance.add(modifChoixEnseignant);
-        
-        //Promotion du groupe
-        modifChoixPromotion.removeAllItems();
-        resultatFenetre = statementFenetre.executeQuery("SELECT id FROM promotion");
-        while (resultatFenetre.next()) {
-            modifChoixPromotion.addItem(promotionDAO.find(resultatFenetre.getInt("ID")));
-        }
-        resultatFenetre = statementFenetre.executeQuery("SELECT idpromotion FROM groupe JOIN seance_groupes ON id = id_groupe where id_seance = "+seanceSelection.getId());
-        if(resultatFenetre.first()){
-            for(int i=0;i<modifChoixPromotion.getItemCount();++i){
-                if(((Promotion)modifChoixPromotion.getItemAt(i)).getId() == resultatFenetre.getInt("IDPROMOTION")){
-                    modifChoixPromotion.setSelectedIndex(i);
-                }
-            }
-        }
-        panneauModifSeance.add(modifChoixPromotion);
-        
-        //Groupe
-        modifChoixGroupe.removeAllItems();
-        resultatFenetre = statementFenetre.executeQuery("SELECT id FROM groupe WHERE idpromotion = "+((Promotion)modifChoixPromotion.getSelectedItem()).getId());
-        while (resultatFenetre.next()) {
-            modifChoixGroupe.addItem(groupeDAO.find(resultatFenetre.getInt("ID")));
-        }
-        resultatFenetre = statementFenetre.executeQuery("SELECT id FROM groupe JOIN seance_groupes ON id = id_groupe where id_seance = "+seanceSelection.getId());
-        if(resultatFenetre.first()){
-            for(int i=0;i<modifChoixGroupe.getItemCount();++i){
-                if(((Groupe)modifChoixGroupe.getItemAt(i)).getId() == resultatFenetre.getInt("ID")){
-                    modifChoixGroupe.setSelectedIndex(i);
-                }
-            }
-        }
-        panneauModifSeance.add(modifChoixGroupe);
-        
         //Site de la salle
         modifChoixSite.removeAllItems();
         resultatFenetre = statementFenetre.executeQuery("SELECT id FROM site");
@@ -635,11 +651,91 @@ public class Fenetre extends JFrame implements ActionListener{
         }
         panneauModifSeance.add(modifChoixSalle);
         
+        //Enseignants
+        DefaultListModel modifChoixEnseignantModel = new DefaultListModel();
+        resultatFenetre = statementFenetre.executeQuery("SELECT id FROM utilisateur JOIN enseignant ON utilisateur.id = enseignant.id_utilisateur "
+                                                         + "WHERE enseignant.ID_COURS = "+((Cours)modifChoixCours.getSelectedItem()).getId()+" "
+                                                         + "AND id not in (SELECT id_enseignant FROM seance_enseignants "
+                                                         + "WHERE id_seance = "+seanceSelection.getId()+")");
+        while (resultatFenetre.next()) {
+            modifChoixEnseignantModel.addElement(utilisateurDAO.find(resultatFenetre.getInt("ID")));
+        }
+        modifChoixEnseignant = new JList(modifChoixEnseignantModel);
+        panneauModifSeance.add(modifChoixEnseignant);
+        
+        //Enseignants sélectionnés
+        DefaultListModel modifChoixEnseignantSelectionModel = new DefaultListModel();
+        resultatFenetre = statementFenetre.executeQuery("SELECT id_enseignant FROM seance_enseignants "
+                                                         + "WHERE id_seance = "+seanceSelection.getId());
+        while (resultatFenetre.next()) {
+            modifChoixEnseignantSelectionModel.addElement(utilisateurDAO.find(resultatFenetre.getInt("ID_ENSEIGNANT")));
+        }
+        modifChoixEnseignantSelection = new JList(modifChoixEnseignantSelectionModel);
+        panneauModifSeance.add(modifChoixEnseignantSelection);
+        
+        //Boutons de gestion des enseignants
+        panneauModifSeance.add(modifBoutonAjouterEnseignant);
+        panneauModifSeance.add(modifBoutonSupprimerEnseignantSelection);
+        
+        //Promotion du groupe
+        modifChoixPromotion.removeAllItems();
+        resultatFenetre = statementFenetre.executeQuery("SELECT id FROM promotion");
+        while (resultatFenetre.next()) {
+            modifChoixPromotion.addItem(promotionDAO.find(resultatFenetre.getInt("ID")));
+        }
+        resultatFenetre = statementFenetre.executeQuery("SELECT idpromotion FROM groupe JOIN seance_groupes ON id = id_groupe where id_seance = "+seanceSelection.getId());
+        if(resultatFenetre.first()){
+            for(int i=0;i<modifChoixPromotion.getItemCount();++i){
+                if(((Promotion)modifChoixPromotion.getItemAt(i)).getId() == resultatFenetre.getInt("IDPROMOTION")){
+                    modifChoixPromotion.setSelectedIndex(i);
+                }
+            }
+        }
+        panneauModifSeance.add(modifChoixPromotion);
+        
+        //Groupes
+        DefaultListModel modifChoixGroupeModel = new DefaultListModel();
+        resultatFenetre = statementFenetre.executeQuery("SELECT id FROM groupe WHERE idpromotion = "+((Promotion)modifChoixPromotion.getSelectedItem()).getId()+" "
+                                                        +"AND id not in (SELECT id_groupe FROM seance_groupes "
+                                                         + "WHERE id_seance = "+seanceSelection.getId()+")");
+        while (resultatFenetre.next()) {
+            modifChoixGroupeModel.addElement(groupeDAO.find(resultatFenetre.getInt("ID")));
+        }
+        modifChoixGroupe = new JList(modifChoixGroupeModel);
+        panneauModifSeance.add(modifChoixGroupe);
+        
+        //Groupes sélectionnés
+        DefaultListModel modifChoixGroupeSelectionModel = new DefaultListModel();
+        resultatFenetre = statementFenetre.executeQuery("SELECT id_groupe FROM seance_groupes "
+                                                         + "WHERE id_seance = "+seanceSelection.getId());
+        while (resultatFenetre.next()) {
+            modifChoixGroupeSelectionModel.addElement(groupeDAO.find(resultatFenetre.getInt("ID_GROUPE")));
+        }
+        modifChoixGroupeSelection = new JList(modifChoixGroupeSelectionModel);
+        panneauModifSeance.add(modifChoixGroupeSelection);
+        
+        //Boutons de gestion des groupes
+        panneauModifSeance.add(modifBoutonAjouterGroupe);
+        panneauModifSeance.add(modifBoutonSupprimerGroupeSelection);
+        
         //Bouton d'enregistrement
         panneauModifSeance.add(modifBoutonEnregistrer);
         
         //Affichage d'erreur (qui pourra être modifié dans l'ActionListener du bouton
         panneauModifSeance.add(modifErrorField);
+        
+        
+        //Ré-activation des ActionListeners
+        modifChoixAnnee.addActionListener(this);
+        modifChoixMois.addActionListener(this);
+        modifChoixCours.addActionListener(this);
+        modifChoixSite.addActionListener(this);
+        modifBoutonAjouterEnseignant.addActionListener(this);
+        modifBoutonSupprimerEnseignantSelection.addActionListener(this);
+        modifChoixPromotion.addActionListener(this);
+        modifBoutonAjouterGroupe.addActionListener(this);
+        modifBoutonSupprimerGroupeSelection.addActionListener(this);
+        modifBoutonEnregistrer.addActionListener(this);
     }
     
     private void modifFillDaysOfMonth(){
@@ -707,12 +803,83 @@ public class Fenetre extends JFrame implements ActionListener{
         //Heure de fin
         MyHour modifHeureFin = new MyHour((int)modifChoixHeureFin.getValue(),(int)modifChoixMinutesFin.getValue());
         
-        //check que la fin soit après le début
-        messageErreur = (modifHeureFin.compareTo(modifHeureDebut) == -1)?"ERREUR : L'heure de fin doit se situer après l'heure de début":messageErreur;
-        
-        
-        
-       modifErrorField.setText(messageErreur);
+        //Vérifier que la fin soit après le début
+        if(modifHeureFin.compareTo(modifHeureDebut) == -1){
+            messageErreur = "ERREUR : L'heure de fin doit se situer après l'heure de début";
+        }else{
+            /*
+            //Vérifier que l'enseignant n'a pas cours à cette heure là
+            int nombreSeancesEnseignant = -1;
+            resultatEvent = statementEvent.executeQuery("SELECT COUNT(id) as nombreSeances FROM seance JOIN seance_enseignants on id = id_seance "
+                                                        + "WHERE ((heure_debut >= TIME('"+modifHeureDebut+"') AND heure_debut <= TIME('"+modifHeureDebut+"')) "
+                                                        + "OR (heure_fin >= TIME('"+modifHeureFin+"') AND heure_fin <= TIME('"+modifHeureFin+"'))) "
+                                                        + "AND id_enseignant = "+((Utilisateur)modifChoixEnseignant.getSelectedItem()).getId()+" "
+                                                        + "AND id != "+seanceSelection.getId());
+            if(resultatEvent.first()){
+                nombreSeancesEnseignant = resultatEvent.getInt("nombreSeances");
+            }
+            if(nombreSeancesEnseignant > 0){
+                messageErreur = "ERREUR : l'enseignant a déjà un cours dans cette période";
+            }else if(nombreSeancesEnseignant == -1){
+                System.out.println("Erreur dans l'enregistrement des données : nombreSeancesEnseignant vaut -1 après la requête");
+            }else if(nombreSeancesEnseignant == 0){
+                //Vérifier que le groupe choisi n'a pas de cours à cette heure là
+                int nombreSeancesGroupe = -1;
+                resultatEvent = statementEvent.executeQuery("SELECT COUNT(id) as nombreSeances FROM seance JOIN seance_groupes on id = id_seance "
+                                                            + "WHERE ((heure_debut >= TIME('"+modifHeureDebut+"') AND heure_debut <= TIME('"+modifHeureDebut+"')) "
+                                                            + "OR (heure_fin >= TIME('"+modifHeureFin+"') AND heure_fin <= TIME('"+modifHeureFin+"'))) "
+                                                            + "AND id_groupe = "+((Groupe)modifChoixGroupe.getSelectedItem()).getId()+" "
+                                                            + "AND id != "+seanceSelection.getId());
+                if(resultatEvent.first()){
+                    nombreSeancesGroupe = resultatEvent.getInt("nombreSeances");
+                }
+                if(nombreSeancesGroupe > 0){
+                    messageErreur = "ERREUR : le groupe a déjà un cours dans cette période";
+                }else if(nombreSeancesGroupe == -1){
+                    System.out.println("Erreur dans l'enregistrement des données : nombreSeancesGroupe vaut -1 après la requête");
+                }else if(nombreSeancesGroupe == 0){
+                    //Vérifier que la salle choisie n'a pas de cours à cette heure là
+                    int nombreSeancesSalle = -1;
+                    resultatEvent = statementEvent.executeQuery("SELECT COUNT(id) as nombreSeances FROM seance JOIN seance_salles on id = id_seance "
+                                                                + "WHERE ((heure_debut >= TIME('"+modifHeureDebut+"') AND heure_debut <= TIME('"+modifHeureDebut+"')) "
+                                                                + "OR (heure_fin >= TIME('"+modifHeureFin+"') AND heure_fin <= TIME('"+modifHeureFin+"'))) "
+                                                                + "AND id_salle = "+((Salle)modifChoixSalle.getSelectedItem()).getId()+" "
+                                                                + "AND id != "+seanceSelection.getId());
+                    if(resultatEvent.first()){
+                        nombreSeancesSalle = resultatEvent.getInt("nombreSeances");
+                    }
+                    if(nombreSeancesSalle > 0){
+                        messageErreur = "ERREUR : la salle a déjà un cours dans cette période";
+                    }else if(nombreSeancesSalle == -1){
+                        System.out.println("Erreur dans l'enregistrement des données : nombreSeancesSalle vaut -1 après la requête");
+                    }else if(nombreSeancesSalle == 0){
+                        //Vérifier que la capacité de la salle est suffisante pour le nombre d'élèves du groupe
+                        resultatEvent = statementEvent.executeQuery("SELECT * FROM salle "
+                                                                    + "WHERE id = "+((Salle)modifChoixSalle.getSelectedItem()).getId()+" "
+                                                                    + "AND capacite > (SELECT COUNT(*) FROM etudiant "
+                                                                                     + "WHERE id_groupe = "+((Groupe)modifChoixGroupe.getSelectedItem()).getId()+")");
+                        
+                        if(resultatEvent.first()){
+                            //TOUT EST OK POUR METTRE À JOUR
+                            seanceSelection.setDate(modifDate);
+                            seanceSelection.setHeureDebut(modifHeureDebut);
+                            seanceSelection.setHeureFin(modifHeureFin);
+                            seanceSelection.setEtat(parseEtat((String)modifChoixEtat.getSelectedItem()));
+                            seanceSelection.setCours((Cours)modifChoixCours.getSelectedItem());
+                            seanceSelection.setTypeCours((TypeCours)modifChoixTypeCours.getSelectedItem());
+                            seanceSelection.setSemaine(modifDate.getSemaineDeAnnee());
+                            if(seanceDAO.update(seanceSelection)){  //Mise à jour des infos de la séance
+                                System.out.println("yay");
+                            }
+                        }else{
+                            messageErreur = "ERREUR : la salle n'a pas assez de place pour tous les élèves";
+                        }
+                    }
+                }
+            }*/
+        }
+        remplirModifSeance();
+        modifErrorField.setText(messageErreur);
     }
     
     private void modifCreer() throws SQLException{

@@ -28,7 +28,7 @@ public class SeanceDAO extends DAO<Seance>{
     @Override
     public boolean create(Seance obj) {
         try{
-            return connexion.effectuerUpdate("INSERT INTO seance VALUES('"+obj.getId()
+            return connexion.effectuerUpdate("INSERT INTO seance VALUES('"+""
                                                                           +"', '"+obj.getDate().getSemaineDeAnnee()
                                                                           +"', '"+obj.getDate().toString()
                                                                           +"', '"+obj.getHeureDebut().toString()

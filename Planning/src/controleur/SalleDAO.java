@@ -21,7 +21,7 @@ public class SalleDAO extends DAO<Salle>{
     @Override
     public boolean create(Salle obj) {
         try{
-            return connexion.effectuerUpdate("INSERT INTO salle VALUES('"+obj.getId()+"', '"+obj.getNom()+"', '"+obj.getCapacite()+"', '"+obj.getSite().getId()+"')");
+            return connexion.effectuerUpdate("INSERT INTO salle VALUES('', '"+obj.getNom()+"', '"+obj.getCapacite()+"', '"+obj.getSite().getId()+"')");
         }
         catch(SQLException e){
             System.out.println(e.toString());
