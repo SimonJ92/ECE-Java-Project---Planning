@@ -264,11 +264,7 @@ public class Fenetre extends JFrame implements ActionListener{
                 }
             }
             else if(source == modifBoutonEnregistrer){
-                if(seanceSelection.getId() != 0){ //Cas d'une modification des données
-                    modifEnregistrer();
-                }/*else{  //Cas d'une création de séance
-                    modifCreer();
-                }*/
+                modifEnregistrer();
             }
         }
         catch(SQLException | ParseException e){
@@ -511,7 +507,7 @@ public class Fenetre extends JFrame implements ActionListener{
         modifBoutonEnregistrer.removeActionListener(this);
 
         //CHAMPS SEANCE
-        seanceSelection = seanceDAO.find(1); //à supprimer, mais pratique pour coder
+        //seanceSelection = seanceDAO.find(1); //à supprimer, mais pratique pour coder
         
         panneauModifSeance.removeAll();
         panneauModifSeance.add(new JLabel("Modifier Séance : "+seanceSelection.toString()));    //À supprimer
@@ -608,7 +604,11 @@ public class Fenetre extends JFrame implements ActionListener{
         while (resultatFenetre.next()) {
             modifChoixCours.addItem(coursDAO.find(resultatFenetre.getInt("ID")));
         }
-        modifChoixCours.setSelectedItem(seanceSelection.getCours());
+        for(int i=0;i<modifChoixCours.getItemCount();++i){
+            if(((Cours)modifChoixCours.getItemAt(i)).getId() == seanceSelection.getCours().getId()){
+                modifChoixCours.setSelectedIndex(i);
+            }
+        }
         panneauModifSeance.add(modifChoixCours);
         
         //Type de cours
@@ -617,7 +617,11 @@ public class Fenetre extends JFrame implements ActionListener{
         while (resultatFenetre.next()) {
             modifChoixTypeCours.addItem(typeCoursDAO.find(resultatFenetre.getInt("ID")));
         }
-        modifChoixCours.setSelectedItem(seanceSelection.getTypeCours());
+        for(int i=0;i<modifChoixTypeCours.getItemCount();++i){
+            if(((TypeCours)modifChoixTypeCours.getItemAt(i)).getId() == seanceSelection.getTypeCours().getId()){
+                modifChoixTypeCours.setSelectedIndex(i);
+            }
+        }
         panneauModifSeance.add(modifChoixTypeCours);
         
         //Site de la salle
@@ -807,8 +811,16 @@ public class Fenetre extends JFrame implements ActionListener{
         //Vérifier que la fin soit après le début
         if(modifHeureFin.compareTo(modifHeureDebut) == -1){
             messageErreur = "ERREUR : L'heure de fin doit se situer après l'heure de début";
-        }else{
-            //Vérifier que les enseignants n'ont pas cours à cette heure là
+        }else if((int)modifChoixHeureDebut.getValue() < 7 || (int)modifChoixHeureDebut.getValue() > 20 ||
+                    (int)modifChoixMinutesDebut.getValue() < 0 || (int)modifChoixMinutesDebut.getValue() > 59 ||
+                    (int)modifChoixHeureFin.getValue() < 7 || (int)modifChoixHeureFin.getValue() > 20 ||
+                    (int)modifChoixMinutesFin.getValue() < 0 || (int)modifChoixMinutesFin.getValue() > 59){
+            messageErreur = "ERREUR : Les heures doivent être comprises entre 7h et 20h. Les minutes doivent être comprises entre 0mn et 59mn";
+        }else if(modifDate.getJourDeLaSemaine() == 6 || modifDate.getJourDeLaSemaine() == 7){
+            messageErreur = "ERREUR : Vous ne pouvez pas ajouter de cours les Samedis et Dimanches";
+        }
+        else{
+            //Vérifier que les enseignants choisis n'ont pas cours à cette heure là
             int nombreSeancesEnseignant = 0;
             for(int i=0; i<modifChoixEnseignantSelection.getModel().getSize();++i){
                 resultatEvent = statementEvent.executeQuery("SELECT COUNT(id) as nombreSeances FROM seance JOIN seance_enseignants on id = id_seance "
@@ -820,43 +832,32 @@ public class Fenetre extends JFrame implements ActionListener{
                     nombreSeancesEnseignant += resultatEvent.getInt("nombreSeances");
                 }
             }
-            
-            
             if(nombreSeancesEnseignant > 0){
-                messageErreur = "ERREUR : l'enseignant a déjà un cours dans cette période";
+                messageErreur = "ERREUR : un des enseignants a déjà un cours dans cette période";
             }else if(nombreSeancesEnseignant < 0){
                 System.out.println("Erreur dans l'enregistrement des données : nombreSeancesEnseignant vaut <0 après la requête");
-            }else if(nombreSeancesEnseignant == 0){/*
-                //Vérifier que le groupe choisi n'a pas de cours à cette heure là
-                int nombreSeancesGroupe = -1;
-                resultatEvent = statementEvent.executeQuery("SELECT COUNT(id) as nombreSeances FROM seance JOIN seance_groupes on id = id_seance "
-                                                            + "WHERE ((heure_debut >= TIME('"+modifHeureDebut+"') AND heure_debut <= TIME('"+modifHeureDebut+"')) "
-                                                            + "OR (heure_fin >= TIME('"+modifHeureFin+"') AND heure_fin <= TIME('"+modifHeureFin+"'))) "
-                                                            + "AND id_groupe = "+((Groupe)modifChoixGroupe.getSelectedItem()).getId()+" "
-                                                            + "AND id != "+seanceSelection.getId());
-                if(resultatEvent.first()){
-                    nombreSeancesGroupe = resultatEvent.getInt("nombreSeances");
-                }*/
-                /*int nombreSeancesGroupe = 0;
-                for(int i=0; i<modifChoixEnseignantSelection.getModel().getSize();++i){
+            }else if(nombreSeancesEnseignant == 0){
+                //Vérifier que les groupes choisis n'a pas de cours à cette heure là
+                int nombreSeancesGroupe = 0;
+                for(int i=0; i<modifChoixGroupeSelection.getModel().getSize();++i){
                     resultatEvent = statementEvent.executeQuery("SELECT COUNT(id) as nombreSeances FROM seance JOIN seance_groupes on id = id_seance "
                                                             + "WHERE ((heure_debut >= TIME('"+modifHeureDebut+"') AND heure_debut <= TIME('"+modifHeureDebut+"')) "
                                                             + "OR (heure_fin >= TIME('"+modifHeureFin+"') AND heure_fin <= TIME('"+modifHeureFin+"'))) "
-                                                            + "AND id_groupe = "+((Utilisateur)modifChoixEnseignantSelection.getModel().getElementAt(i)).getId()+" "
+                                                            + "AND id_groupe = "+((Groupe)modifChoixGroupeSelection.getModel().getElementAt(i)).getId()+" "
                                                             + "AND id != "+seanceSelection.getId());
                     if(resultatEvent.first()){
                         nombreSeancesGroupe += resultatEvent.getInt("nombreSeances");
                     }
                 }
-                System.out.println(nombreSeancesGroupe);*/
-                
-                /*if(nombreSeancesGroupe > 0){
-                    messageErreur = "ERREUR : le groupe a déjà un cours dans cette période";
-                }else if(nombreSeancesGroupe == -1){
-                    System.out.println("Erreur dans l'enregistrement des données : nombreSeancesGroupe vaut -1 après la requête");
+                if(nombreSeancesGroupe > 0){
+                    messageErreur = "ERREUR : Un des groupes a déjà un cours dans cette période";
+                }else if(nombreSeancesGroupe < 0){
+                    System.out.println("Erreur dans l'enregistrement des données : nombreSeancesGroupe vaut <0 après la requête");
                 }else if(nombreSeancesGroupe == 0){
                     //Vérifier que la salle choisie n'a pas de cours à cette heure là
                     int nombreSeancesSalle = -1;
+                    //On cherche le nombre de salles qui ont le même id que la salle choisie et qui sont libres entre les heures choisies
+                    //On s'assure de retirer l'id de la salle selectionnée du compte
                     resultatEvent = statementEvent.executeQuery("SELECT COUNT(id) as nombreSeances FROM seance JOIN seance_salles on id = id_seance "
                                                                 + "WHERE ((heure_debut >= TIME('"+modifHeureDebut+"') AND heure_debut <= TIME('"+modifHeureDebut+"')) "
                                                                 + "OR (heure_fin >= TIME('"+modifHeureFin+"') AND heure_fin <= TIME('"+modifHeureFin+"'))) "
@@ -870,29 +871,58 @@ public class Fenetre extends JFrame implements ActionListener{
                     }else if(nombreSeancesSalle == -1){
                         System.out.println("Erreur dans l'enregistrement des données : nombreSeancesSalle vaut -1 après la requête");
                     }else if(nombreSeancesSalle == 0){
-                        //Vérifier que la capacité de la salle est suffisante pour le nombre d'élèves du groupe
+                         //Vérifier que la capacité de la salle est suffisante pour le nombre d'élèves du groupe
+                        int totalEtudiants = 0;
+                        for(int i=0; i<modifChoixGroupeSelection.getModel().getSize();++i){
+                            //Pour chaque groupe, on ajoute le nombre d'élèves appartenant au groupe au totalEtudiants
+                            resultatEvent = statementEvent.executeQuery("SELECT COUNT(*) as nombreEtudiants FROM etudiant "
+                                                                        + "WHERE id_groupe = "+((Groupe)modifChoixGroupeSelection.getModel().getElementAt(i)).getId());
+                            if(resultatEvent.first()){
+                                totalEtudiants += resultatEvent.getInt("nombreEtudiants");
+                            }
+                        }
+                        //On cherche s'il existe une salle avec l'id de la salle choisie, tout en s'assurant que sa capacité est suffisante pour le total des élèves
+                        boolean valide = false;
                         resultatEvent = statementEvent.executeQuery("SELECT * FROM salle "
                                                                     + "WHERE id = "+((Salle)modifChoixSalle.getSelectedItem()).getId()+" "
-                                                                    + "AND capacite > (SELECT COUNT(*) FROM etudiant "
-                                                                                     + "WHERE id_groupe = "+((Groupe)modifChoixGroupe.getSelectedItem()).getId()+")");
-                        
-                        if(resultatEvent.first()){
+                                                                    + "AND capacite >= "+totalEtudiants);
+                       if(resultatEvent.first()){   
+                           valide = true;   //Pour pouvoir réutiliser le résultat par la suite
+                       }
+                       if(valide){
                             //TOUT EST OK POUR METTRE À JOUR
+                            seanceSelection.setSemaine(modifDate.getSemaineDeAnnee());
                             seanceSelection.setDate(modifDate);
                             seanceSelection.setHeureDebut(modifHeureDebut);
                             seanceSelection.setHeureFin(modifHeureFin);
                             seanceSelection.setEtat(parseEtat((String)modifChoixEtat.getSelectedItem()));
                             seanceSelection.setCours((Cours)modifChoixCours.getSelectedItem());
                             seanceSelection.setTypeCours((TypeCours)modifChoixTypeCours.getSelectedItem());
-                            seanceSelection.setSemaine(modifDate.getSemaineDeAnnee());
-                            if(seanceDAO.update(seanceSelection)){  //Mise à jour des infos de la séance
-                                System.out.println("yay");
+                            if(seanceSelection.getId() == 0){
+                                //Cas d'une création de salle
+                                if(seanceDAO.create(seanceSelection)){  //Mise à jour des infos de la séance
+                                    //On récupère l'id de la dernière séance crée, siot cele que l'on vient d'ajouter
+                                    resultatEvent = statementEvent.executeQuery("SELECT MAX(id) as idCree from seance");
+                                    if(resultatEvent.first()){
+                                        seanceSelection.setId(resultatEvent.getInt("idCree"));
+                                    }
+                                    gererTablesSeances();
+                                }else{
+                                    messageErreur = "ERREUR : Erreur lors de la création de la séance";
+                                }
+                            }else{
+                                //Cas d'une modification de salle
+                                if(seanceDAO.update(seanceSelection)){  //Mise à jour des infos de la séance
+                                    gererTablesSeances();
+                                }else{
+                                    messageErreur = "ERREUR : Erreur lors de la mise à jour de la séance";
+                                }
                             }
                         }else{
                             messageErreur = "ERREUR : la salle n'a pas assez de place pour tous les élèves";
                         }
                     }
-                }*/
+                }
             }
         }
         
@@ -907,7 +937,27 @@ public class Fenetre extends JFrame implements ActionListener{
         modifErrorField.setText(messageErreur);
     }
     
-    private void modifCreer() throws SQLException{
+    private void gererTablesSeances() throws SQLException {
+        //déletion de tous les séances_enseignants en rapport avec la séance
+        statementEvent.executeUpdate("DELETE FROM seance_enseignants WHERE id_seance = "+seanceSelection.getId());
+        //ajout des séances_enseignants à ajouter
+        for (int i = 0; i < modifChoixEnseignantSelection.getModel().getSize(); ++i) {
+            //create lance des SQLExceptions, donc les erreurs sont gérées
+            seanceEnseignantsDAO.create(new SeanceEnseignants(seanceSelection, (Utilisateur) modifChoixEnseignantSelection.getModel().getElementAt(i)));
+        }
+
+        //déletion de tous les séances_groupes en rapport avec la séance
+        statementEvent.executeUpdate("DELETE FROM seance_groupes WHERE id_seance = "+seanceSelection.getId());
+        //ajout des séances_groupes à ajouter
+        for (int i = 0; i < modifChoixGroupeSelection.getModel().getSize(); ++i) {
+            //create lance des SQLExceptions, donc les erreurs sont gérées
+            seanceGroupesDAO.create(new SeanceGroupes(seanceSelection, (Groupe) modifChoixGroupeSelection.getModel().getElementAt(i)));
+        }
         
+        //déletion de tous les séances_salles en rapport avec la séance
+        statementEvent.executeUpdate("DELETE FROM seance_salles WHERE id_seance = "+seanceSelection.getId());
+        //ajout des séances_salles à ajouter
+        //create lance des SQLExceptions, donc les erreurs sont gérées
+        seanceSallesDAO.create(new SeanceSalles(seanceSelection, (Salle) modifChoixSalle.getSelectedItem()));
     }
 }

@@ -19,7 +19,7 @@ public class SiteDAO extends DAO<Site>{
     @Override
     public boolean create(Site obj) {
         try{
-            return connexion.effectuerUpdate("INSERT INTO site VALUES('', '"+obj.getNom()+"')");
+            return connexion.effectuerUpdate("INSERT INTO site VALUES('0', '"+obj.getNom()+"')");
         }
         catch(SQLException e){
             System.out.println(e.toString());

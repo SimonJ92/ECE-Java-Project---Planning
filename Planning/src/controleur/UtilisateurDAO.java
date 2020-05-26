@@ -20,7 +20,7 @@ public class UtilisateurDAO extends DAO<Utilisateur>{
     @Override
     public boolean create(Utilisateur obj) {
         try{
-            return connexion.effectuerUpdate("INSERT INTO utilisateur VALUES('', '"
+            return connexion.effectuerUpdate("INSERT INTO utilisateur VALUES('0', '"
                                                                                +obj.getEmail()+"', '"
                                                                                +obj.getPasswd()+"', '"
                                                                                +obj.getNom()+"', '"

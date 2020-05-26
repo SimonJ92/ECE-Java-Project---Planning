@@ -26,6 +26,13 @@ public class MyHour implements Comparable<MyHour>{
     
     public MyHour(){
         this.date = new Date();
+        try{
+            setHeure(8);
+        }
+        catch(ParseException e){
+            System.out.print(e.toString());
+            
+        }
     }
     
     public int getHeure(){

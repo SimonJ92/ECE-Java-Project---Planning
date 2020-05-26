@@ -20,7 +20,7 @@ public class PromotionDAO extends DAO<Promotion>{
     @Override
     public boolean create(Promotion obj) {
         try{
-            return connexion.effectuerUpdate("INSERT INTO promotion VALUES('', '"+obj.getNom()+"')");
+            return connexion.effectuerUpdate("INSERT INTO promotion VALUES('0', '"+obj.getNom()+"')");
         }
         catch(SQLException e){
             System.out.println(e.toString());

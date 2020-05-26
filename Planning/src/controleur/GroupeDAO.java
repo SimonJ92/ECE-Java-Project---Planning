@@ -21,7 +21,7 @@ public class GroupeDAO extends DAO<Groupe>{
     @Override
     public boolean create(Groupe obj) {
         try{
-            return connexion.effectuerUpdate("INSERT INTO groupe VALUES('', '"+obj.getNom()+"', '"+obj.getPromotion().getId()+"')");
+            return connexion.effectuerUpdate("INSERT INTO groupe VALUES('0', '"+obj.getNom()+"', '"+obj.getPromotion().getId()+"')");
         }
         catch(SQLException e){
             System.out.println(e.toString());

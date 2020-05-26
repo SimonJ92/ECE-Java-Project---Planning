@@ -7,8 +7,6 @@ package controleur;
 import java.sql.*;
 import java.text.ParseException;
 import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import modele.Cours;
 import modele.MyDate;
 import modele.MyHour;
@@ -28,8 +26,8 @@ public class SeanceDAO extends DAO<Seance>{
     @Override
     public boolean create(Seance obj) {
         try{
-            return connexion.effectuerUpdate("INSERT INTO seance VALUES('"+""
-                                                                          +"', '"+obj.getDate().getSemaineDeAnnee()
+            return connexion.effectuerUpdate("INSERT INTO seance VALUES('0'"
+                                                                          +", '"+obj.getDate().getSemaineDeAnnee()
                                                                           +"', '"+obj.getDate().toString()
                                                                           +"', '"+obj.getHeureDebut().toString()
                                                                           +"', '"+obj.getHeureFin().toString()

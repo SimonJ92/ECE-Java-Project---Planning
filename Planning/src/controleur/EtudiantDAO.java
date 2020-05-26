@@ -22,7 +22,7 @@ public class EtudiantDAO extends DAO<Etudiant>{
     @Override
     public boolean create(Etudiant obj) {
         try{
-            return connexion.effectuerUpdate("INSERT INTO etudiant VALUES('', '"+obj.getNumero()+"', '"+obj.getGroupe().getId()+"')");
+            return connexion.effectuerUpdate("INSERT INTO etudiant VALUES('"+obj.getIdUtilisateur()+"', '"+obj.getNumero()+"', '"+obj.getGroupe().getId()+"')");
         }
         catch(SQLException e){
             System.out.println(e.toString());
