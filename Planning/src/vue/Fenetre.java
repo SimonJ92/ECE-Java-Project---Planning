@@ -18,6 +18,9 @@ import java.util.*;
  * @author simon
  */
 public class Fenetre extends JFrame implements ActionListener{
+    //dimensions de la fenêtre
+    private int largeur = 1920;
+    private int hauteur = 1040;
     
     //Éléments de connexion à la base de données
     private Connexion connexion;
@@ -46,11 +49,16 @@ public class Fenetre extends JFrame implements ActionListener{
     private JPanel global;
     
     //Panels
+    private JPanel panneauAccueil;
+    private JPanel panneauLogin;
     private JPanel panneauEDTGrilleSalle;
     private JPanel panneauEDTGrilleEnseignant;
     private JPanel panneauEDTGrilleEtudiant;
     private JPanel panneauRecherche; // 3 recherches : Elève, Salle et Enseignant
     private JPanel panneauModifSeance;
+    
+    //connexion utilisateur
+    private Utilisateur connectedUser;
     
     
     //ÉLÉMENTS DES PANELS
@@ -61,6 +69,18 @@ public class Fenetre extends JFrame implements ActionListener{
     private Utilisateur enseignantSelection;
     private Etudiant etudiantSelection;
     private Seance seanceSelection;
+    
+    //Accueil
+    
+    //Panneau Login
+    JLabel loginTitre;
+    JLabel loginErreurMessage;
+    JLabel loginEmailLabel;
+    JTextField loginEmail;
+    JLabel loginPasswordLabel;
+    JPasswordField loginPassword;
+    JCheckBox loginVoirPassword;
+    JButton loginBoutonValider;
     
     //Emploi du temps - Grille - Salle
     
@@ -116,18 +136,21 @@ public class Fenetre extends JFrame implements ActionListener{
             //récupération de la connexion à la BDD
             this.connexion = myConnexion;
             
+            //Initialisation de l'utilisateur connecté
+            connectedUser = new Utilisateur();
+            
             //initialisation des différents panels et leurs composants
             initComponent();
 
             //paramétrage de la fenêtere
-            setSize(1920,1040);
+            setSize(largeur,hauteur);
             setTitle("Planning");
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setResizable(true);
             setVisible(true);
 
             //On définit le panneau d'accueil (à changer)
-            cardLayout.show(global, "ModifSeance");
+            cardLayout.show(global, "Login");
 
             //On affiche le panneau global
             setContentPane(global);
@@ -141,6 +164,27 @@ public class Fenetre extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent evt) {
         Object source = evt.getSource();
+        
+        //LOGIN
+        try{
+            if(source == loginBoutonValider){
+                Utilisateur tempConnectedUser = login(loginEmail.getText(),loginPassword.getText());
+                if(tempConnectedUser != null){
+                    connectedUser = tempConnectedUser;
+                    remplirAccueil();
+                    cardLayout.show(global, "Accueil");
+                }else{
+                    loginErreurMessage.setText("Erreur : l'identifiant ou le mot de passe est erroné. Veuillez réessayer");
+                }
+            }
+            else if(source == loginVoirPassword){
+                System.out.println("yay");
+                loginPassword.setEchoChar(loginVoirPassword.isSelected()?(char)0:(Character)UIManager.get("PasswordField.echoChar"));
+            }
+        }
+        catch(SQLException e){
+            System.out.println(e.toString()); 
+        }
         
         //RECHERCHE
         try{
@@ -290,6 +334,8 @@ public class Fenetre extends JFrame implements ActionListener{
     }
     
     private void initPanels(){
+        panneauAccueil = new JPanel();
+        panneauLogin = new JPanel();
         panneauEDTGrilleSalle = new JPanel();
         panneauEDTGrilleEnseignant = new JPanel();
         panneauEDTGrilleEtudiant = new JPanel();
@@ -315,6 +361,14 @@ public class Fenetre extends JFrame implements ActionListener{
         etudiantSelection = new Etudiant();
         seanceSelection = new Seance();
         
+        /*Il faudra peut être ne laisser que le panneau d'acceuil généré au lancement, puis générer le reste par la suite*/
+        
+        //Accueil
+        remplirAccueil();
+        
+        //Panel Login
+        remplirPanneauLogin();
+        
         //Panel Emploi du temps - Grille - Salle
         remplirEDTGrilleSalle();
 
@@ -337,6 +391,8 @@ public class Fenetre extends JFrame implements ActionListener{
         global = new JPanel(cardLayout);
 
         //On va ajouter dans le panel global tous les différents panels
+        global.add(panneauAccueil, "Accueil");
+        global.add(panneauLogin,"Login");
         global.add(panneauEDTGrilleSalle, "EDTGrilleSalle");
         global.add(panneauEDTGrilleEnseignant, "EDTGrilleEnseignant");
         global.add(panneauEDTGrilleEtudiant, "EDTGrilleEtudiant");
@@ -352,6 +408,86 @@ public class Fenetre extends JFrame implements ActionListener{
         }
         resultatFenetre.close();
         return utilisateur;
+    }
+    
+    //TODO
+    private void addMenuBars(JPanel panel){
+        
+    }
+    
+    //TODO
+    private void remplirAccueil(){
+        panneauAccueil.removeAll();
+        //Initialisation des composants du panneau
+        
+        
+        //On retire les éventuels ActionListeners
+        
+        
+        
+        JLabel verif = new JLabel("Droit utilisateur : "+connectedUser.getDroit());
+        panneauAccueil.add(verif);
+    }
+    
+    private void remplirPanneauLogin(){
+        panneauLogin.removeAll();
+        
+        panneauLogin.setLayout(null);  
+        
+        //Ajout des barres de navigation
+        addMenuBars(panneauLogin);
+        
+        //Initialisation des composants du panneau
+        loginTitre = new JLabel("Connexion");
+        loginErreurMessage = new JLabel("");
+        loginEmailLabel = new JLabel("Email : ");
+        loginEmail = new JTextField();
+        loginPasswordLabel = new JLabel("Mot de passe : ");
+        loginPassword = new JPasswordField();
+        loginVoirPassword = new JCheckBox("Voir le mot de passe",false);
+        loginBoutonValider = new JButton("Se connecter");
+        
+        //On retire les éventuels ActionListeners
+        loginBoutonValider.removeActionListener(this);
+        
+        //CHAMPS LOGIN
+        
+        //Titre de la page
+        loginTitre.setFont(new Font("Sans Serif", Font.BOLD, 32));
+        loginTitre.setBounds(largeur/2 - 87, hauteur/2 - 250, 175, 50);
+        panneauLogin.add(loginTitre);
+        
+        //message d'erreur
+        loginErreurMessage.setForeground(Color.red);
+        loginErreurMessage.setBounds(largeur/2 - 250, hauteur/2 - 200, 500, 25);
+        panneauLogin.add(loginErreurMessage);
+        
+        //Label de l'email
+        loginEmailLabel.setBounds(largeur/2 - 225,hauteur/2 - 125, 75, 25);
+        panneauLogin.add(loginEmailLabel);
+        
+        //Entrée de l'email
+        loginEmail.setBounds(largeur/2 - 125,hauteur/2 - 125, 250, 25);
+        panneauLogin.add(loginEmail);
+        
+        //Label du mot de passe
+        loginPasswordLabel.setBounds(largeur/2 - 225,hauteur/2 - 75, 100, 25);
+        panneauLogin.add(loginPasswordLabel);
+        
+        //Entrée du mot de passe
+        loginPassword.setBounds(largeur/2 - 125,hauteur/2 - 75, 250, 25);
+        panneauLogin.add(loginPassword);
+        
+        //Checkbox voir le mote de passe
+        loginVoirPassword.setBounds(largeur/2 - 125,hauteur/2 - 25, 250, 25);
+        panneauLogin.add(loginVoirPassword);
+        
+        //Bouton de validation
+        loginBoutonValider.setBounds(largeur/2 - 125, hauteur/2 + 25, 250, 50);
+        panneauLogin.add(loginBoutonValider);
+        
+        loginBoutonValider.addActionListener(this);
+        loginVoirPassword.addActionListener(this);
     }
     
     //TODO
