@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: May 26, 2020 at 11:50 PM
+-- Generation Time: Jun 03, 2020 at 11:41 AM
 -- Server version: 8.0.18
 -- PHP Version: 7.3.12
 
@@ -202,15 +202,16 @@ CREATE TABLE IF NOT EXISTS `seance` (
   PRIMARY KEY (`ID`),
   KEY `ID_COURS` (`ID_COURS`),
   KEY `ID_TYPE` (`ID_TYPE`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `seance`
 --
 
 INSERT INTO `seance` (`ID`, `SEMAINE`, `DATE`, `HEURE_DEBUT`, `HEURE_FIN`, `ETAT`, `ID_COURS`, `ID_TYPE`) VALUES
-(1, 22, '2020-05-29', '08:30:00', '10:00:00', 3, 5, 2),
-(10, 23, '2020-06-03', '10:15:00', '11:45:00', 1, 6, 7);
+(1, 22, '2020-06-03', '08:30:00', '10:00:00', 3, 5, 2),
+(10, 23, '2020-06-03', '10:15:00', '11:45:00', 1, 6, 7),
+(13, 53, '2020-06-03', '08:30:00', '10:00:00', 1, 5, 1);
 
 -- --------------------------------------------------------
 
@@ -254,6 +255,7 @@ CREATE TABLE IF NOT EXISTS `seance_groupes` (
 
 INSERT INTO `seance_groupes` (`ID_SEANCE`, `ID_GROUPE`) VALUES
 (10, 1),
+(13, 1),
 (10, 2),
 (1, 4);
 
@@ -278,7 +280,8 @@ CREATE TABLE IF NOT EXISTS `seance_salles` (
 
 INSERT INTO `seance_salles` (`ID_SEANCE`, `ID_SALLE`) VALUES
 (10, 2),
-(1, 4);
+(1, 4),
+(13, 6);
 
 -- --------------------------------------------------------
 
