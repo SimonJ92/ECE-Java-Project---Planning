@@ -71,16 +71,23 @@ public class Fenetre extends JFrame implements ActionListener{
     private Seance seanceSelection;
     
     //Accueil
+    private JLabel accueilLabelConnectedUser;
+    private JPanel accueilEDT;
+    private JLabel accueilEDTTitre;
+    private ArrayList<JButton> accueilEDTListeCours;
+    private MyDate accueilDateJour;
+    private JLabel accueilEDTLabelDate;
+    private JLabel[] accueilEDTLabelsHeures;    //15 label pour les heures
     
     //Panneau Login
-    JLabel loginTitre;
-    JLabel loginErreurMessage;
-    JLabel loginEmailLabel;
-    JTextField loginEmail;
-    JLabel loginPasswordLabel;
-    JPasswordField loginPassword;
-    JCheckBox loginVoirPassword;
-    JButton loginBoutonValider;
+    private JLabel loginTitre;
+    private JLabel loginErreurMessage;
+    private JLabel loginEmailLabel;
+    private JTextField loginEmail;
+    private JLabel loginPasswordLabel;
+    private JPasswordField loginPassword;
+    private JCheckBox loginVoirPassword;
+    private JButton loginBoutonValider;
     
     //Emploi du temps - Grille - Salle
     
@@ -361,7 +368,7 @@ public class Fenetre extends JFrame implements ActionListener{
         etudiantSelection = new Etudiant();
         seanceSelection = new Seance();
         
-        /*Il faudra peut être ne laisser que le panneau d'acceuil généré au lancement, puis générer le reste par la suite*/
+        /*Il faudra peut être ne laisser que le panneau d'accueil généré au lancement, puis générer le reste par la suite*/
         
         //Accueil
         remplirAccueil();
@@ -415,18 +422,139 @@ public class Fenetre extends JFrame implements ActionListener{
         
     }
     
+    //private JButton boutonCours;      TO REMOVE
     //TODO
-    private void remplirAccueil(){
+    private void remplirAccueil() throws SQLException{
         panneauAccueil.removeAll();
-        //Initialisation des composants du panneau
+        panneauAccueil.setLayout(null);
         
+        int widthEDT = 275;
+        int heightEDT = 700;
+        
+        //Initialisation des composants du panneau
+        accueilLabelConnectedUser = new JLabel("",SwingConstants.CENTER); //set text ensuite, en fonctiond e l'utilisateur connecté 
+        accueilEDT = new PanneauEDTAccueil();
+        accueilEDTTitre = new JLabel("Emploi du temps",SwingConstants.CENTER);
+        accueilEDTListeCours = new ArrayList<>();
+        accueilDateJour = new MyDate();
+        accueilEDTLabelDate = new JLabel(accueilDateJour.toString());
+        accueilEDTLabelsHeures = new JLabel[15];    //15 label pour les heures
         
         //On retire les éventuels ActionListeners
         
         
+        //ELEMENTS DE LA PAGE
+        accueilLabelConnectedUser.setText("Bienvenue, "+connectedUser.toString()+"");
+        accueilLabelConnectedUser.setFont(new Font("Sans Serif", Font.BOLD, 32));
+        accueilLabelConnectedUser.setBounds(largeur/2 - 250, 300, 500, 50);
+        panneauAccueil.add(accueilLabelConnectedUser);
         
-        JLabel verif = new JLabel("Droit utilisateur : "+connectedUser.getDroit());
+        if (connectedUser.getDroit() == 3 || connectedUser.getDroit() == 4) {  //Si l'utilisateur connecté est un prof ou un élève, on affiche son emploi du temps du jour
+            //Panneau d'emploi du temps
+            accueilEDT.setBounds(10, 200, widthEDT, heightEDT);
+            accueilEDT.setBackground(Color.white);
+            accueilEDT.setLayout(null);
+
+            accueilEDTTitre.setBounds(0, 5, widthEDT, 25);
+            accueilEDTTitre.setFont(new Font("Sans Serif", Font.BOLD, 18));
+            accueilEDT.add(accueilEDTTitre);
+
+            //Création des labels des heures pour l'EDT
+            (accueilEDTLabelsHeures[0] = new JLabel("08h30")).setBounds(5, 22, 40, 25); //On définit la position et la taille du label créé en début de ligne
+            (accueilEDTLabelsHeures[1] = new JLabel("10h00")).setBounds(5, 97, 40, 25);
+            (accueilEDTLabelsHeures[2] = new JLabel("10h15")).setBounds(5, 110, 40, 25);
+            (accueilEDTLabelsHeures[3] = new JLabel("11h45")).setBounds(5, 185, 40, 25);
+            (accueilEDTLabelsHeures[4] = new JLabel("12h00")).setBounds(5, 197, 40, 25);
+            (accueilEDTLabelsHeures[5] = new JLabel("13h30")).setBounds(5, 272, 40, 25);
+            (accueilEDTLabelsHeures[6] = new JLabel("13h45")).setBounds(5, 285, 40, 25);
+            (accueilEDTLabelsHeures[7] = new JLabel("15h15")).setBounds(5, 360, 40, 25);
+            (accueilEDTLabelsHeures[8] = new JLabel("15h30")).setBounds(5, 372, 40, 25);
+            (accueilEDTLabelsHeures[9] = new JLabel("17h00")).setBounds(5, 447, 40, 25);
+            (accueilEDTLabelsHeures[10] = new JLabel("17h15")).setBounds(5, 459, 40, 25);
+            (accueilEDTLabelsHeures[11] = new JLabel("18h45")).setBounds(5, 535, 40, 25);
+            (accueilEDTLabelsHeures[12] = new JLabel("19h00")).setBounds(5, 547, 40, 25);
+            (accueilEDTLabelsHeures[13] = new JLabel("20h30")).setBounds(5, 622, 40, 25);
+            (accueilEDTLabelsHeures[14] = new JLabel("21h30")).setBounds(5, 672, 40, 25);
+            
+            //On ajoute les labels sur le sous-panneau
+            for (int i = 0; i < 15; ++i) {
+                accueilEDT.add(accueilEDTLabelsHeures[i]);
+            }
+            
+            //On va récupérer les cours de l'étudiant/du prof et les afficher plus ou moins haut selon l'heure
+            if(connectedUser.getDroit() == 3){  //Connecté en tant que prof
+                resultatFenetre = statementFenetre.executeQuery("SELECT id_seance FROM seance_enseignants WHERE id_enseignant = "+connectedUser.getId());
+            }else{  //Connecté en tant qu'élève
+                resultatFenetre = statementFenetre.executeQuery("SELECT id_seance FROM seance_groupes "
+                                                                + "WHERE id_groupe = (SELECT id_groupe from etudiant where id_utilisateur = "+connectedUser.getId()+")");
+            }
+            
+            Seance tempSeanceAccueil;
+            JButton tempCoursAccueil;
+            int hauteurDebut;
+            int hauteurCours;
+            String descriptionCoursAccueil;
+            while(resultatFenetre.next()){
+                tempSeanceAccueil = seanceDAO.find(resultatFenetre.getInt("ID_SEANCE"));
+                
+                //on compte le nombre de minutes et on le multiplie par le nombre de pixels représentés par 1mn. On enlève ensuite l'offset de 8h30
+                hauteurDebut = (int)(((tempSeanceAccueil.getHeureDebut().getHeure() * 60 + tempSeanceAccueil.getHeureDebut().getMinutes()) - (8*60 + 30)) * 0.833); 
+                //similairement, on calcule la hauteur de la fin du cours, à laquelle on soustrait la hauteur du début pour obtenir la taille
+                hauteurCours = ((int)(((tempSeanceAccueil.getHeureFin().getHeure() * 60 + tempSeanceAccueil.getHeureFin().getMinutes()) - (8*60 + 30)) * 0.833)) - hauteurDebut;
+                
+                //CREATION DE LA DESCRIPTION DU COURS
+                //nom
+                descriptionCoursAccueil = "<html><center>"+tempSeanceAccueil.getCours().getNom()+" : "+tempSeanceAccueil.getTypeCours().getNom()+"<br>-";
+                
+                //profs
+                resultatEvent = statementEvent.executeQuery("SELECT nom FROM utilisateur JOIN seance_enseignants ON id = id_enseignant WHERE id_seance = "+tempSeanceAccueil.getId());
+                while(resultatEvent.next()){
+                    descriptionCoursAccueil += resultatEvent.getString("NOM")+"-";
+                }
+                descriptionCoursAccueil += "<br>-";
+                
+                //groupes
+                resultatEvent = statementEvent.executeQuery("SELECT nom FROM groupe JOIN seance_groupes ON id = id_groupe WHERE id_seance = "+tempSeanceAccueil.getId());
+                while(resultatEvent.next()){
+                    descriptionCoursAccueil += resultatEvent.getString("NOM")+"-";
+                }
+                descriptionCoursAccueil += "<br>";
+                
+                //salles
+                resultatEvent = statementEvent.executeQuery("SELECT * FROM salle JOIN seance_salles ON id = id_salle WHERE id_seance = "+tempSeanceAccueil.getId());
+                while(resultatEvent.next()){
+                    descriptionCoursAccueil += resultatEvent.getString("NOM")+"  ("+siteDAO.find(resultatEvent.getInt("ID_SITE")).getNom()+")";
+                }
+                descriptionCoursAccueil += "<br>";
+                
+                
+                tempCoursAccueil = new JButton(descriptionCoursAccueil+"</center></html>");
+                tempCoursAccueil.setBounds(45, 35 + hauteurDebut, 217, hauteurCours);
+                tempCoursAccueil.setHorizontalAlignment(SwingConstants.CENTER);
+                tempCoursAccueil.setFont(new Font("Sans Serif", Font.BOLD, 11));
+                accueilEDTListeCours.add(tempCoursAccueil);
+            }
+            for(JButton Element : accueilEDTListeCours){
+                accueilEDT.add(Element);
+            }
+
+            panneauAccueil.add(accueilEDT);
+
+        }
+        
+        //TODO : emploir du temps du jour
+        
+        /*JLabel verif = new JLabel("Droit utilisateur : "+connectedUser.getDroit());
         panneauAccueil.add(verif);
+        
+        Seance seanceTest = seanceDAO.find(1);
+        
+        boutonCours = new JButton("<html>"+seanceTest.toString()+"</html>");
+        boutonCours.setBounds(largeur/2, hauteur/2, 150, 200);
+        panneauAccueil.add(boutonCours);
+        
+        CoursEDT testListener = new CoursEDT(seanceTest,1);
+        boutonCours.addActionListener(testListener);*/
     }
     
     private void remplirPanneauLogin(){
@@ -1095,5 +1223,46 @@ public class Fenetre extends JFrame implements ActionListener{
         //ajout des séances_salles à ajouter
         //create lance des SQLExceptions, donc les erreurs sont gérées
         seanceSallesDAO.create(new SeanceSalles(seanceSelection, (Salle) modifChoixSalle.getSelectedItem()));
+    }
+    
+    
+    
+    
+    
+    
+    
+    class CoursEDT implements ActionListener {
+
+        private Seance seance;
+        private int numeroBoutonCours;
+
+        public CoursEDT(Seance seance, int numeroBoutonCours) {
+            this.seance = seance;
+            this.numeroBoutonCours = numeroBoutonCours;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent ev) {
+            if(ev != null){
+                dialogueCoursEDT(numeroBoutonCours);
+            }
+        }
+
+    }
+    
+    private void dialogueCoursEDT(int numeroBoutonCours){
+        JDialog fenetreDialogue = new JDialog(this);
+        fenetreDialogue.setLayout(null);
+        JLabel testDialogue = new JLabel("test");
+        testDialogue.setBounds(250, 250, 100, 25);
+        fenetreDialogue.add(testDialogue);
+        fenetreDialogue.setSize(500,500);
+        fenetreDialogue.setTitle("Détails du cours");
+        //fenetreDialogue.setLocationRelativeTo(boutonCours); //Remplacer par un élément d'une arraylist de boutons
+        fenetreDialogue.setVisible(true);
+        
+        //fenetreDialogue.dispose(); pour fermer la fenetre
+        //TODO
+        
     }
 }
