@@ -8,10 +8,14 @@ import controleur.*;
 import modele.*;
 import java.awt.event.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.*;
 import java.text.ParseException;
 import javax.swing.*;
 import java.util.*;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -21,6 +25,9 @@ public class Fenetre extends JFrame implements ActionListener{
     //dimensions de la fenêtre
     private int largeur = 1920;
     private int hauteur = 1040;
+    
+    //images
+    private BufferedImage navBarHomeIcon;
     
     //Éléments de connexion à la base de données
     private Connexion connexion;
@@ -69,6 +76,15 @@ public class Fenetre extends JFrame implements ActionListener{
     private Utilisateur enseignantSelection;
     private Etudiant etudiantSelection;
     private Seance seanceSelection;
+    
+    //Barres de navigation
+    private JMenuBar barreNav1;
+    private JButton barreNav1BoutonHome;
+    private JButton barreNav1BoutonDeco;
+    private JMenuBar barreNav2;
+    private JButton barreNav2BoutonEDT;
+    private JButton barreNav2BoutonRecap;
+    private JButton barreNav2BoutonRecherche;
     
     //Accueil
     private JLabel accueilLabelConnectedUser;
@@ -146,6 +162,9 @@ public class Fenetre extends JFrame implements ActionListener{
             //Initialisation de l'utilisateur connecté
             connectedUser = new Utilisateur();
             
+            //Initialisation des images
+            navBarHomeIcon = ImageIO.read(new File("C:\\Users\\simon\\OneDrive\\Bureau\\ECE-Java-Project---Planning\\home-icon.png")); //icone pour le bouton vers l'accueil
+            
             //initialisation des différents panels et leurs composants
             initComponent();
 
@@ -162,7 +181,7 @@ public class Fenetre extends JFrame implements ActionListener{
             //On affiche le panneau global
             setContentPane(global);
         }
-        catch(SQLException e){
+        catch(SQLException | IOException e){
             System.out.println("la "+e.toString()); //Supprimer le là : juste utile pour coder
         }
     }
@@ -171,6 +190,22 @@ public class Fenetre extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent evt) {
         Object source = evt.getSource();
+        
+        //BARRES DE NAVIGATION
+        try{
+            if(source == barreNav1BoutonDeco){
+                connectedUser = null;
+                remplirPanneauLogin();
+                cardLayout.show(global,"Login");
+            }
+            else if(source == barreNav2BoutonRecherche){
+                remplirRecherche();
+                cardLayout.show(global, "Recherche");
+            }
+        }
+        catch(Exception e){
+            System.out.println(e.toString());
+        }
         
         //LOGIN
         try{
@@ -420,6 +455,62 @@ public class Fenetre extends JFrame implements ActionListener{
     //TODO
     private void addMenuBars(JPanel panel){
         
+        //Initialisation des composants du panneau
+        barreNav1 = new JMenuBar();
+        //barreNav1BoutonHome = new JButton("Accueil");
+        barreNav1BoutonHome = new JButton(new ImageIcon(navBarHomeIcon));
+        barreNav1BoutonDeco = new JButton("Deconnexion");    
+        barreNav2 = new JMenuBar();
+        barreNav2BoutonEDT = new JButton("Emploi du temps");
+        barreNav2BoutonRecap = new JButton("Récapitulatif des cours");
+        barreNav2BoutonRecherche = new JButton("Recherche");
+        
+        //On retire les éventuels ActionListeners
+        barreNav1BoutonHome.removeActionListener(this);
+        barreNav1BoutonDeco.removeActionListener(this);
+        barreNav2BoutonEDT.removeActionListener(this);
+        barreNav2BoutonRecap.removeActionListener(this);
+        barreNav2BoutonRecherche.removeActionListener(this);
+        
+        //ELEMENTS DES BARRES DE NAVIGATION
+        
+        //Barre 1
+        barreNav1.setLayout(null);
+        barreNav1.setBounds(0, 0, largeur, 50);
+        barreNav1.setFont(new Font("Sans Serif", Font.BOLD, 16));
+        
+        barreNav1BoutonHome.setBounds(100, 5, 40, 40);  //anciennement 80/40
+        barreNav1BoutonHome.setContentAreaFilled(false);
+        barreNav1.add(barreNav1BoutonHome);
+        barreNav1BoutonDeco.setBounds(largeur - 145, 5, 120, 40);
+        barreNav1BoutonDeco.setBackground(Color.red);
+        barreNav1.add(barreNav1BoutonDeco);
+        
+        barreNav1.setBounds(0, 0, largeur, 50);
+        panel.add(barreNav1);
+        
+        //Barre 2
+        barreNav2.setLayout(null);
+        barreNav2.setBounds(0, 51, largeur, 50);
+        barreNav2.setFont(new Font("Sans Serif", Font.BOLD, 16));
+        
+        barreNav2BoutonEDT.setBounds(10, 5, 150, 40);
+        barreNav2.add(barreNav2BoutonEDT);
+        barreNav2BoutonRecap.setBounds(170, 5, 180, 40);
+        barreNav2.add(barreNav2BoutonRecap);
+        if (connectedUser.getDroit() == 1 || connectedUser.getDroit() == 2) {
+            barreNav2BoutonRecherche.setBounds(360, 5, 130, 40);
+            barreNav2.add(barreNav2BoutonRecherche);
+        }
+        barreNav2.setBounds(0, 51, largeur, 50);
+        panel.add(barreNav2);
+        
+        //Ré-activation des ActionListeners
+        barreNav1BoutonHome.addActionListener(this);
+        barreNav1BoutonDeco.addActionListener(this);
+        barreNav2BoutonEDT.addActionListener(this);
+        barreNav2BoutonRecap.addActionListener(this);
+        barreNav2BoutonRecherche.addActionListener(this);
     }
     
     //private JButton boutonCours;      TO REMOVE
@@ -427,6 +518,8 @@ public class Fenetre extends JFrame implements ActionListener{
     private void remplirAccueil() throws SQLException{
         panneauAccueil.removeAll();
         panneauAccueil.setLayout(null);
+        
+        addMenuBars(panneauAccueil); //peut être modifier la position selon les ActionListeners
         
         int widthEDT = 275;
         int heightEDT = 700;
@@ -486,7 +579,7 @@ public class Fenetre extends JFrame implements ActionListener{
                 resultatFenetre = statementFenetre.executeQuery("SELECT id_seance FROM seance_enseignants WHERE id_enseignant = "+connectedUser.getId());
             }else{  //Connecté en tant qu'élève
                 resultatFenetre = statementFenetre.executeQuery("SELECT id_seance FROM seance_groupes "
-                                                                + "WHERE id_groupe = (SELECT id_groupe from etudiant where id_utilisateur = "+connectedUser.getId()+")");
+                                                                + "WHERE id_groupe = (SELECT id_groupe FROM etudiant WHERE id_utilisateur = "+connectedUser.getId()+")");
             }
             
             Seance tempSeanceAccueil;
@@ -542,8 +635,6 @@ public class Fenetre extends JFrame implements ActionListener{
 
         }
         
-        //TODO : emploir du temps du jour
-        
         /*JLabel verif = new JLabel("Droit utilisateur : "+connectedUser.getDroit());
         panneauAccueil.add(verif);
         
@@ -561,9 +652,6 @@ public class Fenetre extends JFrame implements ActionListener{
         panneauLogin.removeAll();
         
         panneauLogin.setLayout(null);  
-        
-        //Ajout des barres de navigation
-        addMenuBars(panneauLogin);
         
         //Initialisation des composants du panneau
         loginTitre = new JLabel("Connexion");
@@ -641,6 +729,8 @@ public class Fenetre extends JFrame implements ActionListener{
     
     //TODO
     private void remplirRecherche() throws SQLException {
+        panneauRecherche.removeAll();
+        
         //Initialisation des composants du panneau
         rechercheChoixSemaine = new JComboBox();
         rechercheChoixSite = new JComboBox();
