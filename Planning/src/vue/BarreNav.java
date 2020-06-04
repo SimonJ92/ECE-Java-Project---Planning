@@ -6,6 +6,7 @@
 package vue;
 
 import java.awt.*;
+import javax.swing.BorderFactory;
 import javax.swing.JMenuBar;
 
 /**
@@ -17,6 +18,7 @@ public class BarreNav extends JMenuBar{
     
     public BarreNav(Color couleur){
         backgroundColor = couleur;
+        setBorder(BorderFactory.createEmptyBorder());
     }
     
     @Override
@@ -24,6 +26,6 @@ public class BarreNav extends JMenuBar{
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(backgroundColor);
-        g2d.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
+        g2d.fillRect(0, 0, getWidth(), getHeight());
     }
 }

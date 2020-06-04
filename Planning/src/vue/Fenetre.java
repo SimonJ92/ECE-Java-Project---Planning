@@ -202,7 +202,7 @@ public class Fenetre extends JFrame implements ActionListener{
                 cardLayout.show(global, "Recherche");
             }
         }
-        catch(Exception e){
+        catch(SQLException e){
             System.out.println(e.toString());
         }
         
@@ -479,14 +479,14 @@ public class Fenetre extends JFrame implements ActionListener{
         barreNav1.setBounds(0, 0, largeur, 50);
         barreNav1.setFont(new Font("Sans Serif", Font.BOLD, 16));
         
-        barreNav1BoutonHome.setBounds(100, 5, 40, 40);  //anciennement 80/40
+        barreNav1BoutonHome.setBounds(100, 5, 40, 40);
         barreNav1BoutonHome.setContentAreaFilled(false);
         barreNav1BoutonHome.setBorder(BorderFactory.createEmptyBorder());
         barreNav1.add(barreNav1BoutonHome);
         
         barreNav1BoutonDeco.setBounds(largeur - 145, 5, 120, 40);
         barreNav1BoutonDeco.setFont(new Font("Sans Serif",Font.BOLD,16));
-        barreNav1BoutonDeco.setBackground(Color.red);
+        barreNav1BoutonDeco.setBackground(Color.RED);
         barreNav1BoutonDeco.setBorder(BorderFactory.createEmptyBorder());
         barreNav1.add(barreNav1BoutonDeco);
         
@@ -495,7 +495,7 @@ public class Fenetre extends JFrame implements ActionListener{
         
         //Barre 2
         barreNav2.setLayout(null);
-        barreNav2.setBounds(0, 51, largeur, 50);
+        barreNav2.setBounds(0, 50, largeur, 50);
         barreNav2.setFont(new Font("Sans Serif", Font.BOLD, 16));
         
         barreNav2BoutonEDT.setBounds(10, 5, 150, 40);
@@ -568,6 +568,7 @@ public class Fenetre extends JFrame implements ActionListener{
     //TODO
     private void remplirAccueil() throws SQLException{
         panneauAccueil.removeAll();
+        
         panneauAccueil.setLayout(null);
         
         addMenuBars(panneauAccueil); //peut être modifier la position selon les ActionListeners
@@ -592,7 +593,7 @@ public class Fenetre extends JFrame implements ActionListener{
         accueilLabelConnectedUser.setBounds(largeur/2 - 250, 300, 500, 50);
         panneauAccueil.add(accueilLabelConnectedUser);
         
-        if (connectedUser.getDroit() == 3 || connectedUser.getDroit() == 4) {  //Si l'utilisateur connecté est un prof ou un élève, on affiche son emploi du temps du jour
+        if (connectedUser.getDroit() == 3 || connectedUser.getDroit() == 4){  //Si l'utilisateur connecté est un prof ou un élève, on affiche son emploi du temps du jour
             //Panneau d'emploi du temps
             accueilEDT.setBounds(10, 200, widthEDT, heightEDT);
             accueilEDT.setBackground(Color.white);
@@ -913,7 +914,6 @@ public class Fenetre extends JFrame implements ActionListener{
         //CHAMPS SEANCE
         //seanceSelection = seanceDAO.find(1); //à supprimer, mais pratique pour coder
         
-        panneauModifSeance.removeAll();
         panneauModifSeance.add(new JLabel("Modifier Séance : "+seanceSelection.toString()));    //À supprimer
         
         //Année
@@ -1084,6 +1084,8 @@ public class Fenetre extends JFrame implements ActionListener{
         
         //Boutons de gestion des enseignants
         panneauModifSeance.add(modifBoutonAjouterEnseignant);
+        
+        
         panneauModifSeance.add(modifBoutonSupprimerEnseignantSelection);
         
         //Promotion du groupe
@@ -1125,6 +1127,8 @@ public class Fenetre extends JFrame implements ActionListener{
         
         //Boutons de gestion des groupes
         panneauModifSeance.add(modifBoutonAjouterGroupe);
+        
+        
         panneauModifSeance.add(modifBoutonSupprimerGroupeSelection);
         
         //Bouton d'enregistrement
