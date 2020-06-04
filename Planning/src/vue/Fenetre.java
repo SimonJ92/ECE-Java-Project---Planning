@@ -220,7 +220,6 @@ public class Fenetre extends JFrame implements ActionListener{
                 }
             }
             else if(source == loginVoirPassword){
-                System.out.println("yay");
                 loginPassword.setEchoChar(loginVoirPassword.isSelected()?(char)0:(Character)UIManager.get("PasswordField.echoChar"));
             }
         }
