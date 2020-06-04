@@ -460,6 +460,7 @@ public class Fenetre extends JFrame implements ActionListener{
         barreNav1BoutonHome = new JButton(new ImageIcon(navBarHomeIcon));
         barreNav1BoutonDeco = new JButton("Déconnexion");    
         barreNav2 = new BarreNav(Color.BLACK);
+
         barreNav2BoutonEDT = new JButton("Emploi du temps");
         barreNav2BoutonRecap = new JButton("Récapitulatif des cours");
         barreNav2BoutonRecherche = new JButton("Recherche");
@@ -481,8 +482,8 @@ public class Fenetre extends JFrame implements ActionListener{
         barreNav1BoutonHome.setBounds(100, 5, 40, 40);  //anciennement 80/40
         barreNav1BoutonHome.setContentAreaFilled(false);
         barreNav1BoutonHome.setBorder(BorderFactory.createEmptyBorder());
-        
         barreNav1.add(barreNav1BoutonHome);
+        
         barreNav1BoutonDeco.setBounds(largeur - 145, 5, 120, 40);
         barreNav1BoutonDeco.setFont(new Font("Sans Serif",Font.BOLD,16));
         barreNav1BoutonDeco.setBackground(Color.red);
