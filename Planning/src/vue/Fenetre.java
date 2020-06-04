@@ -220,6 +220,7 @@ public class Fenetre extends JFrame implements ActionListener{
                 }
             }
             else if(source == loginVoirPassword){
+                //cochage de case au nivau du mdp  qui affichera le mdr en toute lettre  avec (char)0 et cache avec ...UIManager...
                 loginPassword.setEchoChar(loginVoirPassword.isSelected()?(char)0:(Character)UIManager.get("PasswordField.echoChar"));
             }
         }
