@@ -23,8 +23,8 @@ import javax.imageio.ImageIO;
  */
 public class Fenetre extends JFrame implements ActionListener{
     //dimensions de la fenêtre
-    private int largeur = 1920;
-    private int hauteur = 1040;
+    private int largeur = 1680;
+    private int hauteur = 1050;
     
     //images
     private BufferedImage navBarHomeIcon;
