@@ -78,10 +78,10 @@ public class Fenetre extends JFrame implements ActionListener{
     private Seance seanceSelection;
     
     //Barres de navigation
-    private JMenuBar barreNav1;
+    private BarreNav barreNav1;
     private JButton barreNav1BoutonHome;
     private JButton barreNav1BoutonDeco;
-    private JMenuBar barreNav2;
+    private BarreNav barreNav2;
     private JButton barreNav2BoutonEDT;
     private JButton barreNav2BoutonRecap;
     private JButton barreNav2BoutonRecherche;
@@ -92,7 +92,6 @@ public class Fenetre extends JFrame implements ActionListener{
     private JLabel accueilEDTTitre;
     private ArrayList<JButton> accueilEDTListeCours;
     private MyDate accueilDateJour;
-    private JLabel accueilEDTLabelDate;
     private JLabel[] accueilEDTLabelsHeures;    //15 label pour les heures
     
     //Panneau Login
@@ -456,11 +455,11 @@ public class Fenetre extends JFrame implements ActionListener{
     private void addMenuBars(JPanel panel){
         
         //Initialisation des composants du panneau
-        barreNav1 = new JMenuBar();
+        barreNav1 = new BarreNav(Color.WHITE);
         //barreNav1BoutonHome = new JButton("Accueil");
         barreNav1BoutonHome = new JButton(new ImageIcon(navBarHomeIcon));
-        barreNav1BoutonDeco = new JButton("Deconnexion");    
-        barreNav2 = new JMenuBar();
+        barreNav1BoutonDeco = new JButton("Déconnexion");    
+        barreNav2 = new BarreNav(Color.BLACK);
         barreNav2BoutonEDT = new JButton("Emploi du temps");
         barreNav2BoutonRecap = new JButton("Récapitulatif des cours");
         barreNav2BoutonRecherche = new JButton("Recherche");
@@ -481,9 +480,13 @@ public class Fenetre extends JFrame implements ActionListener{
         
         barreNav1BoutonHome.setBounds(100, 5, 40, 40);  //anciennement 80/40
         barreNav1BoutonHome.setContentAreaFilled(false);
+        barreNav1BoutonHome.setBorder(BorderFactory.createEmptyBorder());
+        
         barreNav1.add(barreNav1BoutonHome);
         barreNav1BoutonDeco.setBounds(largeur - 145, 5, 120, 40);
+        barreNav1BoutonDeco.setFont(new Font("Sans Serif",Font.BOLD,16));
         barreNav1BoutonDeco.setBackground(Color.red);
+        barreNav1BoutonDeco.setBorder(BorderFactory.createEmptyBorder());
         barreNav1.add(barreNav1BoutonDeco);
         
         barreNav1.setBounds(0, 0, largeur, 50);
@@ -495,11 +498,58 @@ public class Fenetre extends JFrame implements ActionListener{
         barreNav2.setFont(new Font("Sans Serif", Font.BOLD, 16));
         
         barreNav2BoutonEDT.setBounds(10, 5, 150, 40);
+        barreNav2BoutonEDT.setBorder(BorderFactory.createEmptyBorder());
+        barreNav2BoutonEDT.setBackground(Color.BLACK);
+        barreNav2BoutonEDT.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                barreNav2BoutonEDT.setBackground(Color.LIGHT_GRAY);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                barreNav2BoutonEDT.setBackground(Color.BLACK);
+            }
+        });
+        barreNav2BoutonEDT.setFont(new Font("Sans Serif",Font.BOLD,18));
+        barreNav2BoutonEDT.setForeground(Color.WHITE);
         barreNav2.add(barreNav2BoutonEDT);
-        barreNav2BoutonRecap.setBounds(170, 5, 180, 40);
+        
+        barreNav2BoutonRecap.setBounds(180, 5, 200, 40);
+        barreNav2BoutonRecap.setBorder(BorderFactory.createEmptyBorder());
+        barreNav2BoutonRecap.setBackground(Color.BLACK);
+        barreNav2BoutonRecap.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                barreNav2BoutonRecap.setBackground(Color.LIGHT_GRAY);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                barreNav2BoutonRecap.setBackground(Color.BLACK);
+            }
+        });
+        barreNav2BoutonRecap.setFont(new Font("Sans Serif",Font.BOLD,18));
+        barreNav2BoutonRecap.setForeground(Color.WHITE);
         barreNav2.add(barreNav2BoutonRecap);
+        
         if (connectedUser.getDroit() == 1 || connectedUser.getDroit() == 2) {
-            barreNav2BoutonRecherche.setBounds(360, 5, 130, 40);
+            barreNav2BoutonRecherche.setBounds(400, 5, 130, 40);
+            barreNav2BoutonRecherche.setBorder(BorderFactory.createEmptyBorder());
+            barreNav2BoutonRecherche.setBackground(Color.BLACK);
+            barreNav2BoutonRecherche.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseEntered(java.awt.event.MouseEvent evt) {
+                    barreNav2BoutonRecherche.setBackground(Color.LIGHT_GRAY);
+                }
+
+                @Override
+                public void mouseExited(java.awt.event.MouseEvent evt) {
+                    barreNav2BoutonRecherche.setBackground(Color.BLACK);
+                }
+            });
+            barreNav2BoutonRecherche.setFont(new Font("Sans Serif", Font.BOLD, 18));
+            barreNav2BoutonRecherche.setForeground(Color.WHITE);
             barreNav2.add(barreNav2BoutonRecherche);
         }
         barreNav2.setBounds(0, 51, largeur, 50);
@@ -527,10 +577,9 @@ public class Fenetre extends JFrame implements ActionListener{
         //Initialisation des composants du panneau
         accueilLabelConnectedUser = new JLabel("",SwingConstants.CENTER); //set text ensuite, en fonctiond e l'utilisateur connecté 
         accueilEDT = new PanneauEDTAccueil();
-        accueilEDTTitre = new JLabel("Emploi du temps",SwingConstants.CENTER);
+        accueilEDTTitre = new JLabel("Emploi du temps du jour",SwingConstants.CENTER);
         accueilEDTListeCours = new ArrayList<>();
         accueilDateJour = new MyDate();
-        accueilEDTLabelDate = new JLabel(accueilDateJour.toString());
         accueilEDTLabelsHeures = new JLabel[15];    //15 label pour les heures
         
         //On retire les éventuels ActionListeners
