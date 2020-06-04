@@ -163,7 +163,7 @@ public class Fenetre extends JFrame implements ActionListener{
             connectedUser = new Utilisateur();
             
             //Initialisation des images
-            navBarHomeIcon = ImageIO.read(new File("C:\\Users\\simon\\OneDrive\\Bureau\\ECE-Java-Project---Planning\\home-icon.png")); //icone pour le bouton vers l'accueil
+            navBarHomeIcon = ImageIO.read(new File("G:\\Users\\geelo\\OneDrive\\Documents\\GitHub\\ECE-Java-Project---Planning\\home-icon.png")); //icone pour le bouton vers l'accueil
             
             //initialisation des différents panels et leurs composants
             initComponent();
@@ -220,7 +220,7 @@ public class Fenetre extends JFrame implements ActionListener{
                 }
             }
             else if(source == loginVoirPassword){
-                System.out.println("yay");
+                //cochage de case au nivau du mdp  qui affichera le mdr en toute lettre  avec (char)0 et cache avec ...UIManager...
                 loginPassword.setEchoChar(loginVoirPassword.isSelected()?(char)0:(Character)UIManager.get("PasswordField.echoChar"));
             }
         }
