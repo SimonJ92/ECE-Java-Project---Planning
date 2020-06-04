@@ -112,7 +112,10 @@ public class Fenetre extends JFrame implements ActionListener{
     
     
     //Emploi du temps - Grille - Étudiant
-    
+    private PanneauEDTGrille etudiantGrilleEDT;
+    private ArrayList<JButton> etudiantGrilleListeCours;
+    private JLabel[] etudiantGrilleLabelsHeures;    //15 label pour les heures
+    private JPanel etudiantGrillePanneauSemaines;
     
     //Recherche
     private JComboBox rechercheChoixSemaine;
@@ -609,7 +612,7 @@ public class Fenetre extends JFrame implements ActionListener{
     }
     
     //private JButton boutonCours;      TO REMOVE
-    //TODO
+
     private void remplirAccueil() throws SQLException{
         panneauAccueil.removeAll();
         
@@ -820,8 +823,71 @@ public class Fenetre extends JFrame implements ActionListener{
     //TODO
     private void remplirEDTGrilleEtudiant(){
         panneauEDTGrilleEtudiant.removeAll();
-        panneauEDTGrilleEtudiant.add(new JLabel("EDT Etudiant : "+etudiantSelection.toString()));
-        panneauEDTGrilleEtudiant.add(new JLabel("Semaine : "+selectedWeek));
+        panneauEDTGrilleEtudiant.setLayout(null);
+        addMenuBars(panneauEDTGrilleEtudiant);
+        
+        //Initialisation des composants du panneau
+        etudiantGrilleEDT = new PanneauEDTGrille();
+        etudiantGrilleListeCours = new ArrayList<>();
+        etudiantGrilleLabelsHeures = new JLabel[15];
+        etudiantGrillePanneauSemaines = new JPanel();
+        
+        //On retire les éventuels ActionListeners
+        
+        
+        
+        //ELEMENTS DE LA PAGE
+        etudiantGrillePanneauSemaines.setLayout(null);
+        etudiantGrillePanneauSemaines.setBounds(0, 200, largeur, 40);
+        JButton tempWeekButtonEtudiant;
+        for(int i=31;i<=52;++i){
+            tempWeekButtonEtudiant = new JButton("<html>"+i+" </html>");
+            tempWeekButtonEtudiant.addActionListener(new SemaineEDT(i));
+            tempWeekButtonEtudiant.setBounds((i-31)*(largeur/52 + 1), 0, largeur/52, 40);
+            tempWeekButtonEtudiant.setMargin(new Insets(0, 0, 0, 0));
+            etudiantGrillePanneauSemaines.add(tempWeekButtonEtudiant);
+        }
+        for(int i=1;i<31;++i){
+            tempWeekButtonEtudiant = new JButton("<html><center>"+i+" </center></html>");
+            tempWeekButtonEtudiant.addActionListener(new SemaineEDT(i));
+            tempWeekButtonEtudiant.setBounds((i+21)*(largeur/52 + 1), 0, largeur/52, 40);
+            tempWeekButtonEtudiant.setMargin(new Insets(0, 0, 0, 0));
+            etudiantGrillePanneauSemaines.add(tempWeekButtonEtudiant);
+        }
+        panneauEDTGrilleEtudiant.add(etudiantGrillePanneauSemaines);
+        
+        
+        etudiantGrilleEDT.setBounds(largeur/2 - 696, 250, 1392, 700);
+        etudiantGrilleEDT.setBackground(Color.WHITE);
+        etudiantGrilleEDT.setLayout(null);
+        
+        //Création des labels des heures pour l'EDT
+        (etudiantGrilleLabelsHeures[0] = new JLabel("08h30")).setBounds(5, 22, 40, 25); //On définit la position et la taille du label créé en début de ligne
+        (etudiantGrilleLabelsHeures[1] = new JLabel("10h00")).setBounds(5, 97, 40, 25);
+        (etudiantGrilleLabelsHeures[2] = new JLabel("10h15")).setBounds(5, 110, 40, 25);
+        (etudiantGrilleLabelsHeures[3] = new JLabel("11h45")).setBounds(5, 185, 40, 25);
+        (etudiantGrilleLabelsHeures[4] = new JLabel("12h00")).setBounds(5, 197, 40, 25);
+        (etudiantGrilleLabelsHeures[5] = new JLabel("13h30")).setBounds(5, 272, 40, 25);
+        (etudiantGrilleLabelsHeures[6] = new JLabel("13h45")).setBounds(5, 285, 40, 25);
+        (etudiantGrilleLabelsHeures[7] = new JLabel("15h15")).setBounds(5, 360, 40, 25);
+        (etudiantGrilleLabelsHeures[8] = new JLabel("15h30")).setBounds(5, 372, 40, 25);
+        (etudiantGrilleLabelsHeures[9] = new JLabel("17h00")).setBounds(5, 447, 40, 25);
+        (etudiantGrilleLabelsHeures[10] = new JLabel("17h15")).setBounds(5, 459, 40, 25);
+        (etudiantGrilleLabelsHeures[11] = new JLabel("18h45")).setBounds(5, 535, 40, 25);
+        (etudiantGrilleLabelsHeures[12] = new JLabel("19h00")).setBounds(5, 547, 40, 25);
+        (etudiantGrilleLabelsHeures[13] = new JLabel("20h30")).setBounds(5, 622, 40, 25);
+        (etudiantGrilleLabelsHeures[14] = new JLabel("21h30")).setBounds(5, 672, 40, 25);
+
+        //On ajoute les labels sur le sous-panneau
+        for (int i = 0; i < 15; ++i) {
+            etudiantGrilleEDT.add(etudiantGrilleLabelsHeures[i]);
+        }
+        
+        panneauEDTGrilleEtudiant.add(etudiantGrilleEDT);
+        
+        //Ré-activation des ActionListeners
+        
+        
     }
     
     //TODO
@@ -1416,9 +1482,8 @@ public class Fenetre extends JFrame implements ActionListener{
         seanceSallesDAO.create(new SeanceSalles(seanceSelection, (Salle) modifChoixSalle.getSelectedItem()));
     }
     
-    
+    //TODO
     private void remplirRecapCours(){
-        System.out.println("pass");
         panneauRecapCours.removeAll();
         panneauRecapCours.setLayout(null);
         addMenuBars(panneauRecapCours);
@@ -1437,12 +1502,23 @@ public class Fenetre extends JFrame implements ActionListener{
     }
     
     
-    
+    class SemaineEDT implements ActionListener{
+        private final int numSemaine;
+        
+        public SemaineEDT(int numSemaine){
+            this.numSemaine = numSemaine;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            selectedWeek = numSemaine;
+        }  
+    }    
     
     class CoursEDT implements ActionListener {
 
-        private Seance seance;
-        private int numeroBoutonCours;
+        private final Seance seance;
+        private final int numeroBoutonCours;
 
         public CoursEDT(Seance seance, int numeroBoutonCours) {
             this.seance = seance;
