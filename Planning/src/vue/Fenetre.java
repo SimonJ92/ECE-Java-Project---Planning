@@ -63,6 +63,7 @@ public class Fenetre extends JFrame implements ActionListener{
     private JPanel panneauEDTGrilleEtudiant;
     private JPanel panneauRecherche; // 3 recherches : Elève, Salle et Enseignant
     private JPanel panneauModifSeance;
+    private JPanel panneauRecapCours;
     
     //connexion utilisateur
     private Utilisateur connectedUser;
@@ -150,6 +151,9 @@ public class Fenetre extends JFrame implements ActionListener{
     private JButton modifBoutonSupprimerGroupeSelection;
     private JButton modifBoutonEnregistrer;
     
+    //Récapitulatif des cours
+    
+    
     //...
     
     //Constructeur à appeler pour démarrer l'appli
@@ -192,10 +196,30 @@ public class Fenetre extends JFrame implements ActionListener{
         
         //BARRES DE NAVIGATION
         try{
-            if(source == barreNav1BoutonDeco){
+            if(source == barreNav1BoutonHome){
+                remplirAccueil();
+                cardLayout.show(global, "Accueil");
+            }
+            else if(source == barreNav1BoutonDeco){
                 connectedUser = null;
                 remplirPanneauLogin();
                 cardLayout.show(global,"Login");
+            }
+            else if(source == barreNav2BoutonEDT){
+                selectedWeek = accueilDateJour.getSemaineDeAnnee();
+                if(connectedUser.getDroit() == 3){  //connecté en tant que prof
+                    enseignantSelection = connectedUser;
+                    remplirEDTGrilleEnseignant();
+                    cardLayout.show(global,"EDTGrilleEnseignant");
+                }else{  //connecté en tant qu'étudiant
+                    etudiantSelection = etudiantDAO.find(connectedUser.getId());
+                    remplirEDTGrilleEtudiant();
+                    cardLayout.show(global,"EDTGrilleEtudiant");
+                }
+            }
+            else if(source == barreNav2BoutonRecap){
+                remplirRecapCours();
+                cardLayout.show(global,"RecapCours");
             }
             else if(source == barreNav2BoutonRecherche){
                 remplirRecherche();
@@ -382,6 +406,7 @@ public class Fenetre extends JFrame implements ActionListener{
         panneauEDTGrilleEtudiant = new JPanel();
         panneauRecherche = new JPanel();
         panneauModifSeance = new JPanel();
+        panneauRecapCours = new JPanel();
     }
     
     private void initComponent() throws SQLException {
@@ -425,6 +450,9 @@ public class Fenetre extends JFrame implements ActionListener{
         //Panel Modification de Séance
         remplirModifSeance();
         
+        //Panel récapitulatif des cours
+        remplirRecapCours();
+        
         //...
 
         //Initialisation du conteneur global des panneaux
@@ -439,6 +467,7 @@ public class Fenetre extends JFrame implements ActionListener{
         global.add(panneauEDTGrilleEtudiant, "EDTGrilleEtudiant");
         global.add(panneauRecherche, "Recherche");
         global.add(panneauModifSeance, "ModifSeance");
+        global.add(panneauRecapCours, "RecapCours");
     }
     
     private Utilisateur login(String email, String passwd) throws SQLException{
@@ -482,6 +511,17 @@ public class Fenetre extends JFrame implements ActionListener{
         barreNav1BoutonHome.setBounds(100, 5, 40, 40);
         barreNav1BoutonHome.setContentAreaFilled(false);
         barreNav1BoutonHome.setBorder(BorderFactory.createEmptyBorder());
+        barreNav1BoutonHome.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                barreNav1BoutonHome.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                barreNav1BoutonHome.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+        });
         barreNav1.add(barreNav1BoutonHome);
         
         barreNav1BoutonDeco.setBounds(largeur - 145, 5, 120, 40);
@@ -498,44 +538,48 @@ public class Fenetre extends JFrame implements ActionListener{
         barreNav2.setBounds(0, 50, largeur, 50);
         barreNav2.setFont(new Font("Sans Serif", Font.BOLD, 16));
         
-        barreNav2BoutonEDT.setBounds(10, 5, 150, 40);
-        barreNav2BoutonEDT.setBorder(BorderFactory.createEmptyBorder());
-        barreNav2BoutonEDT.setBackground(Color.BLACK);
-        barreNav2BoutonEDT.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                barreNav2BoutonEDT.setBackground(Color.LIGHT_GRAY);
-            }
+        //Si on est connecté en tant que prof ou élève, on a le choix de voir son emploi du temps ou le récap des cours
+        if (connectedUser.getDroit() == 3 || connectedUser.getDroit() == 4){    
+            barreNav2BoutonEDT.setBounds(10, 0, 150, 50);
+            barreNav2BoutonEDT.setBorder(BorderFactory.createEmptyBorder());
+            barreNav2BoutonEDT.setBackground(Color.BLACK);
+            barreNav2BoutonEDT.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseEntered(java.awt.event.MouseEvent evt) {
+                    barreNav2BoutonEDT.setBackground(Color.LIGHT_GRAY);
+                }
 
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                barreNav2BoutonEDT.setBackground(Color.BLACK);
-            }
-        });
-        barreNav2BoutonEDT.setFont(new Font("Sans Serif",Font.BOLD,18));
-        barreNav2BoutonEDT.setForeground(Color.WHITE);
-        barreNav2.add(barreNav2BoutonEDT);
-        
-        barreNav2BoutonRecap.setBounds(180, 5, 200, 40);
-        barreNav2BoutonRecap.setBorder(BorderFactory.createEmptyBorder());
-        barreNav2BoutonRecap.setBackground(Color.BLACK);
-        barreNav2BoutonRecap.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                barreNav2BoutonRecap.setBackground(Color.LIGHT_GRAY);
-            }
+                @Override
+                public void mouseExited(java.awt.event.MouseEvent evt) {
+                    barreNav2BoutonEDT.setBackground(Color.BLACK);
+                }
+            });
+            barreNav2BoutonEDT.setFont(new Font("Sans Serif",Font.BOLD,18));
+            barreNav2BoutonEDT.setForeground(Color.WHITE);
+            barreNav2.add(barreNav2BoutonEDT);
 
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                barreNav2BoutonRecap.setBackground(Color.BLACK);
-            }
-        });
-        barreNav2BoutonRecap.setFont(new Font("Sans Serif",Font.BOLD,18));
-        barreNav2BoutonRecap.setForeground(Color.WHITE);
-        barreNav2.add(barreNav2BoutonRecap);
+            barreNav2BoutonRecap.setBounds(180, 0, 200, 50);
+            barreNav2BoutonRecap.setBorder(BorderFactory.createEmptyBorder());
+            barreNav2BoutonRecap.setBackground(Color.BLACK);
+            barreNav2BoutonRecap.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseEntered(java.awt.event.MouseEvent evt) {
+                    barreNav2BoutonRecap.setBackground(Color.LIGHT_GRAY);
+                }
+
+                @Override
+                public void mouseExited(java.awt.event.MouseEvent evt) {
+                    barreNav2BoutonRecap.setBackground(Color.BLACK);
+                }
+            });
+            barreNav2BoutonRecap.setFont(new Font("Sans Serif",Font.BOLD,18));
+            barreNav2BoutonRecap.setForeground(Color.WHITE);
+            barreNav2.add(barreNav2BoutonRecap);
+        }
         
+        //Si on est connecté en tant qu'admin ou responsable pédagogique, on peut effectuer une recherche
         if (connectedUser.getDroit() == 1 || connectedUser.getDroit() == 2) {
-            barreNav2BoutonRecherche.setBounds(400, 5, 130, 40);
+            barreNav2BoutonRecherche.setBounds(10, 0, 130, 50);
             barreNav2BoutonRecherche.setBorder(BorderFactory.createEmptyBorder());
             barreNav2BoutonRecherche.setBackground(Color.BLACK);
             barreNav2BoutonRecherche.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -571,7 +615,7 @@ public class Fenetre extends JFrame implements ActionListener{
         
         panneauAccueil.setLayout(null);
         
-        addMenuBars(panneauAccueil); //peut être modifier la position selon les ActionListeners
+        addMenuBars(panneauAccueil);
         
         int widthEDT = 275;
         int heightEDT = 700;
@@ -753,6 +797,8 @@ public class Fenetre extends JFrame implements ActionListener{
         loginBoutonValider.setBounds(largeur/2 - 125, hauteur/2 + 25, 250, 50);
         panneauLogin.add(loginBoutonValider);
         
+        
+        //Ré-activation des ActionListeners
         loginBoutonValider.addActionListener(this);
         loginVoirPassword.addActionListener(this);
     }
@@ -1345,6 +1391,7 @@ public class Fenetre extends JFrame implements ActionListener{
         modifErrorField.setText(messageErreur);
     }
     
+    //Utilisé pour la modification d'une séance ; update les liens de la séance avec groupes, enseignants et salles
     private void gererTablesSeances() throws SQLException {
         //déletion de tous les séances_enseignants en rapport avec la séance
         statementEvent.executeUpdate("DELETE FROM seance_enseignants WHERE id_seance = "+seanceSelection.getId());
@@ -1370,7 +1417,24 @@ public class Fenetre extends JFrame implements ActionListener{
     }
     
     
-    
+    private void remplirRecapCours(){
+        System.out.println("pass");
+        panneauRecapCours.removeAll();
+        panneauRecapCours.setLayout(null);
+        addMenuBars(panneauRecapCours);
+        
+        //Initialisation des composants du panneau
+        
+        
+        //On retire les éventuels ActionListeners
+        
+        
+        
+        //ELEMENTS DE LA PAGE
+        
+        
+        //Ré-activation des ActionListeners
+    }
     
     
     
