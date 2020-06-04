@@ -162,7 +162,7 @@ public class Fenetre extends JFrame implements ActionListener{
             connectedUser = new Utilisateur();
             
             //Initialisation des images
-            navBarHomeIcon = ImageIO.read(new File("C:\\Users\\simon\\OneDrive\\Bureau\\ECE-Java-Project---Planning\\home-icon.png")); //icone pour le bouton vers l'accueil
+            navBarHomeIcon = ImageIO.read(new File("src/packageImages/home-icon.png")); //icone pour le bouton vers l'accueil
             
             //initialisation des différents panels et leurs composants
             initComponent();
