@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 03, 2020 at 11:41 AM
+-- Generation Time: Jun 05, 2020 at 05:35 PM
 -- Server version: 8.0.18
 -- PHP Version: 7.3.12
 
@@ -202,16 +202,20 @@ CREATE TABLE IF NOT EXISTS `seance` (
   PRIMARY KEY (`ID`),
   KEY `ID_COURS` (`ID_COURS`),
   KEY `ID_TYPE` (`ID_TYPE`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `seance`
 --
 
 INSERT INTO `seance` (`ID`, `SEMAINE`, `DATE`, `HEURE_DEBUT`, `HEURE_FIN`, `ETAT`, `ID_COURS`, `ID_TYPE`) VALUES
-(1, 22, '2020-06-03', '08:30:00', '10:00:00', 3, 5, 2),
-(10, 23, '2020-06-03', '10:15:00', '11:45:00', 1, 6, 7),
-(13, 53, '2020-06-03', '08:30:00', '10:00:00', 1, 5, 1);
+(1, 23, '2020-06-04', '08:30:00', '10:00:00', 3, 1, 2),
+(10, 23, '2020-06-05', '10:15:00', '11:45:00', 1, 6, 7),
+(13, 53, '2020-06-03', '08:30:00', '10:00:00', 1, 5, 1),
+(14, 23, '2020-06-04', '12:00:00', '13:45:00', 2, 4, 2),
+(15, 53, '2019-01-01', '08:38:00', '08:38:00', 1, 1, 5),
+(16, 53, '2019-10-01', '08:39:00', '11:39:00', 1, 1, 1),
+(17, 53, '2010-01-01', '08:39:00', '11:00:00', 1, 1, 3);
 
 -- --------------------------------------------------------
 
@@ -233,7 +237,9 @@ CREATE TABLE IF NOT EXISTS `seance_enseignants` (
 
 INSERT INTO `seance_enseignants` (`ID_SEANCE`, `ID_ENSEIGNANT`) VALUES
 (10, 1),
-(1, 3);
+(14, 2),
+(15, 2),
+(17, 2);
 
 -- --------------------------------------------------------
 
@@ -256,8 +262,13 @@ CREATE TABLE IF NOT EXISTS `seance_groupes` (
 INSERT INTO `seance_groupes` (`ID_SEANCE`, `ID_GROUPE`) VALUES
 (10, 1),
 (13, 1),
+(15, 1),
+(16, 1),
 (10, 2),
-(1, 4);
+(1, 4),
+(14, 5),
+(17, 5),
+(14, 6);
 
 -- --------------------------------------------------------
 
@@ -279,9 +290,13 @@ CREATE TABLE IF NOT EXISTS `seance_salles` (
 --
 
 INSERT INTO `seance_salles` (`ID_SEANCE`, `ID_SALLE`) VALUES
+(15, 1),
+(16, 1),
 (10, 2),
 (1, 4),
-(13, 6);
+(14, 4),
+(13, 6),
+(17, 6);
 
 -- --------------------------------------------------------
 

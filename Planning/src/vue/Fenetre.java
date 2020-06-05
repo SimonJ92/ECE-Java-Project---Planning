@@ -112,6 +112,7 @@ public class Fenetre extends JFrame implements ActionListener{
     
     
     //Emploi du temps - Grille - Étudiant
+    private JComboBox etudiantGrilleChoixTypeEDT;
     private PanneauEDTGrille etudiantGrilleEDT;
     private ArrayList<JButton> etudiantGrilleListeCours;
     private JLabel[] etudiantGrilleLabelsHeures;    //15 label pour les heures
@@ -252,6 +253,25 @@ public class Fenetre extends JFrame implements ActionListener{
             }
         }
         catch(SQLException e){
+            System.out.println(e.toString()); 
+        }
+        
+        //EMPLOI DU TEMPS ÉTUDIANT
+        try{
+            if(source == etudiantGrilleChoixTypeEDT){
+                switch((String)etudiantGrilleChoixTypeEDT.getSelectedItem()){
+                    case "En grille":
+                        break;
+                    case "En liste":
+                        //remplir edt en liste
+                        //afficher en liste
+                        break;
+                    default:
+                        System.out.println("Erreur lors du choix de type d'emploi du temps");
+                }
+            }
+        }
+        catch(Exception e){
             System.out.println(e.toString()); 
         }
         
@@ -831,6 +851,7 @@ public class Fenetre extends JFrame implements ActionListener{
         addMenuBars(panneauEDTGrilleEtudiant);
         
         //Initialisation des composants du panneau
+        etudiantGrilleChoixTypeEDT = new JComboBox();
         etudiantGrilleEDT = new PanneauEDTGrille();
         etudiantGrilleListeCours = new ArrayList<>();
         etudiantGrilleLabelsHeures = new JLabel[15];
@@ -838,10 +859,20 @@ public class Fenetre extends JFrame implements ActionListener{
         etudiantGrilleLabelsJours = new JLabel[6];
         
         //On retire les éventuels ActionListeners
-
-        
+        etudiantGrilleChoixTypeEDT.removeActionListener(this);
         
         //ELEMENTS DE LA PAGE
+        
+        //Choix du type d'emploi du temps
+        etudiantGrilleChoixTypeEDT.removeAllItems();
+        etudiantGrilleChoixTypeEDT.addItem("En grille");
+        etudiantGrilleChoixTypeEDT.addItem("En liste");
+        etudiantGrilleChoixTypeEDT.setBounds(20, 150, 100, 30);
+        etudiantGrilleChoixTypeEDT.setBackground(Color.white);
+        panneauEDTGrilleEtudiant.add(etudiantGrilleChoixTypeEDT);
+        
+        
+        //Emploi du temps
         etudiantGrillePanneauSemaines.setLayout(null);
         etudiantGrillePanneauSemaines.setBounds(0, 200, largeur, 40);
         JButton tempWeekButtonEtudiant;
@@ -978,9 +1009,9 @@ public class Fenetre extends JFrame implements ActionListener{
             etudiantGrilleEDT.add(Element);
         }
         panneauEDTGrilleEtudiant.add(etudiantGrilleEDT);
+        
         //Ré-activation des ActionListeners
-        
-        
+        etudiantGrilleChoixTypeEDT.addActionListener(this);
     }
     
     //TODO
@@ -1609,21 +1640,21 @@ public class Fenetre extends JFrame implements ActionListener{
                 global.remove(panneauEDTGrilleEtudiant);
                 panneauEDTGrilleEtudiant = new JPanel();
                 remplirEDTGrilleEtudiant();
-                global.add(panneauEDTGrilleEtudiant,"EDTGrilleEtudiant");
-                cardLayout.show(global,"EDTGrilleEtudiant");
+                global.add(panneauEDTGrilleEtudiant, "EDTGrilleEtudiant");
+                cardLayout.show(global, "EDTGrilleEtudiant");
             } catch (SQLException ex) {
                 System.out.println(ex.toString());
             }
-        }  
-    }    
-    
+        }
+    }
+
     class CoursEDT implements ActionListener {
 
         private final Seance seance;
         private final int numeroBoutonCours;    //pour centrer la fenêtre de dialogue sur le bouton cliqué
         private final String typeEDT;
 
-        public CoursEDT(Seance seance, int numeroBoutonCours,String typeEDT) {
+        public CoursEDT(Seance seance, int numeroBoutonCours, String typeEDT) {
             this.seance = seance;
             this.numeroBoutonCours = numeroBoutonCours;
             this.typeEDT = typeEDT;
@@ -1631,21 +1662,169 @@ public class Fenetre extends JFrame implements ActionListener{
 
         @Override
         public void actionPerformed(ActionEvent ev) {
-            if(ev != null){
-                dialogueCoursEDT(seance,numeroBoutonCours,typeEDT);
+            if (ev != null) {
+                dialogueCoursEDT(seance, numeroBoutonCours, typeEDT);
             }
         }
 
     }
-    
-    private void dialogueCoursEDT(Seance seance,int numeroBoutonCours, String typeEDT){
+
+    private void dialogueCoursEDT(Seance seance, int numeroBoutonCours, String typeEDT) {
         JDialog fenetreDialogue = new JDialog(this);
         fenetreDialogue.setLayout(null);
-        JLabel testDialogue = new JLabel(seance.toString());
-        testDialogue.setBounds(250, 250, 100, 25);
-        fenetreDialogue.add(testDialogue);
-        fenetreDialogue.setSize(500,500);
+        int largeurDialogue = 500;
+        int hauteurDialogue = 365;
+        fenetreDialogue.setSize(largeurDialogue, hauteurDialogue);
         fenetreDialogue.setTitle("Détails du cours");
+        
+        String tempContenuLabel;
+
+        //COMPOSANTS DE LA FENÊTRE DE DIALOGUE
+        try {
+            //Matière
+            JLabel dialogueMatiere = new JLabel("<html><b>Matière :</b> " + seance.getCours().getNom() + "<html>");
+            dialogueMatiere.setBounds(10, 10, largeurDialogue - 10, 25);
+            dialogueMatiere.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+            fenetreDialogue.add(dialogueMatiere);
+
+            //Enseignants
+            resultatEvent = statementEvent.executeQuery("SELECT id_enseignant FROM seance_enseignants WHERE id_seance ="+seance.getId());
+            tempContenuLabel = "<html><b>Enseignant(s) :</b> ";
+            while(resultatEvent.next()){
+                tempContenuLabel += utilisateurDAO.find(resultatEvent.getInt("ID_ENSEIGNANT")).toString();
+                if(!resultatEvent.isLast()){
+                    tempContenuLabel += ", ";
+                }
+            }
+            JLabel dialogueEnseignants = new JLabel(tempContenuLabel + "<html>");
+            dialogueEnseignants.setBounds(10, 45, largeurDialogue - 10, 25);
+            dialogueEnseignants.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+            fenetreDialogue.add(dialogueEnseignants);
+
+            //Public
+            resultatEvent = statementEvent.executeQuery("SELECT id_groupe FROM seance_groupes WHERE id_seance ="+seance.getId());
+            tempContenuLabel = "<html><b>Public :</b> ";
+            while(resultatEvent.next()){
+                tempContenuLabel += groupeDAO.find(resultatEvent.getInt("ID_GROUPE")).getNom();
+                if(!resultatEvent.isLast()){
+                    tempContenuLabel += ", ";
+                }
+            }
+            JLabel dialoguePublic = new JLabel(tempContenuLabel+"<html>");
+            dialoguePublic.setBounds(10, 80, largeurDialogue - 10, 25);
+            dialoguePublic.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+            fenetreDialogue.add(dialoguePublic);
+
+            //Date et heures
+            JLabel dialogueTime = new JLabel("<html><b>Le :</b> " + seance.getDate().getJour() + "/" + seance.getDate().getMois() + "/" + seance.getDate().getAnnee() + " "
+                    + "de " + seance.getHeureDebut().toString() + " à " + seance.getHeureFin().toString() + "<html>");
+            dialogueTime.setBounds(10, 115, largeurDialogue - 10, 25);
+            dialogueTime.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+            fenetreDialogue.add(dialogueTime);
+
+            //Lieu
+            resultatEvent = statementEvent.executeQuery("SELECT id_salle FROM seance_salles WHERE id_seance ="+seance.getId());
+            tempContenuLabel = "<html><b>Lieu :</b> ";
+            while(resultatEvent.next()){
+                tempContenuLabel += salleDAO.find(resultatEvent.getInt("ID_Salle")).getNom() + " ("+salleDAO.find(resultatEvent.getInt("ID_Salle")).getSite().getNom()+")";
+            }
+            JLabel dialogueLieu = new JLabel(tempContenuLabel + "<html>");
+            dialogueLieu.setBounds(10, 150, largeurDialogue - 10, 25);
+            dialogueLieu.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+            fenetreDialogue.add(dialogueLieu);
+
+            //Type de cours
+            JLabel dialogueTypeCours = new JLabel("<html><b>Type de cours :</b> " + seance.getTypeCours().toString() + "<html>");
+            dialogueTypeCours.setBounds(10, 185, largeurDialogue - 10, 25);
+            dialogueTypeCours.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+            fenetreDialogue.add(dialogueTypeCours);
+
+            //État de validation
+            switch(seance.getEtat()){
+                case 1:
+                    tempContenuLabel = "<html><b>État de validation :</b> En cours de validation";
+                    break;
+                case 2:
+                    tempContenuLabel = "<html><b>État de validation :</b> Validé";
+                    break;
+                case 3:
+                    tempContenuLabel = "<html><b>État de validation :</b> Annulé";
+                    break;
+                default:
+                    tempContenuLabel = "<html><b>État de validation :</b> ERREUR LORS DU SWITCH DE L'ETAT DE LA SEANCE";
+                    break;
+            }
+            JLabel dialogueEtat = new JLabel(tempContenuLabel+"<html>");
+            dialogueEtat.setBounds(10, 220, largeurDialogue - 10, 25);
+            dialogueEtat.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+            fenetreDialogue.add(dialogueEtat);
+
+            //Bouton modifier
+            JButton dialogueBoutonModifier = new JButton("<html><b>Modifier la séance</b><html>");
+            dialogueBoutonModifier.setBounds(5, 275, (largeurDialogue - 35) / 2, 40);
+            dialogueBoutonModifier.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+            fenetreDialogue.add(dialogueBoutonModifier);
+            dialogueBoutonModifier.addActionListener(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e){
+                    
+                    try {
+                        seanceSelection = seance;
+                        remplirModifSeance();
+                        cardLayout.show(global, "ModifSeance");
+                        fenetreDialogue.dispose();
+                    } catch (SQLException ex) {
+                        System.out.println(ex.toString());
+                    }
+                }
+            });
+
+            //Bouton supprimer
+            JButton dialogueBoutonSupprimer = new JButton("<html><b>Supprimer la séance</b><html>");
+            dialogueBoutonSupprimer.setBounds(5 + (largeurDialogue - 35) / 2 + 10, 275, (largeurDialogue - 35) / 2, 40);
+            dialogueBoutonSupprimer.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+            fenetreDialogue.add(dialogueBoutonSupprimer);
+            dialogueBoutonSupprimer.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        seanceDAO.delete(seance);
+                        switch (typeEDT) {
+                            case "etudiant":
+                                global.remove(panneauEDTGrilleEtudiant);
+                                panneauEDTGrilleEtudiant = new JPanel();
+                                remplirEDTGrilleEtudiant();
+                                global.add(panneauEDTGrilleEtudiant, "EDTGrilleEtudiant");
+                                cardLayout.show(global, "EDTGrilleEtudiant");
+                                break;
+                            case "enseignant":
+                                global.remove(panneauEDTGrilleEnseignant);
+                                panneauEDTGrilleEnseignant = new JPanel();
+                                remplirEDTGrilleEnseignant();
+                                global.add(panneauEDTGrilleEnseignant, "EDTGrilleEnseignant");
+                                cardLayout.show(global, "EDTGrilleEnseignant");
+                                break;
+                            case "salle":
+                                global.remove(panneauEDTGrilleSalle);
+                                panneauEDTGrilleSalle = new JPanel();
+                                remplirEDTGrilleSalle();
+                                global.add(panneauEDTGrilleSalle, "EDTGrilleSalle");
+                                cardLayout.show(global, "EDTGrilleSalle");
+                                break;
+                            default:
+                                System.out.println("Erreur dans la detection du type d'emploi du temps");
+                                break;
+                        }
+                        fenetreDialogue.dispose();
+                    } catch (SQLException ex) {
+                        System.out.println(ex.toString());
+                    }
+                }
+            });
+
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
         
         switch(typeEDT){
             case "etudiant":
@@ -1662,12 +1841,6 @@ public class Fenetre extends JFrame implements ActionListener{
                 break;
         }
         
-        
-        
         fenetreDialogue.setVisible(true);
-        
-        //fenetreDialogue.dispose(); pour fermer la fenetre
-        //TODO
-        
     }
 }
