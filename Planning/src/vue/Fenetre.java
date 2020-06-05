@@ -502,14 +502,14 @@ public class Fenetre extends JFrame implements ActionListener{
         barreNav1BoutonHome.setContentAreaFilled(false);
         barreNav1.add(barreNav1BoutonHome);
         barreNav1BoutonDeco.setBounds(largeur - 145, 5, 120, 40);
-<<<<<<< Updated upstream
+
         barreNav1BoutonDeco.setBackground(Color.red);
-=======
+
         barreNav1BoutonDeco.setFont(new Font("Sans Serif",Font.BOLD,16));
         barreNav1BoutonDeco.setBackground(rouge1);
         barreNav1BoutonDeco.setForeground(Color.WHITE);
         barreNav1BoutonDeco.setBorder(BorderFactory.createEmptyBorder());
->>>>>>> Stashed changes
+
         barreNav1.add(barreNav1BoutonDeco);
         
         barreNav1.setBounds(0, 0, largeur, 50);
@@ -908,14 +908,14 @@ public class Fenetre extends JFrame implements ActionListener{
         //CHAMPS SEANCE
         //seanceSelection = seanceDAO.find(1); //à supprimer, mais pratique pour coder
         
-<<<<<<< Updated upstream
+
         panneauModifSeance.removeAll();
         panneauModifSeance.add(new JLabel("Modifier Séance : "+seanceSelection.toString()));    //À supprimer
-=======
+
         modifAnnonceDebut.setBounds(largeur/2 - 200, hauteur/10 - 5, 500, 30);
         panneauModifSeance.add(modifAnnonceDebut);    //À supprimer
         //trouver un moyen de repositionner celui là
->>>>>>> Stashed changes
+
         
         //Année
         modifChoixAnnee.removeAllItems();
@@ -1162,9 +1162,9 @@ public class Fenetre extends JFrame implements ActionListener{
         panneauModifSeance.add(modifAddProfSocket);
 
         //Boutons de gestion des enseignants
-<<<<<<< Updated upstream
+
         panneauModifSeance.add(modifBoutonAjouterEnseignant);
-=======
+
                
         //modif esthétiques ici (update: manque une couleur?)
         modifBoutonAjouterEnseignant.setBounds(largeur/2 + 156, hauteur/10 + 6*(hauteur/10) - 10, 400, 20);
@@ -1179,7 +1179,7 @@ public class Fenetre extends JFrame implements ActionListener{
         modifBoutonSupprimerEnseignantSelection.setBackground(vert1);
         modifBoutonSupprimerEnseignantSelection.setForeground(Color.WHITE);
                 
->>>>>>> Stashed changes
+
         panneauModifSeance.add(modifBoutonSupprimerEnseignantSelection);
         
         //Promotion du groupe
@@ -1240,9 +1240,8 @@ public class Fenetre extends JFrame implements ActionListener{
         panneauModifSeance.add(modifAddGroupeSocket);
         
         //Boutons de gestion des groupes
-<<<<<<< Updated upstream
+
         panneauModifSeance.add(modifBoutonAjouterGroupe);
-=======
               
         //modif esthétiques ici (update: manque une couleur?)
         modifBoutonAjouterGroupe.setBounds(largeur/2 + 156, hauteur/10 + 7*(hauteur/10) - 10, 300, 20);
@@ -1255,7 +1254,7 @@ public class Fenetre extends JFrame implements ActionListener{
         modifBoutonSupprimerGroupeSelection.setBounds(largeur/2 + 156,hauteur/10 + 7*(hauteur/10) + 10, 300, 20);
         modifBoutonSupprimerGroupeSelection.setBackground(vert1);
         modifBoutonSupprimerGroupeSelection.setForeground(Color.WHITE);
->>>>>>> Stashed changes
+        
         panneauModifSeance.add(modifBoutonSupprimerGroupeSelection);
         
         //Bouton d'enregistrement
