@@ -941,7 +941,7 @@ public class Fenetre extends JFrame implements ActionListener{
         resultatFenetre = statementFenetre.executeQuery("SELECT id_seance FROM seance_groupes JOIN seance ON id_seance = id "
                                                       + "WHERE WEEK(date,3) = "+selectedWeek+" "
                                                 + "AND YEAR(date) = "+((selectedWeek < 31)?(tempCalendarEDTEtudiant.get(Calendar.YEAR)):(tempCalendarEDTEtudiant.get(Calendar.YEAR)-1))+" "
-                                                      + "AND id_groupe = (SELECT id_groupe FROM etudiant WHERE id_utilisateur = "+connectedUser.getId()+")");
+                                                      + "AND id_groupe = (SELECT id_groupe FROM etudiant WHERE id_utilisateur = "+etudiantSelection.getId()+")");
         Seance tempSeanceEDTEtudiant;
         JButton tempCoursEDTEtudiant;
         int hauteurDebut;
@@ -1759,69 +1759,70 @@ public class Fenetre extends JFrame implements ActionListener{
             dialogueEtat.setFont(new Font("Sans Serif", Font.PLAIN, 16));
             fenetreDialogue.add(dialogueEtat);
 
-            //Bouton modifier
-            JButton dialogueBoutonModifier = new JButton("<html><b>Modifier la séance</b><html>");
-            dialogueBoutonModifier.setBounds(5, 275, (largeurDialogue - 35) / 2, 40);
-            dialogueBoutonModifier.setFont(new Font("Sans Serif", Font.PLAIN, 16));
-            fenetreDialogue.add(dialogueBoutonModifier);
-            dialogueBoutonModifier.addActionListener(new ActionListener(){
-                @Override
-                public void actionPerformed(ActionEvent e){
-                    
-                    try {
-                        seanceSelection = seance;
-                        remplirModifSeance();
-                        cardLayout.show(global, "ModifSeance");
-                        fenetreDialogue.dispose();
-                    } catch (SQLException ex) {
-                        System.out.println(ex.toString());
-                    }
-                }
-            });
+            if (connectedUser.getDroit() == 1) {
+                //Bouton modifier
+                JButton dialogueBoutonModifier = new JButton("<html><b>Modifier la séance</b><html>");
+                dialogueBoutonModifier.setBounds(5, 275, (largeurDialogue - 35) / 2, 40);
+                dialogueBoutonModifier.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+                fenetreDialogue.add(dialogueBoutonModifier);
+                dialogueBoutonModifier.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
 
-            //Bouton supprimer
-            JButton dialogueBoutonSupprimer = new JButton("<html><b>Supprimer la séance</b><html>");
-            dialogueBoutonSupprimer.setBounds(5 + (largeurDialogue - 35) / 2 + 10, 275, (largeurDialogue - 35) / 2, 40);
-            dialogueBoutonSupprimer.setFont(new Font("Sans Serif", Font.PLAIN, 16));
-            fenetreDialogue.add(dialogueBoutonSupprimer);
-            dialogueBoutonSupprimer.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    try {
-                        seanceDAO.delete(seance);
-                        switch (typeEDT) {
-                            case "etudiant":
-                                global.remove(panneauEDTGrilleEtudiant);
-                                panneauEDTGrilleEtudiant = new JPanel();
-                                remplirEDTGrilleEtudiant();
-                                global.add(panneauEDTGrilleEtudiant, "EDTGrilleEtudiant");
-                                cardLayout.show(global, "EDTGrilleEtudiant");
-                                break;
-                            case "enseignant":
-                                global.remove(panneauEDTGrilleEnseignant);
-                                panneauEDTGrilleEnseignant = new JPanel();
-                                remplirEDTGrilleEnseignant();
-                                global.add(panneauEDTGrilleEnseignant, "EDTGrilleEnseignant");
-                                cardLayout.show(global, "EDTGrilleEnseignant");
-                                break;
-                            case "salle":
-                                global.remove(panneauEDTGrilleSalle);
-                                panneauEDTGrilleSalle = new JPanel();
-                                remplirEDTGrilleSalle();
-                                global.add(panneauEDTGrilleSalle, "EDTGrilleSalle");
-                                cardLayout.show(global, "EDTGrilleSalle");
-                                break;
-                            default:
-                                System.out.println("Erreur dans la detection du type d'emploi du temps");
-                                break;
+                        try {
+                            seanceSelection = seance;
+                            remplirModifSeance();
+                            cardLayout.show(global, "ModifSeance");
+                            fenetreDialogue.dispose();
+                        } catch (SQLException ex) {
+                            System.out.println(ex.toString());
                         }
-                        fenetreDialogue.dispose();
-                    } catch (SQLException ex) {
-                        System.out.println(ex.toString());
                     }
-                }
-            });
+                });
 
+                //Bouton supprimer
+                JButton dialogueBoutonSupprimer = new JButton("<html><b>Supprimer la séance</b><html>");
+                dialogueBoutonSupprimer.setBounds(5 + (largeurDialogue - 35) / 2 + 10, 275, (largeurDialogue - 35) / 2, 40);
+                dialogueBoutonSupprimer.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+                fenetreDialogue.add(dialogueBoutonSupprimer);
+                dialogueBoutonSupprimer.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        try {
+                            seanceDAO.delete(seance);
+                            switch (typeEDT) {
+                                case "etudiant":
+                                    global.remove(panneauEDTGrilleEtudiant);
+                                    panneauEDTGrilleEtudiant = new JPanel();
+                                    remplirEDTGrilleEtudiant();
+                                    global.add(panneauEDTGrilleEtudiant, "EDTGrilleEtudiant");
+                                    cardLayout.show(global, "EDTGrilleEtudiant");
+                                    break;
+                                case "enseignant":
+                                    global.remove(panneauEDTGrilleEnseignant);
+                                    panneauEDTGrilleEnseignant = new JPanel();
+                                    remplirEDTGrilleEnseignant();
+                                    global.add(panneauEDTGrilleEnseignant, "EDTGrilleEnseignant");
+                                    cardLayout.show(global, "EDTGrilleEnseignant");
+                                    break;
+                                case "salle":
+                                    global.remove(panneauEDTGrilleSalle);
+                                    panneauEDTGrilleSalle = new JPanel();
+                                    remplirEDTGrilleSalle();
+                                    global.add(panneauEDTGrilleSalle, "EDTGrilleSalle");
+                                    cardLayout.show(global, "EDTGrilleSalle");
+                                    break;
+                                default:
+                                    System.out.println("Erreur dans la detection du type d'emploi du temps");
+                                    break;
+                            }
+                            fenetreDialogue.dispose();
+                        } catch (SQLException ex) {
+                            System.out.println(ex.toString());
+                        }
+                    }
+                });
+            }
         } catch (SQLException e) {
             System.out.println(e.toString());
         }
