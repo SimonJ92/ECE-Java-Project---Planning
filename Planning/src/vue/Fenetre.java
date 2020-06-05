@@ -175,7 +175,7 @@ public class Fenetre extends JFrame implements ActionListener{
             setVisible(true);
 
             //On définit le panneau d'accueil (à changer)
-            cardLayout.show(global, "Login");
+            cardLayout.show(global, "Recherche");
 
             //On affiche le panneau global
             setContentPane(global);
@@ -781,6 +781,8 @@ public class Fenetre extends JFrame implements ActionListener{
     private void remplirRecherche() throws SQLException {
         panneauRecherche.removeAll();
         
+        panneauRecherche.setLayout(null);
+        
         //Initialisation des composants du panneau
         rechercheChoixSemaine = new JComboBox();
         rechercheChoixSite = new JComboBox();
@@ -806,6 +808,7 @@ public class Fenetre extends JFrame implements ActionListener{
         for (int i = 1; i <= 52; ++i) {
             rechercheChoixSemaine.addItem(i);
         }
+        rechercheChoixSemaine.setBounds(largeur/2 - 250, hauteur/3 - 300, 50, 30);
         panneauRecherche.add(rechercheChoixSemaine);
         
         //Site de la salle
@@ -814,6 +817,7 @@ public class Fenetre extends JFrame implements ActionListener{
         while (resultatFenetre.next()) {
             rechercheChoixSite.addItem(siteDAO.find(resultatFenetre.getInt("ID")));
         }
+        rechercheChoixSite.setBounds(largeur/2 - 600, hauteur/2 - 200, 75, 25);
         panneauRecherche.add(rechercheChoixSite);
 
         //Salle
@@ -822,6 +826,7 @@ public class Fenetre extends JFrame implements ActionListener{
         while (resultatFenetre.next()) {
             rechercheChoixSalle.addItem(salleDAO.find(resultatFenetre.getInt("ID")));
         }
+        rechercheChoixSalle.setBounds(largeur/2 - 500, hauteur/2 - 200, 125, 25);
         panneauRecherche.add(rechercheChoixSalle);
 
         //Enseignant
@@ -830,6 +835,7 @@ public class Fenetre extends JFrame implements ActionListener{
         while (resultatFenetre.next()) {
             rechercheChoixEnseignant.addItem(utilisateurDAO.find(resultatFenetre.getInt("ID")));
         }
+        rechercheChoixEnseignant.setBounds(largeur/2 - 67, hauteur/2 - 200, 135, 25);
         panneauRecherche.add(rechercheChoixEnseignant);
 
         //Promotion du groupe de l'élève
@@ -838,6 +844,7 @@ public class Fenetre extends JFrame implements ActionListener{
         while (resultatFenetre.next()) {
             rechercheChoixPromotion.addItem(promotionDAO.find(resultatFenetre.getInt("ID")));
         }
+        rechercheChoixPromotion.setBounds(largeur/2 - 210, hauteur/2, 60, 25);
         panneauRecherche.add(rechercheChoixPromotion);
 
         //Groupe de l'élève
@@ -846,6 +853,7 @@ public class Fenetre extends JFrame implements ActionListener{
         while (resultatFenetre.next()) {
             rechercheChoixGroupe.addItem(groupeDAO.find(resultatFenetre.getInt("ID")));
         }
+        rechercheChoixGroupe.setBounds(largeur/2 - 125, hauteur/2, 100, 25);
         panneauRecherche.add(rechercheChoixGroupe);
 
         //Élève
@@ -854,12 +862,18 @@ public class Fenetre extends JFrame implements ActionListener{
         while (resultatFenetre.next()) {
             rechercheChoixEtudiant.addItem(etudiantDAO.find(resultatFenetre.getInt("ID_UTILISATEUR")));
         }
+        rechercheChoixEtudiant.setBounds(largeur/2, hauteur/2, 200, 25);
         panneauRecherche.add(rechercheChoixEtudiant);
 
         //Boutons de recherche
         panneauRecherche.add(boutonRechercherSalle);
+        boutonRechercherSalle.setBounds(largeur/2 - 600, hauteur/2 - 150, 175, 25);
+        
         panneauRecherche.add(boutonRechercherEnseignant);
+        boutonRechercherEnseignant.setBounds(largeur/2 - 100, hauteur/2 - 150, 200, 25);
+        
         panneauRecherche.add(boutonRechercherEtudiant);
+        boutonRechercherEtudiant.setBounds(largeur/2 + 151, hauteur/2 - 150, 175, 25);
         
         //Ré-activation des ActionListeners
         rechercheChoixSite.addActionListener(this);
