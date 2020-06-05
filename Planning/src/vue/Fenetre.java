@@ -65,6 +65,10 @@ public class Fenetre extends JFrame implements ActionListener{
     private JPanel panneauModifSeance;
     private JPanel panneauRecapCours;
     
+    //couleurs du thème:
+    Color vert1 = new Color(31,160,85);
+    Color rouge1 = new Color(199, 44, 72);
+    
     //connexion utilisateur
     private Utilisateur connectedUser;
     
@@ -145,6 +149,16 @@ public class Fenetre extends JFrame implements ActionListener{
     private JComboBox modifChoixSite;
     private JComboBox modifChoixSalle;
     private JLabel modifErrorField;
+    private JLabel modifAnnonceDebut;
+    private JLabel modifLabelDate;
+    private JLabel modifLabelHeureDebut;
+    private JLabel modifLabelHeureFin;
+    private JLabel modifLabelEtatCours;
+    private JLabel modifLabelChoixCours;
+    private JLabel modifLabelChoixSalle;
+    private JLabel modifLabelChoixProf;
+    private JLabel modifLabelChoixPromo;
+    private JLabel modifLabelTypeCours;
     private JList modifChoixEnseignant;
     private JList modifChoixEnseignantSelection;
     private JButton modifBoutonAjouterEnseignant;
@@ -155,11 +169,15 @@ public class Fenetre extends JFrame implements ActionListener{
     private JButton modifBoutonAjouterGroupe;
     private JButton modifBoutonSupprimerGroupeSelection;
     private JButton modifBoutonEnregistrer;
+    private JScrollPane modifChoixProfSocket;
+    private JScrollPane modifAddProfSocket;
+    private JScrollPane modifChoixGroupeSocket;
+    private JScrollPane modifAddGroupeSocket;
     
     //Récapitulatif des cours
     
     
-    //...
+    //EDT liste
     
     //Constructeur à appeler pour démarrer l'appli
     public Fenetre(Connexion myConnexion){
@@ -550,7 +568,8 @@ public class Fenetre extends JFrame implements ActionListener{
         
         barreNav1BoutonDeco.setBounds(largeur - 145, 5, 120, 40);
         barreNav1BoutonDeco.setFont(new Font("Sans Serif",Font.BOLD,16));
-        barreNav1BoutonDeco.setBackground(Color.RED);
+        barreNav1BoutonDeco.setBackground(rouge1);
+        barreNav1BoutonDeco.setForeground(Color.WHITE);
         barreNav1BoutonDeco.setBorder(BorderFactory.createEmptyBorder());
         barreNav1.add(barreNav1BoutonDeco);
         
@@ -1110,6 +1129,9 @@ public class Fenetre extends JFrame implements ActionListener{
     //TODO (ne pas oublier de définir une taille pour les Jlist : elles peuvent être invisibles si elles sont vides)
     private void remplirModifSeance() throws SQLException{
         panneauModifSeance.removeAll();
+        panneauModifSeance.setLayout(null); //On définit un absolute Layout
+        addMenuBars(panneauModifSeance);
+        
         //Initialisation des composants du panneau
         modifChoixAnnee = new JComboBox();
         modifChoixMois = new JComboBox();
@@ -1134,6 +1156,20 @@ public class Fenetre extends JFrame implements ActionListener{
         modifChoixSalle = new JComboBox();
         modifBoutonEnregistrer = new JButton("Enregistrer");
         modifErrorField = new JLabel("");
+        modifAnnonceDebut = new JLabel("Modification de  la Séance "+seanceSelection.toString());
+        modifLabelDate = new JLabel("Date : ");
+        modifLabelHeureDebut = new JLabel("Heure de début");
+        modifLabelHeureFin = new JLabel("Heure de fin");
+        modifLabelEtatCours = new JLabel("Etat de la procédure : ");
+        modifLabelChoixCours = new JLabel("Cours de la séance: ");
+        modifLabelChoixSalle = new JLabel("Etablissement et salle : ");
+        modifLabelChoixProf = new JLabel("Intervenants : ");
+        modifLabelChoixPromo = new JLabel("Promotion et groupes : ");
+        modifLabelTypeCours = new JLabel("Type de séance : ");
+        modifChoixProfSocket = new JScrollPane();
+        modifAddProfSocket = new JScrollPane();
+        modifChoixGroupeSocket = new JScrollPane();
+        modifAddGroupeSocket = new JScrollPane();
         
         //On retire les éventuels ActionListeners
         modifChoixAnnee.removeActionListener(this);
@@ -1147,10 +1183,11 @@ public class Fenetre extends JFrame implements ActionListener{
         modifBoutonSupprimerGroupeSelection.removeActionListener(this);
         modifBoutonEnregistrer.removeActionListener(this);
 
-        //CHAMPS SEANCE
-        //seanceSelection = seanceDAO.find(1); //à supprimer, mais pratique pour coder
+        //CHAMPS SEANCE       
         
-        panneauModifSeance.add(new JLabel("Modifier Séance : "+seanceSelection.toString()));    //À supprimer
+        //Titre
+        modifAnnonceDebut.setBounds(largeur/2 - 350, hauteur/10 - 5, 700, 30);
+        panneauModifSeance.add(modifAnnonceDebut);
         
         //Année
         modifChoixAnnee.removeAllItems();
@@ -1160,6 +1197,8 @@ public class Fenetre extends JFrame implements ActionListener{
         if(seanceSelection.getId() != 0){   //si une séance a été selectionné = si on est en modification
             modifChoixAnnee.setSelectedItem(seanceSelection.getDate().getAnnee());
         }
+        modifChoixAnnee.setBounds(largeur/2 + 22, hauteur/10 + 50, 60, 25);
+        modifChoixAnnee.setBackground(Color.WHITE);  
         panneauModifSeance.add(modifChoixAnnee);
         
         //Mois
@@ -1170,6 +1209,8 @@ public class Fenetre extends JFrame implements ActionListener{
         if(seanceSelection.getId() != 0){   //si une séance a été selectionné = si on est en modification
             modifChoixMois.setSelectedItem(seanceSelection.getDate().getMois());
         }
+        modifChoixMois.setBounds(largeur/2 - 20, hauteur/10 + 50, 40, 25);
+        modifChoixMois.setBackground(Color.WHITE);
         panneauModifSeance.add(modifChoixMois);
         
         //Jour
@@ -1177,7 +1218,11 @@ public class Fenetre extends JFrame implements ActionListener{
         if(seanceSelection.getId() != 0){   //si une séance a été selectionné = si on est en modification
             modifChoixJour.setSelectedItem(seanceSelection.getDate().getJour());
         }
+        modifLabelDate.setBounds(largeur/2 - 182, hauteur/10 + 50, 90, 30);
+        modifChoixJour.setBounds(largeur/2 - 62, hauteur/10 + 50, 40, 25);
+        modifChoixJour.setBackground(Color.WHITE);
         panneauModifSeance.add(modifChoixJour);
+        panneauModifSeance.add(modifLabelDate);
         
         //Heure de début de séance
         JSpinner.NumberEditor heureDebutSpinnerEditor = new JSpinner.NumberEditor(modifChoixHeureDebut);
@@ -1186,7 +1231,10 @@ public class Fenetre extends JFrame implements ActionListener{
         heureDebutSpinnerEditor.getModel().setMaximum(20);
         heureDebutSpinnerEditor.getModel().setStepSize(1);
         heureDebutSpinnerEditor.getModel().setValue(seanceSelection.getHeureDebut().getHeure());
+        modifChoixHeureDebut.setBounds(largeur/2 - 92, hauteur/10 + (hauteur/10), 40, 25);
+        modifLabelHeureDebut.setBounds(largeur/2 - 182, hauteur/10 + (hauteur/10), 90, 30);
         panneauModifSeance.add(modifChoixHeureDebut);
+        panneauModifSeance.add(modifLabelHeureDebut);
         
         //Minute de début de séance
         JSpinner.NumberEditor minutesDebutSpinnerEditor = new JSpinner.NumberEditor(modifChoixMinutesDebut);
@@ -1195,6 +1243,7 @@ public class Fenetre extends JFrame implements ActionListener{
         minutesDebutSpinnerEditor.getModel().setMaximum(59);
         minutesDebutSpinnerEditor.getModel().setStepSize(1);
         minutesDebutSpinnerEditor.getModel().setValue(seanceSelection.getHeureDebut().getMinutes());
+        modifChoixMinutesDebut.setBounds(largeur/2 - 50, hauteur/10 + (hauteur/10), 40, 25);
         panneauModifSeance.add(modifChoixMinutesDebut);
         
         //Heure de fin de séance
@@ -1204,6 +1253,7 @@ public class Fenetre extends JFrame implements ActionListener{
         heureFinSpinnerEditor.getModel().setMaximum(20);
         heureFinSpinnerEditor.getModel().setStepSize(1);
         heureFinSpinnerEditor.getModel().setValue(seanceSelection.getHeureFin().getHeure());
+        modifChoixHeureFin.setBounds(largeur/2 + 10, hauteur/10 + (hauteur/10), 40, 25);
         panneauModifSeance.add(modifChoixHeureFin);
         
         //Minute de fin de séance
@@ -1213,7 +1263,10 @@ public class Fenetre extends JFrame implements ActionListener{
         minutesFinSpinnerEditor.getModel().setMaximum(59);
         minutesFinSpinnerEditor.getModel().setStepSize(1);
         minutesFinSpinnerEditor.getModel().setValue(seanceSelection.getHeureFin().getMinutes());
+        modifChoixMinutesFin.setBounds(largeur/2 + 52, hauteur/10 + (hauteur/10), 40, 25);
+        modifLabelHeureFin.setBounds(largeur/2 + 94, hauteur/10 + (hauteur/10), 100, 30);
         panneauModifSeance.add(modifChoixMinutesFin);
+        panneauModifSeance.add(modifLabelHeureFin);
         
         //État de la séance
         modifChoixEtat.removeAllItems();
@@ -1236,7 +1289,11 @@ public class Fenetre extends JFrame implements ActionListener{
                 System.out.println("Erreur dans le choix de l'état : la séance selectionné a un état qui n'est ni 0,1,2,3");
                 break;
         }
+        modifChoixEtat.setBounds(largeur/2 - 73, hauteur/10 + 2*(hauteur/10), 154, 30);
+        modifLabelEtatCours.setBounds(largeur/2 - 65, hauteur/10 + 2*(hauteur/10) - 40, 150, 30); 
+        modifChoixEtat.setBackground(Color.WHITE);
         panneauModifSeance.add(modifChoixEtat);
+        panneauModifSeance.add(modifLabelEtatCours);
         
         //Cours de la séance
         modifChoixCours.removeAllItems();
@@ -1249,7 +1306,11 @@ public class Fenetre extends JFrame implements ActionListener{
                 modifChoixCours.setSelectedIndex(i);
             }
         }
+        modifChoixCours.setBounds(largeur/2 - 73, hauteur/10 + 3*(hauteur/10), 154, 30);
+        modifLabelChoixCours.setBounds(largeur/2 - 50, hauteur/10 + 3*(hauteur/10) - 40, 150, 30);
+        modifChoixCours.setBackground(Color.WHITE);
         panneauModifSeance.add(modifChoixCours);
+        panneauModifSeance.add(modifLabelChoixCours);
         
         //Type de cours
         modifChoixTypeCours.removeAllItems();
@@ -1262,7 +1323,11 @@ public class Fenetre extends JFrame implements ActionListener{
                 modifChoixTypeCours.setSelectedIndex(i);
             }
         }
+        modifChoixTypeCours.setBounds(largeur/2 - 73, hauteur/10 + 4*(hauteur/10), 154, 30);
+        modifLabelTypeCours.setBounds(largeur/2 - 50, hauteur/10 + 4*(hauteur/10) - 40, 100, 30);
+        modifChoixTypeCours.setBackground(Color.WHITE);
         panneauModifSeance.add(modifChoixTypeCours);
+        panneauModifSeance.add(modifLabelTypeCours);
         
         //Site de la salle
         modifChoixSite.removeAllItems();
@@ -1278,7 +1343,11 @@ public class Fenetre extends JFrame implements ActionListener{
                 }
             }
         }
+        modifChoixSite.setBounds(largeur/2 - 94, hauteur/10 + 5*(hauteur/10), 70, 30);
+        modifLabelChoixSalle.setBounds(largeur/2 - 65, hauteur/10 + 5*(hauteur/10) - 40, 150, 30);
+        modifChoixSite.setBackground(Color.WHITE);
         panneauModifSeance.add(modifChoixSite);
+        panneauModifSeance.add(modifLabelChoixSalle);
         
         //Salle
         modifChoixSalle.removeAllItems();
@@ -1294,6 +1363,8 @@ public class Fenetre extends JFrame implements ActionListener{
                 }
             }
         }
+        modifChoixSalle.setBounds(largeur/2 - 20,hauteur/10 + 5*(hauteur/10), 130, 30);
+        modifChoixSalle.setBackground(Color.WHITE); 
         panneauModifSeance.add(modifChoixSalle);
         
         //Enseignants
@@ -1306,7 +1377,12 @@ public class Fenetre extends JFrame implements ActionListener{
             modifChoixEnseignantModel.addElement(utilisateurDAO.find(resultatFenetre.getInt("ID")));
         }
         modifChoixEnseignant = new JList(modifChoixEnseignantModel);
-        panneauModifSeance.add(modifChoixEnseignant);
+        modifLabelChoixProf.setBounds(largeur/2 - 40, hauteur/10 + 6*(hauteur/10) - 40, 80, 30);
+
+        modifChoixProfSocket.setBounds(largeur/2 - 132, hauteur/10 + 6*(hauteur/10), 130, 30);
+        modifChoixProfSocket.setViewportView(modifChoixEnseignant);
+        panneauModifSeance.add(modifLabelChoixProf);
+        panneauModifSeance.add(modifChoixProfSocket);
         
         //Enseignants sélectionnés
         DefaultListModel modifChoixEnseignantSelectionModel = new DefaultListModel();
@@ -1316,12 +1392,19 @@ public class Fenetre extends JFrame implements ActionListener{
             modifChoixEnseignantSelectionModel.addElement(utilisateurDAO.find(resultatFenetre.getInt("ID_ENSEIGNANT")));
         }
         modifChoixEnseignantSelection = new JList(modifChoixEnseignantSelectionModel);
-        panneauModifSeance.add(modifChoixEnseignantSelection);
+        modifAddProfSocket.setBounds(largeur/2 + 22, hauteur/10 + 6*(hauteur/10), 130, 30);
+        modifAddProfSocket.setViewportView(modifChoixEnseignantSelection);
+        panneauModifSeance.add(modifAddProfSocket);
         
         //Boutons de gestion des enseignants
+        modifBoutonAjouterEnseignant.setBounds(largeur/2 + 156, hauteur/10 + 6*(hauteur/10) - 10, 400, 20);
+        modifBoutonAjouterEnseignant.setBackground(vert1);
+        modifBoutonAjouterEnseignant.setForeground(Color.WHITE);
         panneauModifSeance.add(modifBoutonAjouterEnseignant);
         
-        
+        modifBoutonSupprimerEnseignantSelection.setBounds(largeur/2 + 156, hauteur/10 + 6*(hauteur/10) + 10, 400, 20);
+        modifBoutonSupprimerEnseignantSelection.setBackground(vert1);
+        modifBoutonSupprimerEnseignantSelection.setForeground(Color.WHITE);
         panneauModifSeance.add(modifBoutonSupprimerEnseignantSelection);
         
         //Promotion du groupe
@@ -1338,6 +1421,10 @@ public class Fenetre extends JFrame implements ActionListener{
                 }
             }
         }
+        modifChoixPromotion.setBounds(largeur/2 - 104, hauteur/10 + 7*(hauteur/10), 60, 25);
+        modifLabelChoixPromo.setBounds(largeur/2 - 65, hauteur/10 + 7*(hauteur/10) - 30, 150, 30);
+        modifChoixPromotion.setBackground(Color.WHITE);
+        panneauModifSeance.add(modifLabelChoixPromo);
         panneauModifSeance.add(modifChoixPromotion);
         
         //Groupes
@@ -1349,7 +1436,9 @@ public class Fenetre extends JFrame implements ActionListener{
             modifChoixGroupeModel.addElement(groupeDAO.find(resultatFenetre.getInt("ID")));
         }
         modifChoixGroupe = new JList(modifChoixGroupeModel);
-        panneauModifSeance.add(modifChoixGroupe);
+        modifChoixGroupeSocket.setBounds(largeur/2 - 14, hauteur/10 + 7*(hauteur/10), 80, 30); 
+        modifChoixGroupeSocket.setViewportView(modifChoixGroupe);
+        panneauModifSeance.add(modifChoixGroupeSocket);
         
         //Groupes sélectionnés
         DefaultListModel modifChoixGroupeSelectionModel = new DefaultListModel();
@@ -1359,18 +1448,29 @@ public class Fenetre extends JFrame implements ActionListener{
             modifChoixGroupeSelectionModel.addElement(groupeDAO.find(resultatFenetre.getInt("ID_GROUPE")));
         }
         modifChoixGroupeSelection = new JList(modifChoixGroupeSelectionModel);
-        panneauModifSeance.add(modifChoixGroupeSelection);
+        modifAddGroupeSocket.setBounds(largeur/2 + 73, hauteur/10 + 7*(hauteur/10), 80, 30);
+        modifAddGroupeSocket.setViewportView(modifChoixGroupeSelection);
+        panneauModifSeance.add(modifAddGroupeSocket);
         
         //Boutons de gestion des groupes
+        modifBoutonAjouterGroupe.setBounds(largeur/2 + 156, hauteur/10 + 7*(hauteur/10) - 10, 300, 20);
+        modifBoutonAjouterGroupe.setBackground(vert1);
+        modifBoutonAjouterGroupe.setForeground(Color.WHITE);
         panneauModifSeance.add(modifBoutonAjouterGroupe);
-        
-        
+
+        modifBoutonSupprimerGroupeSelection.setBounds(largeur/2 + 156,hauteur/10 + 7*(hauteur/10) + 10, 300, 20);
+        modifBoutonSupprimerGroupeSelection.setBackground(vert1);
+        modifBoutonSupprimerGroupeSelection.setForeground(Color.WHITE);
         panneauModifSeance.add(modifBoutonSupprimerGroupeSelection);
         
         //Bouton d'enregistrement
+        modifBoutonEnregistrer.setBounds(largeur/2 - 50, hauteur/10 + 8*(hauteur/10), 100, 50);    
+        modifBoutonEnregistrer.setBackground(vert1);
+        modifBoutonEnregistrer.setForeground(Color.WHITE);
         panneauModifSeance.add(modifBoutonEnregistrer);
         
         //Affichage d'erreur (qui pourra être modifié dans l'ActionListener du bouton
+        modifErrorField.setBounds(largeur/2 + 52, hauteur/10 + 8*(hauteur/10), 400, 50);
         panneauModifSeance.add(modifErrorField);
         
         

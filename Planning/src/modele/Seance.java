@@ -106,6 +106,20 @@ public class Seance {
     
     @Override
     public String toString(){
-        return getCours().getNom()+" - "+getTypeCours().getNom()+" : le "+getDate().toString()+"(semaine "+getSemaine()+") de "+getHeureDebut().toString()+" à "+getHeureFin()+" - "+getEtat();
+        String temp = getCours().getNom()+" - "+getTypeCours().getNom()+" : le "+getDate().toString()+"(semaine "+getSemaine()+") de "+getHeureDebut().toString()+" à "+getHeureFin()+" - ";
+        switch(getEtat()){
+            case 0:
+                break;
+            case 1:
+                temp += "En cours de validation";
+                break;
+            case 2:
+                temp += "Validé";
+                break;
+            case 3:
+                temp += "Annulé";
+                break;
+        }
+        return temp;
     }
 }
