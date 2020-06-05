@@ -134,6 +134,11 @@ public class Fenetre extends JFrame implements ActionListener{
     private JButton boutonRechercherSalle;
     private JButton boutonRechercherEnseignant;
     private JButton boutonRechercherEtudiant;
+    private JLabel rechercheTitre;
+    private JLabel rechercheLabelSemaine;
+    private JLabel rechercheLabelSalle;
+    private JLabel rechercheLabelEnseignant;
+    private JLabel rechercheLabelEtudiant;
     
     //Modification de Séance
     private JComboBox modifChoixAnnee;
@@ -1036,6 +1041,8 @@ public class Fenetre extends JFrame implements ActionListener{
     //TODO
     private void remplirRecherche() throws SQLException {
         panneauRecherche.removeAll();
+        panneauRecherche.setLayout(null);
+        addMenuBars(panneauRecherche);
         
         //Initialisation des composants du panneau
         rechercheChoixSemaine = new JComboBox();
@@ -1048,6 +1055,12 @@ public class Fenetre extends JFrame implements ActionListener{
         boutonRechercherSalle = new JButton("Rechercher une salle");
         boutonRechercherEnseignant = new JButton("Rechercher un enseignant");
         boutonRechercherEtudiant = new JButton("Rechercher un etudiant");
+        rechercheTitre = new JLabel("Recherche spécifique");
+        rechercheLabelSemaine = new JLabel("Semaine :");
+        rechercheLabelSalle = new JLabel("Salle :");
+        rechercheLabelEnseignant = new JLabel("Enseignant :");
+        rechercheLabelEtudiant = new JLabel("Etudiant :");
+
         
         //On retire les éventuels ActionListeners
         rechercheChoixSite.removeActionListener(this);
@@ -1057,12 +1070,22 @@ public class Fenetre extends JFrame implements ActionListener{
         boutonRechercherEnseignant.removeActionListener(this);
         boutonRechercherEtudiant.removeActionListener(this);
         
+        //Titre de la page
+        rechercheTitre.setFont(new Font("Sans Serif", Font.ITALIC, 30));
+        rechercheTitre.setBounds(largeur/2 - 145, hauteur/7 , 295, 30);
+        panneauRecherche.add(rechercheTitre);
+        
         //Semaine
         rechercheChoixSemaine.removeAllItems();
         for (int i = 1; i <= 52; ++i) {
             rechercheChoixSemaine.addItem(i);
         }
+        rechercheLabelSemaine.setFont(new Font("Sans Serif", Font.BOLD, 20));
+        rechercheLabelSemaine.setBounds(largeur/2 - 65, hauteur/3 - 55, 100, 30);
+        rechercheChoixSemaine.setBackground(Color.white);
+        rechercheChoixSemaine.setBounds(largeur/2 - 50, hauteur/3 - 25, 50, 30);
         panneauRecherche.add(rechercheChoixSemaine);
+        panneauRecherche.add(rechercheLabelSemaine);
         
         //Site de la salle
         rechercheChoixSite.removeAllItems();
@@ -1070,6 +1093,8 @@ public class Fenetre extends JFrame implements ActionListener{
         while (resultatFenetre.next()) {
             rechercheChoixSite.addItem(siteDAO.find(resultatFenetre.getInt("ID")));
         }
+        rechercheChoixSite.setBackground(Color.white);
+        rechercheChoixSite.setBounds(largeur/2 - 625, hauteur/2 - 50, 75, 25);
         panneauRecherche.add(rechercheChoixSite);
 
         //Salle
@@ -1078,7 +1103,12 @@ public class Fenetre extends JFrame implements ActionListener{
         while (resultatFenetre.next()) {
             rechercheChoixSalle.addItem(salleDAO.find(resultatFenetre.getInt("ID")));
         }
+        rechercheLabelSalle.setFont(new Font("Sans Serif", Font.BOLD, 20));
+        rechercheLabelSalle.setBounds(largeur/2 - 525, hauteur/2 - 75, 100, 25);
+        rechercheChoixSalle.setBackground(Color.white);
+        rechercheChoixSalle.setBounds(largeur/2 - 525, hauteur/2 - 50, 125, 25);
         panneauRecherche.add(rechercheChoixSalle);
+        panneauRecherche.add(rechercheLabelSalle);
 
         //Enseignant
         rechercheChoixEnseignant.removeAllItems();
@@ -1086,7 +1116,12 @@ public class Fenetre extends JFrame implements ActionListener{
         while (resultatFenetre.next()) {
             rechercheChoixEnseignant.addItem(utilisateurDAO.find(resultatFenetre.getInt("ID")));
         }
+        rechercheLabelEnseignant.setFont(new Font("Sans Serif", Font.BOLD, 20));
+        rechercheLabelEnseignant.setBounds(largeur/2 - 92, hauteur/2 - 75, 150, 25);
+        rechercheChoixEnseignant.setBackground(Color.white);
+        rechercheChoixEnseignant.setBounds(largeur/2 - 92, hauteur/2 - 50, 135, 25);
         panneauRecherche.add(rechercheChoixEnseignant);
+        panneauRecherche.add(rechercheLabelEnseignant);
 
         //Promotion du groupe de l'élève
         rechercheChoixPromotion.removeAllItems();
@@ -1094,6 +1129,8 @@ public class Fenetre extends JFrame implements ActionListener{
         while (resultatFenetre.next()) {
             rechercheChoixPromotion.addItem(promotionDAO.find(resultatFenetre.getInt("ID")));
         }
+        rechercheChoixPromotion.setBackground(Color.white);
+        rechercheChoixPromotion.setBounds(largeur/2 + 265, hauteur/2 - 50, 60, 25);
         panneauRecherche.add(rechercheChoixPromotion);
 
         //Groupe de l'élève
@@ -1102,6 +1139,8 @@ public class Fenetre extends JFrame implements ActionListener{
         while (resultatFenetre.next()) {
             rechercheChoixGroupe.addItem(groupeDAO.find(resultatFenetre.getInt("ID")));
         }
+        rechercheChoixGroupe.setBackground(Color.white);
+        rechercheChoixGroupe.setBounds(largeur/2 + 350, hauteur/2 - 50, 100, 25);
         panneauRecherche.add(rechercheChoixGroupe);
 
         //Élève
@@ -1110,12 +1149,22 @@ public class Fenetre extends JFrame implements ActionListener{
         while (resultatFenetre.next()) {
             rechercheChoixEtudiant.addItem(etudiantDAO.find(resultatFenetre.getInt("ID_UTILISATEUR")));
         }
+        rechercheLabelEtudiant.setFont(new Font("Sans Serif", Font.BOLD, 20));
+        rechercheLabelEtudiant.setBounds(largeur/2 + 475, hauteur/2 - 75, 100, 25);
+        rechercheChoixEtudiant.setBackground(Color.white);
+        rechercheChoixEtudiant.setBounds(largeur/2 + 475, hauteur/2 - 50, 200, 25);
         panneauRecherche.add(rechercheChoixEtudiant);
+        panneauRecherche.add(rechercheLabelEtudiant);
 
         //Boutons de recherche
         panneauRecherche.add(boutonRechercherSalle);
+        boutonRechercherSalle.setBounds(largeur/2 - 600, hauteur/2, 175, 50);
+        
         panneauRecherche.add(boutonRechercherEnseignant);
+        boutonRechercherEnseignant.setBounds(largeur/2 - 125, hauteur/2, 200, 50);
+        
         panneauRecherche.add(boutonRechercherEtudiant);
+        boutonRechercherEtudiant.setBounds(largeur/2 + 393, hauteur/2, 175, 50);
         
         //Ré-activation des ActionListeners
         rechercheChoixSite.addActionListener(this);
