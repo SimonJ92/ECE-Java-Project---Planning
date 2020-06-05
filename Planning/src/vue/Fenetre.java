@@ -90,6 +90,7 @@ public class Fenetre extends JFrame implements ActionListener{
     private JButton barreNav2BoutonEDT;
     private JButton barreNav2BoutonRecap;
     private JButton barreNav2BoutonRecherche;
+    private JButton barreNav2BoutonCreer;
     
     //Accueil
     private JLabel accueilLabelConnectedUser;
@@ -252,6 +253,11 @@ public class Fenetre extends JFrame implements ActionListener{
             else if(source == barreNav2BoutonRecherche){
                 remplirRecherche();
                 cardLayout.show(global, "Recherche");
+            }
+            else if(source == barreNav2BoutonCreer){
+                seanceSelection = new Seance();
+                remplirModifSeance();
+                cardLayout.show(global, "ModifSeance");
             }
         }
         catch(SQLException e){
@@ -540,6 +546,7 @@ public class Fenetre extends JFrame implements ActionListener{
         barreNav2BoutonEDT = new JButton("Emploi du temps");
         barreNav2BoutonRecap = new JButton("Récapitulatif des cours");
         barreNav2BoutonRecherche = new JButton("Recherche");
+        barreNav2BoutonCreer = new JButton("Ajouter une séance");
         
         //On retire les éventuels ActionListeners
         barreNav1BoutonHome.removeActionListener(this);
@@ -644,6 +651,24 @@ public class Fenetre extends JFrame implements ActionListener{
             barreNav2BoutonRecherche.setFont(new Font("Sans Serif", Font.BOLD, 18));
             barreNav2BoutonRecherche.setForeground(Color.WHITE);
             barreNav2.add(barreNav2BoutonRecherche);
+            
+            barreNav2BoutonCreer.setBounds(160, 0, 200, 50);
+            barreNav2BoutonCreer.setBorder(BorderFactory.createEmptyBorder());
+            barreNav2BoutonCreer.setBackground(Color.BLACK);
+            barreNav2BoutonCreer.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseEntered(java.awt.event.MouseEvent evt) {
+                    barreNav2BoutonCreer.setBackground(Color.LIGHT_GRAY);
+                }
+
+                @Override
+                public void mouseExited(java.awt.event.MouseEvent evt) {
+                    barreNav2BoutonCreer.setBackground(Color.BLACK);
+                }
+            });
+            barreNav2BoutonCreer.setFont(new Font("Sans Serif", Font.BOLD, 18));
+            barreNav2BoutonCreer.setForeground(Color.WHITE);
+            barreNav2.add(barreNav2BoutonCreer);
         }
         barreNav2.setBounds(0, 51, largeur, 50);
         panel.add(barreNav2);
@@ -654,6 +679,7 @@ public class Fenetre extends JFrame implements ActionListener{
         barreNav2BoutonEDT.addActionListener(this);
         barreNav2BoutonRecap.addActionListener(this);
         barreNav2BoutonRecherche.addActionListener(this);
+        barreNav2BoutonCreer.addActionListener(this);
     }
 
     private void remplirAccueil() throws SQLException{
@@ -1038,7 +1064,6 @@ public class Fenetre extends JFrame implements ActionListener{
         etudiantGrilleChoixTypeEDT.addActionListener(this);
     }
     
-    //TODO
     private void remplirRecherche() throws SQLException {
         panneauRecherche.removeAll();
         panneauRecherche.setLayout(null);
@@ -1175,7 +1200,6 @@ public class Fenetre extends JFrame implements ActionListener{
         boutonRechercherEtudiant.addActionListener(this);
     }
     
-    //TODO (ne pas oublier de définir une taille pour les Jlist : elles peuvent être invisibles si elles sont vides)
     private void remplirModifSeance() throws SQLException{
         panneauModifSeance.removeAll();
         panneauModifSeance.setLayout(null); //On définit un absolute Layout
@@ -1205,7 +1229,7 @@ public class Fenetre extends JFrame implements ActionListener{
         modifChoixSalle = new JComboBox();
         modifBoutonEnregistrer = new JButton("Enregistrer");
         modifErrorField = new JLabel("");
-        modifAnnonceDebut = new JLabel("Modification de  la Séance "+seanceSelection.toString());
+        modifAnnonceDebut = new JLabel("",SwingConstants.CENTER);
         modifLabelDate = new JLabel("Date : ");
         modifLabelHeureDebut = new JLabel("Heure de début");
         modifLabelHeureFin = new JLabel("Heure de fin");
@@ -1235,6 +1259,11 @@ public class Fenetre extends JFrame implements ActionListener{
         //CHAMPS SEANCE       
         
         //Titre
+        if(seanceSelection.getId()!=0){
+            modifAnnonceDebut.setText("Modification de  la Séance "+seanceSelection.toString());
+        }else{
+            modifAnnonceDebut.setText("Création d'une nouvelle séance");
+        }
         modifAnnonceDebut.setBounds(largeur/2 - 350, hauteur/10 - 5, 700, 30);
         panneauModifSeance.add(modifAnnonceDebut);
         
