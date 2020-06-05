@@ -808,7 +808,7 @@ public class Fenetre extends JFrame implements ActionListener{
         for (int i = 1; i <= 52; ++i) {
             rechercheChoixSemaine.addItem(i);
         }
-        rechercheChoixSemaine.setBounds(largeur/2 - 250, hauteur/3 - 300, 50, 30);
+        rechercheChoixSemaine.setBounds(largeur/2 - 25, hauteur/3 - 125, 50, 30);
         panneauRecherche.add(rechercheChoixSemaine);
         
         //Site de la salle
@@ -844,7 +844,7 @@ public class Fenetre extends JFrame implements ActionListener{
         while (resultatFenetre.next()) {
             rechercheChoixPromotion.addItem(promotionDAO.find(resultatFenetre.getInt("ID")));
         }
-        rechercheChoixPromotion.setBounds(largeur/2 - 210, hauteur/2, 60, 25);
+        rechercheChoixPromotion.setBounds(largeur/2 + 290, hauteur/2 - 200, 60, 25);
         panneauRecherche.add(rechercheChoixPromotion);
 
         //Groupe de l'élève
@@ -853,7 +853,7 @@ public class Fenetre extends JFrame implements ActionListener{
         while (resultatFenetre.next()) {
             rechercheChoixGroupe.addItem(groupeDAO.find(resultatFenetre.getInt("ID")));
         }
-        rechercheChoixGroupe.setBounds(largeur/2 - 125, hauteur/2, 100, 25);
+        rechercheChoixGroupe.setBounds(largeur/2 + 375, hauteur/2 - 200, 100, 25);
         panneauRecherche.add(rechercheChoixGroupe);
 
         //Élève
@@ -862,18 +862,18 @@ public class Fenetre extends JFrame implements ActionListener{
         while (resultatFenetre.next()) {
             rechercheChoixEtudiant.addItem(etudiantDAO.find(resultatFenetre.getInt("ID_UTILISATEUR")));
         }
-        rechercheChoixEtudiant.setBounds(largeur/2, hauteur/2, 200, 25);
+        rechercheChoixEtudiant.setBounds(largeur/2 + 500, hauteur/2 - 200, 200, 25);
         panneauRecherche.add(rechercheChoixEtudiant);
 
         //Boutons de recherche
         panneauRecherche.add(boutonRechercherSalle);
-        boutonRechercherSalle.setBounds(largeur/2 - 600, hauteur/2 - 150, 175, 25);
+        boutonRechercherSalle.setBounds(largeur/2 - 575, hauteur/2 - 150, 175, 25);
         
         panneauRecherche.add(boutonRechercherEnseignant);
         boutonRechercherEnseignant.setBounds(largeur/2 - 100, hauteur/2 - 150, 200, 25);
         
         panneauRecherche.add(boutonRechercherEtudiant);
-        boutonRechercherEtudiant.setBounds(largeur/2 + 151, hauteur/2 - 150, 175, 25);
+        boutonRechercherEtudiant.setBounds(largeur/2 + 418, hauteur/2 - 150, 175, 25);
         
         //Ré-activation des ActionListeners
         rechercheChoixSite.addActionListener(this);
