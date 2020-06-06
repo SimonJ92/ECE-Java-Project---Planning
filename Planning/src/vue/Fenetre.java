@@ -61,6 +61,7 @@ public class Fenetre extends JFrame implements ActionListener {
     private JPanel panneauAccueil;
     private JPanel panneauLogin;
     private JPanel panneauEDTGrille;    //utilisé pour les emplois du temps des profs, élèves et salles
+    private JPanel panneauEDTListe;
     private JPanel panneauRecherche; // 3 recherches : Elève, Salle et Enseignant
     private JPanel panneauModifSeance;
     private JPanel panneauRecapCours;
@@ -68,6 +69,7 @@ public class Fenetre extends JFrame implements ActionListener {
     //couleurs du thème:
     Color vert1 = new Color(31, 160, 85);
     Color rouge1 = new Color(199, 44, 72);
+    Color bleu1 = new Color(135,206,250);   //lightskyblue
 
     //connexion utilisateur
     private Utilisateur connectedUser;
@@ -115,6 +117,13 @@ public class Fenetre extends JFrame implements ActionListener {
     private JLabel[] EDTGrilleLabelsHeures;    //15 label pour les heures
     private JPanel EDTGrillePanneauSemaines;
     private JLabel[] EDTGrilleLabelsJours;
+    
+    //Emploir de temps - Liste
+    private JComboBox EDTListeChoixTypeEDT;
+    private JScrollPane EDTListeEDTContainer;
+    private JPanel EDTListeEDT;
+    private ArrayList<JPanel> EDTListeListeCours;
+    private JPanel EDTListePanneauSemaines;
 
     //Recherche
     private JComboBox rechercheChoixSemaine;
@@ -173,9 +182,6 @@ public class Fenetre extends JFrame implements ActionListener {
     private JScrollPane modifAddGroupeSocket;
 
     //Récapitulatif des cours
-    //TODO
-    
-    //EDT liste
     //TODO
     
     
@@ -278,26 +284,7 @@ public class Fenetre extends JFrame implements ActionListener {
         } catch (SQLException e) {
             System.out.println(e.toString());
         }
-
-        //EMPLOI DU TEMPS GRILLE
-        try {
-            //possibilité de changer vers l'emploi du temps en format Liste
-            if (source == EDTGrilleChoixTypeEDT) {
-                switch ((String) EDTGrilleChoixTypeEDT.getSelectedItem()) {
-                    case "En grille":
-                        break;
-                    case "En liste":
-                        //remplir edt en liste
-                        //afficher en liste
-                        break;
-                    default:
-                        System.out.println("Erreur lors du choix de type d'emploi du temps");
-                }
-            }
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
-
+        
         //RECHERCHE
         try {
             //adaptation de la page à la modification du choix du site
@@ -446,6 +433,7 @@ public class Fenetre extends JFrame implements ActionListener {
         panneauAccueil = new JPanel();
         panneauLogin = new JPanel();
         panneauEDTGrille = new JPanel();
+        panneauEDTListe = new JPanel();
         panneauRecherche = new JPanel();
         panneauModifSeance = new JPanel();
         panneauRecapCours = new JPanel();
@@ -480,6 +468,7 @@ public class Fenetre extends JFrame implements ActionListener {
         global.add(panneauAccueil, "Accueil");
         global.add(panneauLogin, "Login");
         global.add(panneauEDTGrille, "EDTGrille");
+        global.add(panneauEDTListe, "EDTListe");
         global.add(panneauRecherche, "Recherche");
         global.add(panneauModifSeance, "ModifSeance");
         global.add(panneauRecapCours, "RecapCours");
@@ -861,7 +850,7 @@ public class Fenetre extends JFrame implements ActionListener {
         //On retire les éventuels ActionListeners
         EDTGrilleChoixTypeEDT.removeActionListener(this);
 
-        //ELEMENTS DE LA PAGE
+        //ÉLÉMENTS DE LA PAGE
         //Choix du type d'emploi du temps
         EDTGrilleChoixTypeEDT.removeAllItems();
         EDTGrilleChoixTypeEDT.addItem("En grille");
@@ -870,20 +859,20 @@ public class Fenetre extends JFrame implements ActionListener {
         EDTGrilleChoixTypeEDT.setBackground(Color.white);
         panneauEDTGrille.add(EDTGrilleChoixTypeEDT);
 
-        //Emploi du temps
+        //Semaines
         EDTGrillePanneauSemaines.setLayout(null);
         EDTGrillePanneauSemaines.setBounds(0, 200, largeur, 40);
         JButton tempWeekButton;
         for (int i = 31; i <= 52; ++i) {
             tempWeekButton = new JButton("<html>" + i + " </html>");
-            tempWeekButton.addActionListener(new SemaineEDT(i, typeEDT));
+            tempWeekButton.addActionListener(new SemaineEDT(i, typeEDT, "grille"));
             tempWeekButton.setBounds((i - 31) * (largeur / 52 + 1), 0, largeur / 52, 40);
             tempWeekButton.setMargin(new Insets(0, 0, 0, 0));
             EDTGrillePanneauSemaines.add(tempWeekButton);
         }
         for (int i = 1; i < 31; ++i) {
             tempWeekButton = new JButton("<html><center>" + i + " </center></html>");
-            tempWeekButton.addActionListener(new SemaineEDT(i, typeEDT));
+            tempWeekButton.addActionListener(new SemaineEDT(i, typeEDT, "grille"));
             tempWeekButton.setBounds((i + 21) * (largeur / 52 + 1), 0, largeur / 52, 40);
             tempWeekButton.setMargin(new Insets(0, 0, 0, 0));
             EDTGrillePanneauSemaines.add(tempWeekButton);
@@ -899,14 +888,6 @@ public class Fenetre extends JFrame implements ActionListener {
         Calendar tempCalendar = Calendar.getInstance();
         tempCalendar.set(Calendar.WEEK_OF_YEAR, selectedWeek);
         tempCalendar.set(Calendar.DAY_OF_WEEK, tempCalendar.getFirstDayOfWeek());
-
-        //Création des lables des jours pour l'EDT
-        for (int i = 0; i < 6; ++i) {
-            EDTGrilleLabelsJours[i] = new JLabel("" + tempCalendar.get(Calendar.DAY_OF_MONTH) + "/" + (tempCalendar.get(Calendar.MONTH) + 1));
-            EDTGrilleLabelsJours[i].setBounds(45 + (i + 1) * 109 + i * 109 - 20, 10, 40, 25); //On définit la position et la taille du label créé en début de ligne
-            tempCalendar.add(Calendar.DAY_OF_YEAR, 1);
-            EDTGrilleEDT.add(EDTGrilleLabelsJours[i]);
-        }
 
         //Création des labels des heures pour l'EDT
         (EDTGrilleLabelsHeures[0] = new JLabel("08h30")).setBounds(5, 22, 40, 25); //On définit la position et la taille du label créé en début de ligne
@@ -952,6 +933,21 @@ public class Fenetre extends JFrame implements ActionListener {
                 break;
             default:
                 System.out.println("Erreur de type d'emploi du temps");
+        }
+        
+        //Comme on va récupérer les cours par date, on va se positionner sur la bonne année
+        if(selectedWeek > 30){
+            tempCalendar.add(Calendar.YEAR, -1);
+            tempCalendar.set(Calendar.WEEK_OF_YEAR, selectedWeek);
+            tempCalendar.set(Calendar.DAY_OF_WEEK, tempCalendar.getFirstDayOfWeek());
+        }
+        
+         //Création des lables des jours pour l'EDT
+        for (int i = 0; i < 6; ++i) {
+            EDTGrilleLabelsJours[i] = new JLabel("" + tempCalendar.get(Calendar.DAY_OF_MONTH) + "/" + (tempCalendar.get(Calendar.MONTH) + 1));
+            EDTGrilleLabelsJours[i].setBounds(45 + (i + 1) * 109 + i * 109 - 20, 10, 40, 25); //On définit la position et la taille du label créé en début de ligne
+            tempCalendar.add(Calendar.DAY_OF_YEAR, 1);
+            EDTGrilleEDT.add(EDTGrilleLabelsJours[i]);
         }
 
         Seance tempSeance;
@@ -1014,7 +1010,7 @@ public class Fenetre extends JFrame implements ActionListener {
             tempCours.setHorizontalAlignment(SwingConstants.CENTER);
             tempCours.setFont(new Font("Sans Serif", Font.BOLD, 11));
             tempCours.setMargin(new Insets(0, 0, 0, 0));
-            tempCours.addActionListener(new CoursEDT(tempSeance, compte, typeEDT));
+            tempCours.addActionListener(new CoursEDT(tempSeance, compte, typeEDT, "grille"));
             EDTGrilleListeCours.add(tempCours);
             compte++;
         }
@@ -1024,7 +1020,245 @@ public class Fenetre extends JFrame implements ActionListener {
         panneauEDTGrille.add(EDTGrilleEDT);
 
         //Ré-activation des ActionListeners
-        EDTGrilleChoixTypeEDT.addActionListener(this);
+        EDTGrilleChoixTypeEDT.addActionListener(new ActionListener(){
+            
+            @Override
+            public void actionPerformed(ActionEvent e){
+                try {
+                    //possibilité de changer vers l'emploi du temps en format Liste
+                    switch ((String) EDTGrilleChoixTypeEDT.getSelectedItem()) {
+                        case "En grille":
+                            break;
+                        case "En liste":
+                            remplirEDTListe(typeEDT);
+                            cardLayout.show(global, "EDTListe");
+                            break;
+                        default:
+                            System.out.println("Erreur lors du choix de type d'emploi du temps");
+                    }
+                } catch (Exception ex) {
+                    System.out.println(ex.toString());
+                }
+            }
+        });
+    }
+    
+    private void remplirEDTListe(String typeEDT) throws SQLException{
+        panneauEDTListe.removeAll();
+        panneauEDTListe.setLayout(null);
+        addMenuBars(panneauEDTListe);
+        
+        //Initialisation des composants du panneau
+        EDTListeChoixTypeEDT = new JComboBox();
+        EDTListeEDTContainer = new JScrollPane();
+        EDTListeEDT = new JPanel();
+        EDTListeListeCours = new ArrayList<>();
+        EDTListePanneauSemaines = new JPanel();
+
+        //On retire les éventuels ActionListeners
+        EDTListeChoixTypeEDT.removeActionListener(this);
+        
+        //ÉLÉMENTS DE LA PAGE
+        //Choix du type d'emploi du temps
+        EDTListeChoixTypeEDT.removeAllItems();
+        EDTListeChoixTypeEDT.addItem("En grille");
+        EDTListeChoixTypeEDT.addItem("En liste");
+        EDTListeChoixTypeEDT.setSelectedItem("En liste");
+        EDTListeChoixTypeEDT.setBounds(20, 150, 100, 30);
+        EDTListeChoixTypeEDT.setBackground(Color.white);
+        panneauEDTListe.add(EDTListeChoixTypeEDT);
+        
+        //Semaines
+        EDTListePanneauSemaines.setLayout(null);
+        EDTListePanneauSemaines.setBounds(0, 200, largeur, 40);
+        JButton tempWeekButton;
+        for (int i = 31; i <= 52; ++i) {
+            tempWeekButton = new JButton("<html>" + i + " </html>");
+            tempWeekButton.addActionListener(new SemaineEDT(i, typeEDT, "liste"));
+            tempWeekButton.setBounds((i - 31) * (largeur / 52 + 1), 0, largeur / 52, 40);
+            tempWeekButton.setMargin(new Insets(0, 0, 0, 0));
+            EDTListePanneauSemaines.add(tempWeekButton);
+        }
+        for (int i = 1; i < 31; ++i) {
+            tempWeekButton = new JButton("<html><center>" + i + " </center></html>");
+            tempWeekButton.addActionListener(new SemaineEDT(i, typeEDT, "liste"));
+            tempWeekButton.setBounds((i + 21) * (largeur / 52 + 1), 0, largeur / 52, 40);
+            tempWeekButton.setMargin(new Insets(0, 0, 0, 0));
+            EDTListePanneauSemaines.add(tempWeekButton);
+        }
+        panneauEDTListe.add(EDTListePanneauSemaines);
+        
+        //On crée un objet Calendar, que l'on fixe sur le premier jour de la semaine souhaitée
+        Calendar tempCalendar = Calendar.getInstance();
+        tempCalendar.set(Calendar.WEEK_OF_YEAR, selectedWeek);
+        tempCalendar.set(Calendar.DAY_OF_WEEK, tempCalendar.getFirstDayOfWeek());
+        //System.out.println(tempCalendar.getTime());
+        
+        //Initialiser le panneau où l'on affiche les séances, en fonction du nombre de séancez et du nombre de jours avec séances
+        switch (typeEDT) {
+            case "etudiant":
+                resultatFenetre = statementFenetre.executeQuery("SELECT COUNT(id_seance) as nombreSeances, COUNT(DISTINCT date) as nbJoursRemplis "
+                        + "FROM seance_groupes JOIN seance ON id_seance = id "
+                        + "WHERE WEEK(date,3) = " + selectedWeek + " "
+                        + "AND YEAR(date) = " + ((selectedWeek < 31) ? (tempCalendar.get(Calendar.YEAR)) : (tempCalendar.get(Calendar.YEAR) - 1)) + " "
+                        + "AND id_groupe = (SELECT id_groupe FROM etudiant WHERE id_utilisateur = " + etudiantSelection.getId() + ")");
+                break;
+            case "enseignant":
+                resultatFenetre = statementFenetre.executeQuery("SELECT COUNT(id_seance) as nombreSeances, COUNT(DISTINCT date) as nbJoursRemplis "
+                        + "FROM seance_enseignants JOIN seance ON id_seance = id "
+                        + "WHERE WEEK(date,3) = " + selectedWeek + " "
+                        + "AND YEAR(date) = " + ((selectedWeek < 31) ? (tempCalendar.get(Calendar.YEAR)) : (tempCalendar.get(Calendar.YEAR) - 1)) + " "
+                        + "AND id_enseignant = " + enseignantSelection.getId());
+                break;
+            case "salle":
+                resultatFenetre = statementFenetre.executeQuery("SELECT COUNT(id_seance) as nombreSeances, COUNT(DISTINCT date) as nbJoursRemplis "
+                        + "FROM seance_salles JOIN seance ON id_seance = id "
+                        + "WHERE WEEK(date,3) = " + selectedWeek + " "
+                        + "AND YEAR(date) = " + ((selectedWeek < 31) ? (tempCalendar.get(Calendar.YEAR)) : (tempCalendar.get(Calendar.YEAR) - 1)) + " "
+                        + "AND id_salle = " + salleSelection.getId());
+                break;
+            default:
+                System.out.println("Erreur de type d'emploi du temps");
+        }
+        if(resultatFenetre.first()){
+            //Initialisation du sous-panneau qui contient l'EDT et qui est scrollable
+            EDTListeEDTContainer.setBounds(20, 250, 1000, (resultatFenetre.getInt("nbJoursRemplis"))*50 + (resultatFenetre.getInt("nombreSeances"))*40);
+            
+            //Initialisation du sous-panneau contenu
+            EDTListeEDT.setBounds(0, 0, 1000, (resultatFenetre.getInt("nbJoursRemplis"))*50 + (resultatFenetre.getInt("nombreSeances"))*40);
+            EDTListeEDT.setLayout(null);
+        }
+        EDTListeEDT.setBackground(Color.WHITE);
+        
+        //Comme on va récupérer les cours par date, on va se positionner sur la bonne année
+        if(selectedWeek > 30){
+            tempCalendar.add(Calendar.YEAR, -1);
+            tempCalendar.set(Calendar.WEEK_OF_YEAR, selectedWeek);
+            tempCalendar.set(Calendar.DAY_OF_WEEK, tempCalendar.getFirstDayOfWeek());
+        }
+        
+        
+        int compte = 5;  //suivi du nombre de pixels parcourus à la verticale
+        JPanel tempPanel;
+        JLabel tempLabelJour;
+        JLabel tempLabel[] = new JLabel[7]; //7 labels temporaires pour les détails du cour
+        Seance tempSeance;
+        EDTListeListeCours.clear();
+        
+        //Remplir la liste des cours
+        for(int i=0;i<5;++i){
+            //récupération des séances du jour
+            System.out.println("SELECT id_seance FROM seance_salles JOIN seance ON id_seance = id "
+                            + "WHERE date = '"+new java.sql.Date(tempCalendar.getTimeInMillis())+"' "
+                            + "AND id_salle = " + salleSelection.getId()+" ORDER BY heure_debut ASC");
+            switch (typeEDT) {
+                case "etudiant":
+                    resultatFenetre = statementFenetre.executeQuery("SELECT id_seance FROM seance_groupes JOIN seance ON id_seance = id "
+                            + "WHERE date = '"+new java.sql.Date(tempCalendar.getTimeInMillis())+"' "
+                            + "AND id_groupe = (SELECT id_groupe FROM etudiant WHERE id_utilisateur = " + etudiantSelection.getId() + ") ORDER BY heure_debut ASC");
+                    break;
+                case "enseignant":
+                    resultatFenetre = statementFenetre.executeQuery("SELECT id_seance FROM seance_enseignants JOIN seance ON id_seance = id "
+                            + "WHERE date = '"+new java.sql.Date(tempCalendar.getTimeInMillis())+"' "
+                            + "AND id_enseignant = " + enseignantSelection.getId()+" ORDER BY heure_debut ASC");
+                    break;
+                case "salle":
+                    resultatFenetre = statementFenetre.executeQuery("SELECT id_seance FROM seance_salles JOIN seance ON id_seance = id "
+                            + "WHERE date = '"+new java.sql.Date(tempCalendar.getTimeInMillis())+"' "
+                            + "AND id_salle = " + salleSelection.getId()+" ORDER BY heure_debut ASC");
+                    break;
+                default:
+                    System.out.println("Erreur de type d'emploi du temps");
+            }
+            if(resultatFenetre.isBeforeFirst()){    //On ne crée des éléments que s'il y a au moins 1 séance pour le jour
+                //On affiche le nom du jour en premier
+                tempPanel = new JPanel();
+                tempPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+                tempPanel.setLayout(null);
+                tempPanel.removeAll();
+                tempPanel.setBounds(5, compte, 975, 30);
+                compte += 30;
+                tempPanel.setBackground(bleu1);
+                
+                tempLabelJour = new JLabel("",SwingConstants.LEFT);
+                tempLabelJour.setBounds(5, 3, 500, 25);
+                tempLabelJour.setText("<html><b>"+parseDayOfTheWeek(tempCalendar.get(Calendar.DAY_OF_WEEK))
+                        +" "+tempCalendar.get(Calendar.DAY_OF_MONTH)
+                        +" "+parseMonth(tempCalendar.get(Calendar.MONTH))
+                        +" "+tempCalendar.get(Calendar.YEAR)
+                        +"</b></html>");
+                tempPanel.add(tempLabelJour);
+                
+                EDTListeEDT.add(tempPanel);
+                while(resultatFenetre.next()){
+                    tempSeance = seanceDAO.find(resultatFenetre.getInt("ID_SEANCE"));
+                    
+                    //onn affiche chaque séance du jour
+                    tempPanel = new JPanel();
+                    tempPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+                    tempPanel.setLayout(null);
+                    tempPanel.removeAll();
+                    tempPanel.setBounds(5, compte, 975, 30);
+                    compte += 30;
+                    tempPanel.setBackground(Color.LIGHT_GRAY);
+                    
+                    //heure
+                    tempLabel[0]= new JLabel("");
+                    tempLabel[0].setText(tempSeance.getHeureDebut()+" - "+tempSeance.getHeureFin());
+                    tempLabel[0].setBounds(2, 3, 120, 25);
+                    tempPanel.add(tempLabel[0]);
+                    
+                    //Nom du cours
+                    tempLabel[1]= new JLabel("");
+                    tempLabel[1].setText(tempSeance.getCours().getNom());
+                    tempLabel[1].setBounds(122, 3, 120, 25);
+                    tempPanel.add(tempLabel[1]);
+                    
+                    //***
+
+                    //addMouse listener
+                    EDTListeListeCours.add(tempPanel);
+                }
+                compte += 5;
+            }
+            
+            //on pass au jour suivant
+            tempCalendar.add(Calendar.DAY_OF_YEAR, 1);
+        }
+        
+        for(JPanel Element : EDTListeListeCours){
+            EDTListeEDT.add(Element);
+        }
+        
+        
+        
+        
+        
+        EDTListeEDTContainer.setViewportView(EDTListeEDT);
+        panneauEDTListe.add(EDTListeEDTContainer);
+        
+        //Ré-activation des ActionListeners
+        EDTListeChoixTypeEDT.addActionListener(new ActionListener(){
+            
+            @Override
+            public void actionPerformed(ActionEvent e){
+                try {
+                    //possibilité de changer vers l'emploi du temps en format Liste
+                    switch ((String) EDTListeChoixTypeEDT.getSelectedItem()) {
+                        case "En grille":
+                            remplirEDTGrille(typeEDT);
+                            cardLayout.show(global, "EDTGrille");
+                            break;
+                        case "En liste":
+                            break;
+                        default:
+                            System.out.println("Erreur lors du choix de type d'emploi du temps");
+                    }
+                } catch (Exception ex) {
+                    System.out.println(ex.toString());
+                }
+            }
+        });
     }
 
     private void remplirRecherche() throws SQLException {
@@ -1761,26 +1995,97 @@ public class Fenetre extends JFrame implements ActionListener {
         
         
     }
+    
+    //Retourne le nom français du jour de la semaine en fonction d'une valeur DAY_OF_THE_WEEK d'un objet calendar
+    private String parseDayOfTheWeek(int dayNumber){
+        switch(dayNumber){
+            case 1:
+                return "dimanche";
+            case 2:
+                return "lundi";
+            case 3:
+                return "mardi";
+            case 4:
+                return "mercredi";
+            case 5:
+                return "jeudi";
+            case 6:
+                return "vendredi";
+            case 7:
+                return "samedi";
+            default:
+                return "";
+        }
+    }
+    
+    //Retourne le nom français du mois de l'année en fonction d'une valeur MONTH d'un objet calendar
+    private String parseMonth(int monthNumber){
+        switch(monthNumber){
+            case 0:
+                return "janvier";
+            case 1:
+                return "février";
+            case 2:
+                return "mars";
+            case 3:
+                return "avril";
+            case 4:
+                return "mai";
+            case 5:
+                return "juin";
+            case 6:
+                return "juillet";
+            case 7:
+                return "août";
+            case 8:
+                return "septembre";
+            case 9:
+                return "octobre";
+            case 10:
+                return "novembre";
+            case 11:
+                return "décembre";
+            default:
+                return "";
+        }
+    }
 
     class SemaineEDT implements ActionListener {
 
         private final int numSemaine;
         private final String typeEDT;
+        private final String formeEDT;
 
-        public SemaineEDT(int numSemaine, String typeEDT) {
+        public SemaineEDT(int numSemaine, String typeEDT, String formeEDT) {
             this.numSemaine = numSemaine;
             this.typeEDT = typeEDT;
+            this.formeEDT = formeEDT;
         }
 
         @Override
         public void actionPerformed(ActionEvent ae) {
             selectedWeek = numSemaine;
             try {
-                global.remove(panneauEDTGrille);
-                panneauEDTGrille = new JPanel();
-                remplirEDTGrille(typeEDT);
-                global.add(panneauEDTGrille, "EDTGrille");
-                cardLayout.show(global, "EDTGrille");
+                switch(formeEDT){
+                    case "grille":
+                        global.remove(panneauEDTGrille);
+                        panneauEDTGrille = new JPanel();
+                        remplirEDTGrille(typeEDT);
+                        global.add(panneauEDTGrille, "EDTGrille");
+                        cardLayout.show(global, "EDTGrille");
+                        break;
+                    case "liste":
+                        global.remove(panneauEDTListe);
+                        panneauEDTListe = new JPanel();
+                        remplirEDTListe(typeEDT);
+                        global.add(panneauEDTListe, "EDTListe");
+                        cardLayout.show(global, "EDTListe");
+                        break;
+                    default:
+                        System.out.println("Erreur lors du renseignement de la forme d'EDT pour une semaine");
+                        break;
+                }
+                
             } catch (SQLException ex) {
                 System.out.println(ex.toString());
             }
@@ -1792,22 +2097,24 @@ public class Fenetre extends JFrame implements ActionListener {
         private final Seance seance;
         private final int numeroBoutonCours;    //pour centrer la fenêtre de dialogue sur le bouton cliqué
         private final String typeEDT;
+        private final String formeEDT;
 
-        public CoursEDT(Seance seance, int numeroBoutonCours, String typeEDT) {
+        public CoursEDT(Seance seance, int numeroBoutonCours, String typeEDT, String formeEDT) {
             this.seance = seance;
             this.numeroBoutonCours = numeroBoutonCours;
             this.typeEDT = typeEDT;
+            this.formeEDT = formeEDT;
         }
 
         @Override
         public void actionPerformed(ActionEvent ev) {
             if (ev != null) {
-                dialogueCoursEDT(seance, numeroBoutonCours, typeEDT);
+                dialogueCoursEDT(seance, numeroBoutonCours, typeEDT, formeEDT);
             }
         }
     }
 
-    private void dialogueCoursEDT(Seance seance, int numeroBoutonCours, String typeEDT) {
+    private void dialogueCoursEDT(Seance seance, int numeroBoutonCours, String typeEDT, String formeEDT) {
         JDialog fenetreDialogue = new JDialog(this);
         fenetreDialogue.setLayout(null);
         int largeurDialogue = 500;
@@ -1944,7 +2251,17 @@ public class Fenetre extends JFrame implements ActionListener {
             System.out.println(e.toString());
         }
 
-        fenetreDialogue.setLocationRelativeTo(EDTGrilleListeCours.get(numeroBoutonCours)); //Remplacer par un élément d'une arraylist de boutons
+        switch(formeEDT){
+            case "grille":
+                fenetreDialogue.setLocationRelativeTo(EDTGrilleListeCours.get(numeroBoutonCours));
+                break;
+            case "liste":
+                fenetreDialogue.setLocationRelativeTo(EDTListeListeCours.get(numeroBoutonCours));
+                break;
+            default:
+                System.out.println("Erreur lors du renseignement de la forme de l'EDT pour un cours");
+        }
+        
         fenetreDialogue.setVisible(true);
     }
 }
