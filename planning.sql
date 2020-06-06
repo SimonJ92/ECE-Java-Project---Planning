@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 05, 2020 at 05:35 PM
+-- Generation Time: Jun 06, 2020 at 12:42 AM
 -- Server version: 8.0.18
 -- PHP Version: 7.3.12
 
@@ -32,7 +32,8 @@ DROP TABLE IF EXISTS `cours`;
 CREATE TABLE IF NOT EXISTS `cours` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NOM` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `NOM` (`NOM`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -41,11 +42,11 @@ CREATE TABLE IF NOT EXISTS `cours` (
 
 INSERT INTO `cours` (`ID`, `NOM`) VALUES
 (1, 'Electromagnetisme'),
-(2, 'POO Java'),
-(3, 'Robotique'),
+(6, 'Electronique'),
 (4, 'Optique'),
+(2, 'POO Java'),
 (5, 'Programmation C++'),
-(6, 'Electronique');
+(3, 'Robotique');
 
 -- --------------------------------------------------------
 
@@ -85,6 +86,7 @@ CREATE TABLE IF NOT EXISTS `etudiant` (
   `NUMERO` int(11) NOT NULL,
   `ID_GROUPE` int(11) NOT NULL,
   PRIMARY KEY (`ID_UTILISATEUR`),
+  UNIQUE KEY `NUMERO` (`NUMERO`),
   KEY `ID_GROUPE` (`ID_GROUPE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -118,8 +120,9 @@ CREATE TABLE IF NOT EXISTS `groupe` (
   `NOM` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `IDPROMOTION` int(11) NOT NULL,
   PRIMARY KEY (`ID`),
+  UNIQUE KEY `NOM` (`NOM`,`IDPROMOTION`),
   KEY `IDPROMOTION` (`IDPROMOTION`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `groupe`
@@ -143,7 +146,8 @@ DROP TABLE IF EXISTS `promotion`;
 CREATE TABLE IF NOT EXISTS `promotion` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NOM` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `NOM` (`NOM`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -168,6 +172,7 @@ CREATE TABLE IF NOT EXISTS `salle` (
   `CAPACITE` int(11) NOT NULL,
   `ID_SITE` int(11) NOT NULL,
   PRIMARY KEY (`ID`),
+  UNIQUE KEY `NOM` (`NOM`,`ID_SITE`),
   KEY `ID_SITE` (`ID_SITE`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -202,7 +207,7 @@ CREATE TABLE IF NOT EXISTS `seance` (
   PRIMARY KEY (`ID`),
   KEY `ID_COURS` (`ID_COURS`),
   KEY `ID_TYPE` (`ID_TYPE`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `seance`
@@ -210,12 +215,12 @@ CREATE TABLE IF NOT EXISTS `seance` (
 
 INSERT INTO `seance` (`ID`, `SEMAINE`, `DATE`, `HEURE_DEBUT`, `HEURE_FIN`, `ETAT`, `ID_COURS`, `ID_TYPE`) VALUES
 (1, 23, '2020-06-04', '08:30:00', '10:00:00', 3, 1, 2),
-(10, 23, '2020-06-05', '10:15:00', '11:45:00', 1, 6, 7),
+(10, 23, '2020-06-05', '10:15:00', '11:45:00', 2, 6, 7),
 (13, 53, '2020-06-03', '08:30:00', '10:00:00', 1, 5, 1),
 (14, 23, '2020-06-04', '12:00:00', '13:45:00', 2, 4, 2),
 (15, 53, '2019-01-01', '08:38:00', '08:38:00', 1, 1, 5),
 (16, 53, '2019-10-01', '08:39:00', '11:39:00', 1, 1, 1),
-(17, 53, '2010-01-01', '08:39:00', '11:00:00', 1, 1, 3);
+(17, 53, '2019-10-04', '08:30:00', '11:45:00', 1, 6, 3);
 
 -- --------------------------------------------------------
 
@@ -237,9 +242,9 @@ CREATE TABLE IF NOT EXISTS `seance_enseignants` (
 
 INSERT INTO `seance_enseignants` (`ID_SEANCE`, `ID_ENSEIGNANT`) VALUES
 (10, 1),
+(17, 1),
 (14, 2),
-(15, 2),
-(17, 2);
+(15, 2);
 
 -- --------------------------------------------------------
 
@@ -308,7 +313,8 @@ DROP TABLE IF EXISTS `site`;
 CREATE TABLE IF NOT EXISTS `site` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NOM` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `NOM` (`NOM`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -331,7 +337,8 @@ DROP TABLE IF EXISTS `type_cours`;
 CREATE TABLE IF NOT EXISTS `type_cours` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NOM` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `NOM` (`NOM`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -341,11 +348,11 @@ CREATE TABLE IF NOT EXISTS `type_cours` (
 INSERT INTO `type_cours` (`ID`, `NOM`) VALUES
 (1, 'Cours interactif'),
 (2, 'Cours magistral'),
-(3, 'TP'),
-(4, 'TD'),
+(7, 'Devoir sur table'),
 (5, 'Soutenance de projet'),
 (6, 'Soutien'),
-(7, 'Devoir sur table');
+(4, 'TD'),
+(3, 'TP');
 
 -- --------------------------------------------------------
 
@@ -361,7 +368,8 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
   `NOM` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `PRENOM` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `DROIT` tinyint(1) UNSIGNED NOT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `EMAIL` (`EMAIL`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
