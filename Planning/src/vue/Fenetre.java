@@ -1139,18 +1139,17 @@ public class Fenetre extends JFrame implements ActionListener {
         
         
         int compte = 5;  //suivi du nombre de pixels parcourus à la verticale
+        int compteCours = 0;
         JPanel tempPanel;
         JLabel tempLabelJour;
         JLabel tempLabel[] = new JLabel[7]; //7 labels temporaires pour les détails du cour
         Seance tempSeance;
+        String tempContenu;
         EDTListeListeCours.clear();
         
         //Remplir la liste des cours
         for(int i=0;i<5;++i){
             //récupération des séances du jour
-            System.out.println("SELECT id_seance FROM seance_salles JOIN seance ON id_seance = id "
-                            + "WHERE date = '"+new java.sql.Date(tempCalendar.getTimeInMillis())+"' "
-                            + "AND id_salle = " + salleSelection.getId()+" ORDER BY heure_debut ASC");
             switch (typeEDT) {
                 case "etudiant":
                     resultatFenetre = statementFenetre.executeQuery("SELECT id_seance FROM seance_groupes JOIN seance ON id_seance = id "
@@ -1198,26 +1197,87 @@ public class Fenetre extends JFrame implements ActionListener {
                     tempPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
                     tempPanel.setLayout(null);
                     tempPanel.removeAll();
-                    tempPanel.setBounds(5, compte, 975, 30);
-                    compte += 30;
+                    tempPanel.setBounds(5, compte, 975, 35);
+                    compte += 35;
                     tempPanel.setBackground(Color.LIGHT_GRAY);
                     
                     //heure
                     tempLabel[0]= new JLabel("");
                     tempLabel[0].setText(tempSeance.getHeureDebut()+" - "+tempSeance.getHeureFin());
-                    tempLabel[0].setBounds(2, 3, 120, 25);
+                    tempLabel[0].setBounds(2, 3, 138, 30);
                     tempPanel.add(tempLabel[0]);
                     
                     //Nom du cours
                     tempLabel[1]= new JLabel("");
                     tempLabel[1].setText(tempSeance.getCours().getNom());
-                    tempLabel[1].setBounds(122, 3, 120, 25);
+                    tempLabel[1].setBounds(140, 3, 140, 30);
                     tempPanel.add(tempLabel[1]);
                     
-                    //***
+                    //Profs
+                    tempLabel[2]= new JLabel("");
+                    tempContenu = "<html>";
+                    resultatEvent = statementEvent.executeQuery("SELECT nom FROM utilisateur JOIN seance_enseignants ON id = id_enseignant "
+                            + "WHERE id_seance = " + tempSeance.getId());
+                    while (resultatEvent.next()) {
+                        tempContenu += resultatEvent.getString("NOM") + "<br>";
+                    }
+                    tempContenu += "</html>";
+                    tempLabel[2].setText(tempContenu);
+                    tempLabel[2].setBounds(280, 3, 100, 30);
+                    tempPanel.add(tempLabel[2]);
+                    
+                    //Groupes
+                    tempLabel[3]= new JLabel("");
+                    tempContenu = "<html>";
+                     resultatEvent = statementEvent.executeQuery("SELECT id_groupe FROM seance_groupes WHERE id_seance = " + tempSeance.getId());
+                    while (resultatEvent.next()) {
+                        tempContenu += groupeDAO.find(resultatEvent.getInt("ID_GROUPE")).getNom() + " (promo. "+groupeDAO.find(resultatEvent.getInt("ID_GROUPE")).getPromotion().getNom()+")<br>";
+                    }
+                    tempContenu += "</html>";
+                    tempLabel[3].setText(tempContenu);
+                    tempLabel[3].setBounds(380, 3, 140, 30);
+                    tempPanel.add(tempLabel[3]);
+                    
+                    //Salles
+                    tempLabel[4]= new JLabel("");
+                    tempContenu = "<html>";
+                     resultatEvent = statementEvent.executeQuery("SELECT id_salle FROM seance_salles WHERE id_seance = " + tempSeance.getId());
+                    while (resultatEvent.next()) {
+                        tempContenu += salleDAO.find(resultatEvent.getInt("ID_SALLE")).getNom() + " ("+salleDAO.find(resultatEvent.getInt("ID_SALLE")).getSite().getNom()+")<br>";
+                    }
+                    tempContenu += "</html>";
+                    tempLabel[4].setText(tempContenu);
+                    tempLabel[4].setBounds(520, 3, 150, 30);
+                    tempPanel.add(tempLabel[4]);
+                    
+                    //Type cours
+                    tempLabel[5]= new JLabel("");
+                    tempLabel[5].setText(tempSeance.getTypeCours().getNom());
+                    tempLabel[5].setBounds(670, 3, 130, 30);
+                    tempPanel.add(tempLabel[5]);
+                    
+                    //Etat cours
+                    tempLabel[6]= new JLabel("");
+                    tempContenu = "";
+                    switch (tempSeance.getEtat()) {
+                        case 1:
+                            tempContenu += "En cours de validation";
+                            break;
+                        case 2:
+                            tempContenu += "Validé";
+                            break;
+                        case 3:
+                            tempContenu += "Annulé";
+                            break;
+                    }
+                    tempLabel[6].setText(tempContenu);
+                    tempLabel[6].setBounds(800, 3, 160, 30);
+                    tempPanel.add(tempLabel[6]);
 
-                    //addMouse listener
+                    tempPanel.addMouseListener(new CoursEDTListe(tempSeance, compteCours, typeEDT, "liste"));
+                    
                     EDTListeListeCours.add(tempPanel);
+                    compteCours++;
                 }
                 compte += 5;
             }
@@ -2111,6 +2171,38 @@ public class Fenetre extends JFrame implements ActionListener {
             if (ev != null) {
                 dialogueCoursEDT(seance, numeroBoutonCours, typeEDT, formeEDT);
             }
+        }
+    }
+    
+    class CoursEDTListe extends MouseAdapter{
+        
+        private final Seance seance;
+        private final int numeroPanneauCours;    //pour centrer la fenêtre de dialogue sur le bouton cliqué
+        private final String typeEDT;
+        private final String formeEDT;
+        
+        public CoursEDTListe(Seance seance, int numeroPanneauCours, String typeEDT, String formeEDT){
+            this.seance = seance;
+            this.numeroPanneauCours = numeroPanneauCours;
+            this.typeEDT = typeEDT;
+            this.formeEDT = formeEDT;
+        }
+        
+        @Override
+        public void mouseClicked(MouseEvent ev){
+            if (ev != null) {
+                dialogueCoursEDT(seance, numeroPanneauCours, typeEDT, formeEDT);
+            }
+        }
+        
+        @Override
+        public void mouseEntered(MouseEvent ev) {
+            EDTListeListeCours.get(numeroPanneauCours).setCursor(new Cursor(Cursor.HAND_CURSOR));
+        }
+
+        @Override
+        public void mouseExited(MouseEvent ev) {
+            EDTListeListeCours.get(numeroPanneauCours).setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
     }
 
