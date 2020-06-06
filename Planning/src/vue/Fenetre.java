@@ -182,7 +182,9 @@ public class Fenetre extends JFrame implements ActionListener {
     private JScrollPane modifAddGroupeSocket;
 
     //Récapitulatif des cours
-    //TODO
+    private JScrollPane recapListeCoursContainer;
+    private JPanel recapListeCours;
+    private JLabel recapTitre;
     
     
     //Constructeur à appeler pour démarrer l'appli
@@ -247,7 +249,6 @@ public class Fenetre extends JFrame implements ActionListener {
                 }
             } //amène l'utilisateur vers le récapitulatif de ses cours
             else if (source == barreNav2BoutonRecap) {
-                //TODO
                 remplirRecapCours();
                 cardLayout.show(global, "RecapCours");
             } //amène l'utilisateur vers le panneau de recherche
@@ -2043,17 +2044,46 @@ public class Fenetre extends JFrame implements ActionListener {
         addMenuBars(panneauRecapCours);
 
         //Initialisation des composants du panneau
-        
+        recapListeCoursContainer = new JScrollPane();
+        recapListeCours = new JPanel();
+        recapTitre = new JLabel("",SwingConstants.CENTER);
         
         //On retire les éventuels ActionListeners
-        
+        //...
         
         //ELEMENTS DE LA PAGE
+        Calendar tempCalendar = Calendar.getInstance();
+        String tempTitre = "Récapitulatif des cours entre le lundi ";
+        if(tempCalendar.get(Calendar.WEEK_OF_YEAR) < 31){   //si on est dans la deuxième partie de l'année
+            tempCalendar.add(Calendar.YEAR, -1);    //on se place à la première semaine  de cours de l'année précédente
+            tempCalendar.set(Calendar.WEEK_OF_YEAR, 31);
+            tempCalendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+            tempTitre+= tempCalendar.get(Calendar.DAY_OF_MONTH)+" "+parseMonth(tempCalendar.get(Calendar.MONTH))+" "+tempCalendar.get(Calendar.YEAR)+" et le samedi ";
+            
+            tempCalendar.add(Calendar.YEAR, 1);    //on se place à la dernière semaine de cours de l'année actuelle
+            tempCalendar.set(Calendar.WEEK_OF_YEAR, 30);
+            tempCalendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+            tempTitre+= tempCalendar.get(Calendar.DAY_OF_MONTH)+" "+parseMonth(tempCalendar.get(Calendar.MONTH))+" "+tempCalendar.get(Calendar.YEAR);
+        }else{  //on est dans le première partie de l'année   
+            tempCalendar.set(Calendar.WEEK_OF_YEAR, 31);//on se place à la première semaine  de cours de l'année actuelle
+            tempCalendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+            tempTitre+= tempCalendar.get(Calendar.DAY_OF_MONTH)+" "+parseMonth(tempCalendar.get(Calendar.MONTH))+" "+tempCalendar.get(Calendar.YEAR)+" et le samedi ";
+            
+            tempCalendar.add(Calendar.YEAR, 1);    //on se place à la dernière semaine de cours de l'année suivante
+            tempCalendar.set(Calendar.WEEK_OF_YEAR, 30);
+            tempCalendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+            tempTitre+= tempCalendar.get(Calendar.DAY_OF_MONTH)+" "+parseMonth(tempCalendar.get(Calendar.MONTH))+" "+tempCalendar.get(Calendar.YEAR);
+        }
+        
+        
+        recapTitre.setBounds(largeur/2-700, 150, 1400, 40);
+        recapTitre.setFont(new Font("Sans Serif", Font.BOLD, 20));
+        recapTitre.setText(tempTitre);
+        panneauRecapCours.add(recapTitre);
         
         
         //Ré-activation des ActionListeners
-        
-        
+        //...
     }
     
     //Retourne le nom français du jour de la semaine en fonction d'une valeur DAY_OF_THE_WEEK d'un objet calendar
