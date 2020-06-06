@@ -1043,7 +1043,7 @@ public class Fenetre extends JFrame implements ActionListener {
         boutonRechercherSalle = new JButton("Rechercher une salle");
         boutonRechercherEnseignant = new JButton("Rechercher un enseignant");
         boutonRechercherEtudiant = new JButton("Rechercher un etudiant");
-        rechercheTitre = new JLabel("Recherche spécifique");
+        rechercheTitre = new JLabel("Recherche spécifique",SwingConstants.CENTER);
         rechercheLabelSemaine = new JLabel("Semaine :");
         rechercheLabelSalle = new JLabel("Salle :");
         rechercheLabelEnseignant = new JLabel("Enseignant :");
@@ -1059,7 +1059,7 @@ public class Fenetre extends JFrame implements ActionListener {
 
         //Titre de la page
         rechercheTitre.setFont(new Font("Sans Serif", Font.ITALIC, 30));
-        rechercheTitre.setBounds(largeur / 2 - 145, hauteur / 7, 295, 30);
+        rechercheTitre.setBounds(largeur / 2 - 350, hauteur / 7, 700, 30);
         panneauRecherche.add(rechercheTitre);
 
         //Semaine
@@ -1225,7 +1225,7 @@ public class Fenetre extends JFrame implements ActionListener {
         } else {
             modifAnnonceDebut.setText("Création d'une nouvelle séance");
         }
-        modifAnnonceDebut.setBounds(largeur / 2 - 350, hauteur / 10 - 5, 700, 30);
+        modifAnnonceDebut.setBounds(largeur / 2 - 450, hauteur / 10 - 5, 900, 30);
         panneauModifSeance.add(modifAnnonceDebut);
 
         //Année
