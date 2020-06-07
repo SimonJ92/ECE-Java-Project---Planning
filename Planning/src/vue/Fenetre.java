@@ -17,6 +17,9 @@ import java.text.ParseException;
 import javax.swing.*;
 import java.util.*;
 import javax.imageio.ImageIO;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -185,7 +188,9 @@ public class Fenetre extends JFrame implements ActionListener {
     private JScrollPane recapListeCoursContainer;
     private JPanel recapListeCours;
     private JLabel recapTitre;
-    
+    private JTable recapTable;
+    private ArrayList<LigneRecap> recapDonneesTable;
+    private JLabel recapTotalHeures;
     
     //Constructeur à appeler pour démarrer l'appli
     public Fenetre(Connexion myConnexion) {
@@ -1123,10 +1128,13 @@ public class Fenetre extends JFrame implements ActionListener {
         }
         if(resultatFenetre.first()){
             //Initialisation du sous-panneau qui contient l'EDT et qui est scrollable
-            EDTListeEDTContainer.setBounds(20, 250, 1000, (resultatFenetre.getInt("nbJoursRemplis"))*50 + (resultatFenetre.getInt("nombreSeances"))*40);
+            if((resultatFenetre.getInt("nbJoursRemplis"))*50 + (resultatFenetre.getInt("nombreSeances"))*40 < 700){
+                EDTListeEDTContainer.setBounds(20, 250, 1000, (resultatFenetre.getInt("nbJoursRemplis"))*50 + (resultatFenetre.getInt("nombreSeances"))*40);
+            }else{
+                EDTListeEDTContainer.setBounds(20, 250, 1000, 700);
+            }
             
             //Initialisation du sous-panneau contenu
-            EDTListeEDT.setBounds(0, 0, 1000, (resultatFenetre.getInt("nbJoursRemplis"))*50 + (resultatFenetre.getInt("nombreSeances"))*40);
             EDTListeEDT.setLayout(null);
         }
         EDTListeEDT.setBackground(Color.WHITE);
@@ -1283,17 +1291,13 @@ public class Fenetre extends JFrame implements ActionListener {
                 compte += 5;
             }
             
-            //on pass au jour suivant
+            //on passe au jour suivant
             tempCalendar.add(Calendar.DAY_OF_YEAR, 1);
         }
         
         for(JPanel Element : EDTListeListeCours){
             EDTListeEDT.add(Element);
         }
-        
-        
-        
-        
         
         EDTListeEDTContainer.setViewportView(EDTListeEDT);
         panneauEDTListe.add(EDTListeEDTContainer);
@@ -2038,7 +2042,7 @@ public class Fenetre extends JFrame implements ActionListener {
     }
 
     //TODO
-    private void remplirRecapCours() {
+    private void remplirRecapCours() throws SQLException {
         panneauRecapCours.removeAll();
         panneauRecapCours.setLayout(null);
         addMenuBars(panneauRecapCours);
@@ -2047,11 +2051,13 @@ public class Fenetre extends JFrame implements ActionListener {
         recapListeCoursContainer = new JScrollPane();
         recapListeCours = new JPanel();
         recapTitre = new JLabel("",SwingConstants.CENTER);
-        
-        //On retire les éventuels ActionListeners
-        //...
+        recapTable = new JTable();
+        recapDonneesTable = new ArrayList<>();
+        recapTotalHeures = new JLabel("Total : ",SwingConstants.CENTER);
         
         //ELEMENTS DE LA PAGE
+        
+        //Titre
         Calendar tempCalendar = Calendar.getInstance();
         String tempTitre = "Récapitulatif des cours entre le lundi ";
         if(tempCalendar.get(Calendar.WEEK_OF_YEAR) < 31){   //si on est dans la deuxième partie de l'année
@@ -2081,9 +2087,186 @@ public class Fenetre extends JFrame implements ActionListener {
         recapTitre.setText(tempTitre);
         panneauRecapCours.add(recapTitre);
         
+        //Récapitulatifs des cours
+        if(connectedUser.getDroit() == 3){  //connecté en tant que prof
+            resultatFenetre = statementFenetre.executeQuery("SELECT COUNT(DISTINCT id_cours) as nbCours FROM seance JOIN seance_enseignants ON id = id_seance "
+                                                          + "WHERE id_enseignant = "+connectedUser.getId());
+        }else{  //connecté en tant qu'étudiant
+            resultatFenetre = statementFenetre.executeQuery("SELECT COUNT(DISTINCT id_cours) as nbCours FROM seance JOIN seance_groupes ON id = id_seance "
+                                                          + "WHERE id_groupe = (SELECT id_groupe FROM etudiant WHERE id_utilisateur = "+connectedUser.getId()+")");
+        }
+        if(resultatFenetre.first()){
+            if((resultatFenetre.getInt("nbCours")+2)*30 < 700){
+                recapListeCoursContainer.setBounds(largeur/2 - 500, 250, 1000, (resultatFenetre.getInt("nbCours"))*30 + 23);
+            }else{
+                recapListeCoursContainer.setBounds(largeur/2 - 500, 250, 1000, 700);
+            }
+        }
+        recapListeCours.setBackground(Color.WHITE);
         
-        //Ré-activation des ActionListeners
-        //...
+        String colonnesTable[] = {"Matières","Première séance","Dernière séance", "Durée", "N."};
+        DefaultTableModel tableModel = new DefaultTableModel(colonnesTable, 0);
+        
+        LigneRecap tempLigne;
+        String tempMatiere,tempPremiereSeance,tempDerniereSeance,tempDuree,tempNombre;
+        
+        if(connectedUser.getDroit() == 3){  //connecté en tant que prof
+            resultatFenetre = statementFenetre.executeQuery("SELECT DISTINCT id_cours FROM seance JOIN seance_enseignants ON id = id_seance "
+                                                          + "WHERE id_enseignant = "+connectedUser.getId());
+        }else{  //connecté en tant qu'étudiant
+            resultatFenetre = statementFenetre.executeQuery("SELECT DISTINCT id_cours FROM seance JOIN seance_groupes ON id = id_seance "
+                                                          + "WHERE id_groupe = (SELECT id_groupe FROM etudiant WHERE id_utilisateur = "+connectedUser.getId()+")");
+        }
+        
+        while(resultatFenetre.next()){
+            //Matière
+            tempMatiere = coursDAO.find(resultatFenetre.getInt("ID_COURS")).getNom();
+            
+            
+            //Première séance
+            tempPremiereSeance = "";
+            
+            if (connectedUser.getDroit() == 3) {  //connecté en tant que prof
+                resultatEvent = statementEvent.executeQuery("SELECT * FROM seance JOIN seance_enseignants ON id = id_seance "
+                    + "WHERE ((YEAR(date) = YEAR(DATE(NOW()))-1 AND semaine > 30) OR (YEAR(date) <= YEAR(DATE(NOW())) AND semaine < 31)) "
+                    + "AND id_cours = "+resultatFenetre.getInt("ID_COURS")+" "
+                    + "AND id_enseignant = " + connectedUser.getId()+" ORDER BY date ASC, heure_debut ASC limit 1");
+            } else {  //connecté en tant qu'étudiant
+                resultatEvent = statementEvent.executeQuery("SELECT * FROM seance JOIN seance_groupes ON id = id_seance "
+                    + "WHERE ((YEAR(date) = YEAR(DATE(NOW()))-1 AND semaine > 30) OR (YEAR(date) <= YEAR(DATE(NOW())) AND semaine < 31)) "
+                    + "AND id_cours = "+resultatFenetre.getInt("ID_COURS")+" "
+                    + "AND id_groupe = (SELECT id_groupe FROM etudiant WHERE id_utilisateur = "+connectedUser.getId()+") ORDER BY date ASC, heure_debut ASC limit 1");
+            }
+            if(resultatEvent.first()){
+                Calendar tempDate = Calendar.getInstance();
+                tempDate.setTime(resultatEvent.getDate("DATE"));
+                tempPremiereSeance += parseDayOfTheWeek(tempDate.get(Calendar.DAY_OF_WEEK))+" "+tempDate.get(Calendar.DAY_OF_MONTH)+" "+parseMonth(tempDate.get(Calendar.MONTH))
+                        +" "+tempDate.get(Calendar.YEAR);
+                
+                tempDate.setTime(resultatEvent.getTime("HEURE_DEBUT"));
+                tempPremiereSeance += " de "+tempDate.get(Calendar.HOUR_OF_DAY)+"h"+tempDate.get(Calendar.MINUTE);
+                
+                tempDate.setTime(resultatEvent.getTime("HEURE_FIN"));
+                tempPremiereSeance += " à "+tempDate.get(Calendar.HOUR_OF_DAY)+"h"+((tempDate.get(Calendar.MINUTE) < 10)?"0":"")+tempDate.get(Calendar.MINUTE);
+            }
+            
+            tempDerniereSeance = "";
+            if (connectedUser.getDroit() == 3) {  //connecté en tant que prof
+                resultatEvent = statementEvent.executeQuery("SELECT * FROM seance JOIN seance_enseignants ON id = id_seance "
+                    + "WHERE ((YEAR(date) = YEAR(DATE(NOW()))-1 AND semaine > 30) OR (YEAR(date) <= YEAR(DATE(NOW())) AND semaine < 31)) "
+                    + "AND id_cours = "+resultatFenetre.getInt("ID_COURS")+" "
+                    + "AND id_enseignant = " + connectedUser.getId()+" ORDER BY date DESC, heure_debut DESC limit 1");
+            } else {  //connecté en tant qu'étudiant
+                resultatEvent = statementEvent.executeQuery("SELECT * FROM seance JOIN seance_groupes ON id = id_seance "
+                    + "WHERE ((YEAR(date) = YEAR(DATE(NOW()))-1 AND semaine > 30) OR (YEAR(date) <= YEAR(DATE(NOW())) AND semaine < 31)) "
+                    + "AND id_cours = "+resultatFenetre.getInt("ID_COURS")+" "
+                    + "AND id_groupe = (SELECT id_groupe FROM etudiant WHERE id_utilisateur = "+connectedUser.getId()+") ORDER BY date DESC, heure_debut DESC limit 1");
+            }
+            if(resultatEvent.first()){
+                Calendar tempDate = Calendar.getInstance();
+                tempDate.setTime(resultatEvent.getDate("DATE"));
+                tempDerniereSeance += parseDayOfTheWeek(tempDate.get(Calendar.DAY_OF_WEEK))+" "+tempDate.get(Calendar.DAY_OF_MONTH)+" "+parseMonth(tempDate.get(Calendar.MONTH))
+                        +" "+tempDate.get(Calendar.YEAR);
+                
+                tempDate.setTime(resultatEvent.getTime("HEURE_DEBUT"));
+                tempDerniereSeance += " de "+tempDate.get(Calendar.HOUR_OF_DAY)+"h"+((tempDate.get(Calendar.MINUTE) < 10)?"0":"")+tempDate.get(Calendar.MINUTE);
+                
+                tempDate.setTime(resultatEvent.getTime("HEURE_FIN"));
+                tempDerniereSeance += " à "+tempDate.get(Calendar.HOUR_OF_DAY)+"h"+((tempDate.get(Calendar.MINUTE) < 10)?"0":"")+tempDate.get(Calendar.MINUTE);
+            }
+            
+            int tempDureeHeures = 0;
+            int tempDureeMinutes = 0;
+            tempDuree = "";
+            if (connectedUser.getDroit() == 3) {  //connecté en tant que prof
+                resultatEvent = statementEvent.executeQuery("SELECT (TIMEDIFF(heure_fin,heure_debut)) as dureeTot FROM seance JOIN seance_enseignants ON id = id_seance "
+                    + "WHERE ((YEAR(date) = YEAR(DATE(NOW()))-1 AND semaine > 30) OR (YEAR(date) <= YEAR(DATE(NOW())) AND semaine < 31)) "
+                    + "AND id_cours = "+resultatFenetre.getInt("ID_COURS")+" "
+                    + "AND id_enseignant = " + connectedUser.getId());
+            } else {  //connecté en tant qu'étudiant
+                resultatEvent = statementEvent.executeQuery("SELECT (TIMEDIFF(heure_fin,heure_debut)) as dureeTot FROM seance JOIN seance_groupes ON id = id_seance "
+                    + "WHERE ((YEAR(date) = YEAR(DATE(NOW()))-1 AND semaine > 30) OR (YEAR(date) <= YEAR(DATE(NOW())) AND semaine < 31)) "
+                    + "AND id_cours = "+resultatFenetre.getInt("ID_COURS")+" "
+                    + "AND id_groupe = (SELECT id_groupe FROM etudiant WHERE id_utilisateur = "+connectedUser.getId()+")");
+            }
+            Calendar tempCalDuree = Calendar.getInstance();
+            while(resultatEvent.next()){
+                tempCalDuree.setTime(resultatEvent.getTime("dureeTot"));
+                tempDureeHeures += tempCalDuree.get(Calendar.HOUR_OF_DAY);
+                tempDureeMinutes += tempCalDuree.get(Calendar.MINUTE);
+                tempDureeHeures += tempDureeMinutes/60;
+                tempDureeMinutes %= 60;
+            }
+            tempDuree += tempDureeHeures+"h"+((tempDureeMinutes < 10)?"0":"")+tempDureeMinutes;
+            
+            tempNombre = "";
+            if (connectedUser.getDroit() == 3) {  //connecté en tant que prof
+                resultatEvent = statementEvent.executeQuery("SELECT COUNT(*) as nbSeances FROM seance JOIN seance_enseignants ON id = id_seance "
+                    + "WHERE ((YEAR(date) = YEAR(DATE(NOW()))-1 AND semaine > 30) OR (YEAR(date) <= YEAR(DATE(NOW())) AND semaine < 31)) "
+                    + "AND id_cours = "+resultatFenetre.getInt("ID_COURS")+" "
+                    + "AND id_enseignant = " + connectedUser.getId());
+            } else {  //connecté en tant qu'étudiant
+                resultatEvent = statementEvent.executeQuery("SELECT COUNT(*) as nbSeances FROM seance JOIN seance_groupes ON id = id_seance "
+                    + "WHERE ((YEAR(date) = YEAR(DATE(NOW()))-1 AND semaine > 30) OR (YEAR(date) <= YEAR(DATE(NOW())) AND semaine < 31)) "
+                    + "AND id_cours = "+resultatFenetre.getInt("ID_COURS")+" "
+                    + "AND id_groupe = (SELECT id_groupe FROM etudiant WHERE id_utilisateur = "+connectedUser.getId()+")");
+            }
+            if(resultatEvent.first()){
+                tempNombre += resultatEvent.getInt("nbSeances");
+            }
+            
+            tempLigne = new LigneRecap(tempMatiere, tempPremiereSeance, tempDerniereSeance, tempDuree, tempNombre);
+            recapDonneesTable.add(tempLigne);
+        }
+        
+        //On ajoute les lignes au tableau
+        for(LigneRecap Element : recapDonneesTable){
+            String[] ligneData = {Element.getMatiere(),Element.getPremiereSeance(),Element.getDerniereSeance(),Element.getDuree(),Element.getNombre()};
+            tableModel.addRow(ligneData);
+        }
+        
+        recapTable = new JTable(tableModel);
+        
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+        for (int columnIndex = 0; columnIndex < tableModel.getColumnCount(); columnIndex++)
+        {
+            recapTable.getColumnModel().getColumn(columnIndex).setCellRenderer( centerRenderer );
+        }
+        
+        recapTable.setRowHeight(30);
+        recapTable.getColumnModel().getColumn(0).setPreferredWidth(180);
+        recapTable.getColumnModel().getColumn(1).setPreferredWidth(320);
+        recapTable.getColumnModel().getColumn(2).setPreferredWidth(320);
+        recapTable.getColumnModel().getColumn(3).setPreferredWidth(40);
+        recapTable.getColumnModel().getColumn(4).setPreferredWidth(15);
+        recapListeCoursContainer.setViewportView(recapTable);
+        panneauRecapCours.add(recapListeCoursContainer);
+        
+        //Calcul du nombre total d'heures;
+        int tempDureeHeures = 0;
+        int tempDureeMinutes = 0;
+        if (connectedUser.getDroit() == 3) {  //connecté en tant que prof
+            resultatEvent = statementEvent.executeQuery("SELECT (TIMEDIFF(heure_fin,heure_debut)) as dureeTot FROM seance JOIN seance_enseignants ON id = id_seance "
+                    + "WHERE ((YEAR(date) = YEAR(DATE(NOW()))-1 AND semaine > 30) OR (YEAR(date) <= YEAR(DATE(NOW())) AND semaine < 31)) "
+                    + "AND id_enseignant = " + connectedUser.getId());
+        } else {  //connecté en tant qu'étudiant
+            resultatEvent = statementEvent.executeQuery("SELECT (TIMEDIFF(heure_fin,heure_debut)) as dureeTot FROM seance JOIN seance_groupes ON id = id_seance "
+                    + "WHERE ((YEAR(date) = YEAR(DATE(NOW()))-1 AND semaine > 30) OR (YEAR(date) <= YEAR(DATE(NOW())) AND semaine < 31)) "
+                    + "AND id_groupe = (SELECT id_groupe FROM etudiant WHERE id_utilisateur = " + connectedUser.getId() + ")");
+        }
+        Calendar tempCalDuree = Calendar.getInstance();
+        while (resultatEvent.next()) {
+            tempCalDuree.setTime(resultatEvent.getTime("dureeTot"));
+            tempDureeHeures += tempCalDuree.get(Calendar.HOUR_OF_DAY);
+            tempDureeMinutes += tempCalDuree.get(Calendar.MINUTE);
+            tempDureeHeures += tempDureeMinutes / 60;
+            tempDureeMinutes %= 60;
+        }
+        recapTotalHeures.setText("Total : " + tempDureeHeures + "h" + ((tempDureeMinutes < 10) ? "0" : "") + tempDureeMinutes);
+        recapTotalHeures.setBounds(1470, 235, 200, 50);
+        recapTotalHeures.setFont(new Font("Sans Serif", Font.BOLD, 18));
+        panneauRecapCours.add(recapTotalHeures);
     }
     
     //Retourne le nom français du jour de la semaine en fonction d'une valeur DAY_OF_THE_WEEK d'un objet calendar
