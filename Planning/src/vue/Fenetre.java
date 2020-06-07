@@ -1480,7 +1480,7 @@ public class Fenetre extends JFrame implements ActionListener {
         });
     }
     
-    //Ajout design pour page recherche
+    
     private void remplirRecherche() throws SQLException {
         panneauRecherche.removeAll();
         panneauRecherche.setLayout(null);
@@ -1621,7 +1621,8 @@ public class Fenetre extends JFrame implements ActionListener {
         boutonRechercherEnseignant.addActionListener(this);
         boutonRechercherEtudiant.addActionListener(this);
     }
-
+    
+    //Correction bug redirection
     private void remplirModifSeance() throws SQLException {
         panneauModifSeance.removeAll();
         panneauModifSeance.setLayout(null); //On définit un absolute Layout
