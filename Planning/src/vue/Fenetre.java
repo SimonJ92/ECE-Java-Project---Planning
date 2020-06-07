@@ -297,7 +297,10 @@ public class Fenetre extends JFrame implements ActionListener {
             } //amène l'utilisateur vers la page de création d'une séance
             else if (source == barreNav2BoutonCreer) {
                 seanceSelection = new Seance();
+                global.remove(panneauModifSeance);
+                panneauModifSeance = new JPanel();
                 remplirModifSeance();
+                global.add(panneauModifSeance, "ModifSeance");
                 cardLayout.show(global, "ModifSeance");
             }
         } catch (SQLException e) {
