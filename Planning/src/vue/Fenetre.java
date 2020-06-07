@@ -29,14 +29,10 @@ public class Fenetre extends JFrame implements ActionListener{
     
     //images
     private BufferedImage navBarHomeIcon;
-<<<<<<< Updated upstream
-    
-=======
     private BufferedImage navBarLogoEce;
     private BufferedImage imageEce;
     private BufferedImage imageInseecU;
 
->>>>>>> Stashed changes
     //Éléments de connexion à la base de données
     private Connexion connexion;
     private Statement statementFenetre;
@@ -71,12 +67,7 @@ public class Fenetre extends JFrame implements ActionListener{
     private JPanel panneauEDTGrilleEtudiant;
     private JPanel panneauRecherche; // 3 recherches : Elève, Salle et Enseignant
     private JPanel panneauModifSeance;
-<<<<<<< Updated upstream
-    
-    //couleurs du thème:
-    Color vert1 = new Color(31,160,85);
-    Color rouge1 = new Color(199, 44, 72);
-=======
+
     private JPanel panneauRecapCours;
 
     //couleurs du thème (de quoi faire un arc en ciel <3 ):
@@ -97,7 +88,6 @@ public class Fenetre extends JFrame implements ActionListener{
     Color violet2 = new Color(199,21,133);  //fuushia foncé                               / POLICE BLANCHE
     Color marron1 = new Color(210,105,30);  //chocolat (dolce en vrai mdr)                / LES DEUX
     Color marron2 = new Color(188,143,143); // marron rosé, c'était beau en vrai...       / LES DEUX 
->>>>>>> Stashed changes
     
     //connexion utilisateur
     private Utilisateur connectedUser;
@@ -120,29 +110,22 @@ public class Fenetre extends JFrame implements ActionListener{
     private JButton barreNav2BoutonEDT;
     private JButton barreNav2BoutonRecap;
     private JButton barreNav2BoutonRecherche;
-<<<<<<< Updated upstream
-    
-=======
     private JButton barreNav2BoutonCreer;
     private JLabel barreNav1Logo;
 
->>>>>>> Stashed changes
     //Accueil
     private JLabel accueilLabelConnectedUser;
     private JPanel accueilEDT;
     private JLabel accueilEDTTitre;
     private ArrayList<JButton> accueilEDTListeCours;
     private MyDate accueilDateJour;
-<<<<<<< Updated upstream
     private JLabel accueilEDTLabelDate;
     private JLabel[] accueilEDTLabelsHeures;    //15 label pour les heures
     
-=======
     private JLabel[] accueilEDTLabelsHeures; //15 label pour les heures
     private JLabel accueilLogoEce;
     private JLabel accueilLogoInseecU;
 
->>>>>>> Stashed changes
     //Panneau Login
     private JLabel loginTitre;
     private JLabel loginErreurMessage;
@@ -152,8 +135,6 @@ public class Fenetre extends JFrame implements ActionListener{
     private JPasswordField loginPassword;
     private JCheckBox loginVoirPassword;
     private JButton loginBoutonValider;
-<<<<<<< Updated upstream
-=======
     private JLabel loginLogoEce;
     private JLabel loginLogoInseecU;
 
@@ -164,7 +145,6 @@ public class Fenetre extends JFrame implements ActionListener{
     private JLabel[] EDTGrilleLabelsHeures;    //15 label pour les heures
     private JPanel EDTGrillePanneauSemaines;
     private JLabel[] EDTGrilleLabelsJours;
->>>>>>> Stashed changes
     
     //Emploi du temps - Grille - Salle
     
