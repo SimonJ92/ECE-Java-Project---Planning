@@ -22,7 +22,7 @@ import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.*;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.DefaultPieDataset;
+
 
 /**
  *
@@ -325,6 +325,7 @@ public class Fenetre extends JFrame implements ActionListener {
         } catch (SQLException e) {
             System.out.println(e.toString());
         }
+        
         
         //RECHERCHE
         try {
@@ -1476,7 +1477,8 @@ public class Fenetre extends JFrame implements ActionListener {
             }
         });
     }
-
+    
+    
     private void remplirRecherche() throws SQLException {
         panneauRecherche.removeAll();
         panneauRecherche.setLayout(null);
@@ -1617,7 +1619,8 @@ public class Fenetre extends JFrame implements ActionListener {
         boutonRechercherEnseignant.addActionListener(this);
         boutonRechercherEtudiant.addActionListener(this);
     }
-
+    
+    //Correction bug redirection
     private void remplirModifSeance() throws SQLException {
         panneauModifSeance.removeAll();
         panneauModifSeance.setLayout(null); //On définit un absolute Layout
@@ -1890,13 +1893,13 @@ public class Fenetre extends JFrame implements ActionListener {
         panneauModifSeance.add(modifAddProfSocket);
 
         //Boutons de gestion des enseignants
-        modifBoutonAjouterEnseignant.setBounds(largeur / 2 + 156, hauteur / 10 + 6 * (hauteur / 10) - 10, 400, 20);
-        modifBoutonAjouterEnseignant.setBackground(vert1);
+        modifBoutonAjouterEnseignant.setBounds(largeur / 2 + 156, hauteur / 10 + 6 * (hauteur / 10) - 10, 300, 20);
+        modifBoutonAjouterEnseignant.setBackground(vertEce);
         modifBoutonAjouterEnseignant.setForeground(Color.WHITE);
         panneauModifSeance.add(modifBoutonAjouterEnseignant);
 
-        modifBoutonSupprimerEnseignantSelection.setBounds(largeur / 2 + 156, hauteur / 10 + 6 * (hauteur / 10) + 10, 400, 20);
-        modifBoutonSupprimerEnseignantSelection.setBackground(vert1);
+        modifBoutonSupprimerEnseignantSelection.setBounds(largeur / 2 + 156, hauteur / 10 + 6 * (hauteur / 10) + 10, 300, 20);
+        modifBoutonSupprimerEnseignantSelection.setBackground(vertEce);
         modifBoutonSupprimerEnseignantSelection.setForeground(Color.WHITE);
         panneauModifSeance.add(modifBoutonSupprimerEnseignantSelection);
 
@@ -1947,18 +1950,18 @@ public class Fenetre extends JFrame implements ActionListener {
 
         //Boutons de gestion des groupes
         modifBoutonAjouterGroupe.setBounds(largeur / 2 + 156, hauteur / 10 + 7 * (hauteur / 10) - 10, 300, 20);
-        modifBoutonAjouterGroupe.setBackground(vert1);
+        modifBoutonAjouterGroupe.setBackground(vertEce);
         modifBoutonAjouterGroupe.setForeground(Color.WHITE);
         panneauModifSeance.add(modifBoutonAjouterGroupe);
 
         modifBoutonSupprimerGroupeSelection.setBounds(largeur / 2 + 156, hauteur / 10 + 7 * (hauteur / 10) + 10, 300, 20);
-        modifBoutonSupprimerGroupeSelection.setBackground(vert1);
+        modifBoutonSupprimerGroupeSelection.setBackground(vertEce);
         modifBoutonSupprimerGroupeSelection.setForeground(Color.WHITE);
         panneauModifSeance.add(modifBoutonSupprimerGroupeSelection);
 
         //Bouton d'enregistrement
         modifBoutonEnregistrer.setBounds(largeur / 2 - 50, hauteur / 10 + 8 * (hauteur / 10), 100, 50);
-        modifBoutonEnregistrer.setBackground(vert1);
+        modifBoutonEnregistrer.setBackground(vertEce);
         modifBoutonEnregistrer.setForeground(Color.WHITE);
         panneauModifSeance.add(modifBoutonEnregistrer);
 
