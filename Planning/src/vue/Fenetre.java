@@ -30,8 +30,6 @@ import org.jfree.data.general.DefaultPieDataset;
  */
 public class Fenetre extends JFrame implements ActionListener {
     
-    
-
     //dimensions de la fenêtre
     private int largeur = 1920;
     private int hauteur = 1040;
