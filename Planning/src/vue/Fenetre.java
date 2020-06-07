@@ -19,12 +19,18 @@ import java.util.*;
 import javax.imageio.ImageIO;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import org.jfree.chart.*;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
 
 /**
  *
  * @author simon
  */
 public class Fenetre extends JFrame implements ActionListener {
+    
+    
 
     //dimensions de la fenêtre
     private int largeur = 1920;
@@ -121,6 +127,10 @@ public class Fenetre extends JFrame implements ActionListener {
     private JLabel[] accueilEDTLabelsHeures;    //15 label pour les heures
     private JLabel accueilLogoEce;
     private JLabel accueilLogoInseecU;
+    private JFreeChart accueilGraphesEtudiantsParPromo;
+    private JFreeChart accueilGraphesGroupesParPromo;
+    private JFreeChart accueilGraphesSeancesParEnseignant;
+    private JFreeChart accueilGraphesSeancesParCours;
 
     //Panneau Login
     private JLabel loginTitre;
@@ -703,7 +713,7 @@ public class Fenetre extends JFrame implements ActionListener {
         panneauAccueil.add(accueilLabelConnectedUser);
         
         //logos
-        accueilLogoEce.setBounds(largeur - 410, 225, 400, 100);
+        accueilLogoEce.setBounds(largeur/2 - 200, 150, 400, 100);
         accueilLogoInseecU.setBounds(largeur - 210, 100, 200, 125);
         panneauAccueil.add(accueilLogoEce);
         panneauAccueil.add(accueilLogoInseecU);
@@ -817,6 +827,98 @@ public class Fenetre extends JFrame implements ActionListener {
             }
 
             panneauAccueil.add(accueilEDT);
+        }
+        
+        //On ajoute aux élèves un graphe du nombre de séances qu'ils ont par cours
+        if(connectedUser.getDroit() == 4){
+            //Nombre de séances par cours
+            DefaultCategoryDataset seancesParCoursDataSet = new DefaultCategoryDataset();
+            resultatFenetre = statementFenetre.executeQuery("SELECT DISTINCT cours.NOM as nomCours, COUNT(seance.ID) as nbSeances "
+                    + "FROM cours JOIN seance on cours.ID = seance.ID_COURS JOIN seance_groupes on seance_groupes.ID_SEANCE = seance.ID "
+                    + "WHERE seance_groupes.ID_GROUPE = "+etudiantDAO.find(connectedUser.getId()).getGroupe().getId()+" "
+                    + "GROUP BY cours.NOM;");
+            int compte =0;
+            while(resultatFenetre.next()){
+                seancesParCoursDataSet.setValue(resultatFenetre.getInt("nbSeances"), "Nombre d'étudiants", resultatFenetre.getString("nomCours"));
+                compte++;
+            }
+            accueilGraphesSeancesParCours = ChartFactory.createBarChart(
+                    "Nombre de séances par cours",
+                    "Cours",
+                    "Nombre de séances", 
+                    seancesParCoursDataSet, 
+                    PlotOrientation.VERTICAL, 
+                    true, 
+                    true,
+                    false);     
+            ChartPanel chartContainerSeancesParCours = new ChartPanel(accueilGraphesSeancesParCours);
+            chartContainerSeancesParCours.setBounds(largeur/2 - compte*100, hauteur/2, compte*200, hauteur/2 - 200);
+            panneauAccueil.add(chartContainerSeancesParCours);
+        }
+        
+        //Si on est connecté en tant que référent pédagogique ou en tant qu'admin, on affiche des graphes sur les données
+        if(connectedUser.getDroit() == 1 || connectedUser.getDroit() == 2){
+            //Nombre d'étudiants par promotion
+            DefaultCategoryDataset etudiantsParPromoDataSet = new DefaultCategoryDataset();
+            resultatFenetre = statementFenetre.executeQuery("SELECT promotion.NOM as nomPromo, COUNT(DISTINCT etudiant.NUMERO) as nbEtudiants "
+                    + "FROM promotion JOIN groupe ON groupe.IDPROMOTION = promotion.ID JOIN etudiant ON groupe.ID = etudiant.ID_GROUPE "
+                    + "GROUP BY groupe.IDPROMOTION");
+            while(resultatFenetre.next()){
+                etudiantsParPromoDataSet.setValue(resultatFenetre.getInt("nbEtudiants"), "Nombre d'étudiants", resultatFenetre.getString("nomPromo"));
+            }
+            accueilGraphesEtudiantsParPromo = ChartFactory.createBarChart(
+                    "Nombre d'étudiants par promotion",
+                    "Promotion",
+                    "Nombre d'étudiants", 
+                    etudiantsParPromoDataSet, 
+                    PlotOrientation.VERTICAL, 
+                    true, 
+                    true,
+                    false);     
+            ChartPanel chartContainerEtudiantsParPromo = new ChartPanel(accueilGraphesEtudiantsParPromo);
+            chartContainerEtudiantsParPromo.setBounds(largeur/4 - 300, hauteur/2, 500, hauteur/2 - 200);
+            panneauAccueil.add(chartContainerEtudiantsParPromo);
+            
+            //Nombre de groupe par promo
+            DefaultCategoryDataset groupesParPromoDataSet = new DefaultCategoryDataset();
+            resultatFenetre = statementFenetre.executeQuery("SELECT promotion.NOM as nomPromo, COUNT(groupe.ID) as nbGroupes "
+                    + "FROM promotion JOIN groupe ON groupe.IDPROMOTION = promotion.ID GROUP BY promotion.NOM");
+            while(resultatFenetre.next()){
+                groupesParPromoDataSet.setValue(resultatFenetre.getInt("nbGroupes"), "Nombre de groupes", resultatFenetre.getString("nomPromo"));
+            }
+            accueilGraphesGroupesParPromo = ChartFactory.createBarChart(
+                    "Nombre de groupes par promotion",
+                    "Promotion",
+                    "Nombre de groupes", 
+                    groupesParPromoDataSet, 
+                    PlotOrientation.VERTICAL, 
+                    true, 
+                    true,
+                    false);     
+            ChartPanel chartContainerGroupeParPromo = new ChartPanel(accueilGraphesGroupesParPromo);
+            chartContainerGroupeParPromo.setBounds(largeur/2 - 250, hauteur/2, 500, hauteur/2 - 200);
+            panneauAccueil.add(chartContainerGroupeParPromo);
+            
+            //Nombre de séances par enseignant
+            DefaultCategoryDataset seanceParEnseignantDataSet = new DefaultCategoryDataset();
+            resultatFenetre = statementFenetre.executeQuery("SELECT utilisateur.PRENOM as prenomEnseignant, utilisateur.NOM as nomEnseignant, COUNT(*) as nbSeances "
+                    + "FROM seance_enseignants JOIN utilisateur ON seance_enseignants.ID_ENSEIGNANT = utilisateur.ID GROUP BY seance_enseignants.ID_ENSEIGNANT;");
+            while(resultatFenetre.next()){
+                seanceParEnseignantDataSet.setValue(resultatFenetre.getInt("nbSeances"), "Nombre de séances", 
+                        resultatFenetre.getString("prenomEnseignant")+resultatFenetre.getString("nomEnseignant"));
+            }
+            accueilGraphesSeancesParEnseignant = ChartFactory.createBarChart(
+                    "Nombre de séances par enseignant",
+                    "Enseignant",
+                    "Nombre de séances", 
+                    seanceParEnseignantDataSet, 
+                    PlotOrientation.VERTICAL, 
+                    true, 
+                    true,
+                    false);     
+            ChartPanel chartContainerSeancesParEnseignant = new ChartPanel(accueilGraphesSeancesParEnseignant);
+            chartContainerSeancesParEnseignant.setBounds(3*largeur/4 - 200, hauteur/2, 500, hauteur/2 - 200);
+            panneauAccueil.add(chartContainerSeancesParEnseignant);
         }
     }
 
