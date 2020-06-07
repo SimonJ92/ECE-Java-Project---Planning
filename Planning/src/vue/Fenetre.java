@@ -1601,6 +1601,7 @@ public class Fenetre extends JFrame implements ActionListener {
         boutonRechercherSalle.setBounds(largeur / 2 - 600, hauteur / 2, 175, 50);
         panneauRecherche.add(boutonRechercherSalle);
         
+        //Bouton recherche enseignant
         boutonRechercherEnseignant.setBackground(vertEce);
         boutonRechercherEnseignant.setForeground(Color.WHITE);
         boutonRechercherEnseignant.setBounds(largeur / 2 - 125, hauteur / 2, 200, 50);
