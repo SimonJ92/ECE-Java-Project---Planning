@@ -29,7 +29,14 @@ public class Fenetre extends JFrame implements ActionListener{
     
     //images
     private BufferedImage navBarHomeIcon;
+<<<<<<< Updated upstream
     
+=======
+    private BufferedImage navBarLogoEce;
+    private BufferedImage imageEce;
+    private BufferedImage imageInseecU;
+
+>>>>>>> Stashed changes
     //Éléments de connexion à la base de données
     private Connexion connexion;
     private Statement statementFenetre;
@@ -64,10 +71,33 @@ public class Fenetre extends JFrame implements ActionListener{
     private JPanel panneauEDTGrilleEtudiant;
     private JPanel panneauRecherche; // 3 recherches : Elève, Salle et Enseignant
     private JPanel panneauModifSeance;
+<<<<<<< Updated upstream
     
     //couleurs du thème:
     Color vert1 = new Color(31,160,85);
     Color rouge1 = new Color(199, 44, 72);
+=======
+    private JPanel panneauRecapCours;
+
+    //couleurs du thème (de quoi faire un arc en ciel <3 ):
+    Color vertEce = new Color(4, 115, 123); //comme sur le logo..                         / POLICE BLANCHE
+    Color vert1 = new Color(154,205,50);    //vert clair                                  / POLICE NOIRE
+    Color vert2 = new Color(107,142,35);    //olive                                       / LES DEUX
+    Color rouge1 = new Color(178,34,34);    //rouge brique                                / POLICE BLANCHE
+    Color rouge2 = new Color(220,20,60);    //crimson, en gros écarlate quoi..            / LES DEUX
+    Color bleu1 = new Color(135,206,250);   //lightskyblue, bleu ciel pour les billingues / POLICE NOIRE
+    Color bleu2 = new Color(65,105,225);    //bleu royal                                  / POLICE BLANCHE
+    Color jaune1 = new Color(255,255,102);  //poussin clair                               / POLICE NOIRE
+    Color jaune2 = new Color(255,215,0);    //or                                          / POLICE NOIRE
+    Color rose1 = new Color(240,128,128);   //corail clair                                / LES DEUX
+    Color rose2 = new Color(255,160,122);   //saumon clair                                / POLICE NOIRE
+    Color orange1 = new Color(255,165,0);   //orange classique                            / LES DEUX
+    Color orange2 = new Color(255,69,0);    //orange sanguine                             / POLICE BLANCHE
+    Color violet1 = new Color(186,85,211);  //orchidée moyenne                            / LES DEUX
+    Color violet2 = new Color(199,21,133);  //fuushia foncé                               / POLICE BLANCHE
+    Color marron1 = new Color(210,105,30);  //chocolat (dolce en vrai mdr)                / LES DEUX
+    Color marron2 = new Color(188,143,143); // marron rosé, c'était beau en vrai...       / LES DEUX 
+>>>>>>> Stashed changes
     
     //connexion utilisateur
     private Utilisateur connectedUser;
@@ -90,16 +120,29 @@ public class Fenetre extends JFrame implements ActionListener{
     private JButton barreNav2BoutonEDT;
     private JButton barreNav2BoutonRecap;
     private JButton barreNav2BoutonRecherche;
+<<<<<<< Updated upstream
     
+=======
+    private JButton barreNav2BoutonCreer;
+    private JLabel barreNav1Logo;
+
+>>>>>>> Stashed changes
     //Accueil
     private JLabel accueilLabelConnectedUser;
     private JPanel accueilEDT;
     private JLabel accueilEDTTitre;
     private ArrayList<JButton> accueilEDTListeCours;
     private MyDate accueilDateJour;
+<<<<<<< Updated upstream
     private JLabel accueilEDTLabelDate;
     private JLabel[] accueilEDTLabelsHeures;    //15 label pour les heures
     
+=======
+    private JLabel[] accueilEDTLabelsHeures; //15 label pour les heures
+    private JLabel accueilLogoEce;
+    private JLabel accueilLogoInseecU;
+
+>>>>>>> Stashed changes
     //Panneau Login
     private JLabel loginTitre;
     private JLabel loginErreurMessage;
@@ -109,6 +152,19 @@ public class Fenetre extends JFrame implements ActionListener{
     private JPasswordField loginPassword;
     private JCheckBox loginVoirPassword;
     private JButton loginBoutonValider;
+<<<<<<< Updated upstream
+=======
+    private JLabel loginLogoEce;
+    private JLabel loginLogoInseecU;
+
+    //Emploi du temps - Grille
+    private JComboBox EDTGrilleChoixTypeEDT;
+    private PanneauEDTGrille EDTGrilleEDT;
+    private ArrayList<JButton> EDTGrilleListeCours;
+    private JLabel[] EDTGrilleLabelsHeures;    //15 label pour les heures
+    private JPanel EDTGrillePanneauSemaines;
+    private JLabel[] EDTGrilleLabelsJours;
+>>>>>>> Stashed changes
     
     //Emploi du temps - Grille - Salle
     
@@ -182,7 +238,14 @@ public class Fenetre extends JFrame implements ActionListener{
             connectedUser = new Utilisateur();
             
             //Initialisation des images
+<<<<<<< Updated upstream
             navBarHomeIcon = ImageIO.read(new File("G:\\Users\\geelo\\OneDrive\\Documents\\GitHub\\ECE-Java-Project---Planning\\home-icon.png")); //icone pour le bouton vers l'accueil
+=======
+            navBarHomeIcon = ImageIO.read(new File("src/packageImages/home-icon.png")); //icone pour le bouton vers l'accueil
+            navBarLogoEce = ImageIO.read(new File("src/packageImages/logo_ECE_Paris_3.jpg"));
+            imageEce = ImageIO.read(new File("src/packageImages/logo_ece.png"));
+            imageInseecU = ImageIO.read(new File("src/packageImages/logo_Inseec_U.png"));
+>>>>>>> Stashed changes
             
             //initialisation des différents panels et leurs composants
             initComponent();
@@ -478,8 +541,15 @@ public class Fenetre extends JFrame implements ActionListener{
         barreNav1 = new JMenuBar();
         //barreNav1BoutonHome = new JButton("Accueil");
         barreNav1BoutonHome = new JButton(new ImageIcon(navBarHomeIcon));
+<<<<<<< Updated upstream
         barreNav1BoutonDeco = new JButton("Deconnexion");    
         barreNav2 = new JMenuBar();
+=======
+        barreNav1BoutonDeco = new JButton("Déconnexion");
+        barreNav1Logo = new JLabel(new ImageIcon(navBarLogoEce));
+                
+        barreNav2 = new BarreNav(Color.BLACK);
+>>>>>>> Stashed changes
         barreNav2BoutonEDT = new JButton("Emploi du temps");
         barreNav2BoutonRecap = new JButton("Récapitulatif des cours");
         barreNav2BoutonRecherche = new JButton("Recherche");
@@ -498,7 +568,16 @@ public class Fenetre extends JFrame implements ActionListener{
         barreNav1.setBounds(0, 0, largeur, 50);
         barreNav1.setFont(new Font("Sans Serif", Font.BOLD, 16));
         
+<<<<<<< Updated upstream
         barreNav1BoutonHome.setBounds(100, 5, 40, 40);  //anciennement 80/40
+=======
+        //logo ece 
+        barreNav1Logo.setBounds(1, 1, 48, 48);
+        barreNav1.add(barreNav1Logo);
+        
+        //bouton de retour à la page d'accueil
+        barreNav1BoutonHome.setBounds(60, 5, 40, 40);
+>>>>>>> Stashed changes
         barreNav1BoutonHome.setContentAreaFilled(false);
         barreNav1.add(barreNav1BoutonHome);
         barreNav1BoutonDeco.setBounds(largeur - 145, 5, 120, 40);
@@ -558,7 +637,12 @@ public class Fenetre extends JFrame implements ActionListener{
         accueilDateJour = new MyDate();
         accueilEDTLabelDate = new JLabel(accueilDateJour.toString());
         accueilEDTLabelsHeures = new JLabel[15];    //15 label pour les heures
+<<<<<<< Updated upstream
         
+=======
+        accueilLogoEce = new JLabel(new ImageIcon(imageEce));
+        accueilLogoInseecU = new JLabel(new ImageIcon(imageInseecU));
+>>>>>>> Stashed changes
         //On retire les éventuels ActionListeners
         
         
@@ -568,6 +652,15 @@ public class Fenetre extends JFrame implements ActionListener{
         accueilLabelConnectedUser.setBounds(largeur/2 - 250, 300, 500, 50);
         panneauAccueil.add(accueilLabelConnectedUser);
         
+<<<<<<< Updated upstream
+=======
+        //logos
+        accueilLogoEce.setBounds(largeur - 410, 225, 400, 100);
+        accueilLogoInseecU.setBounds(largeur - 210, 100, 200, 125);
+        panneauAccueil.add(accueilLogoEce);
+        panneauAccueil.add(accueilLogoInseecU);
+        
+>>>>>>> Stashed changes
         if (connectedUser.getDroit() == 3 || connectedUser.getDroit() == 4) {  //Si l'utilisateur connecté est un prof ou un élève, on affiche son emploi du temps du jour
             //Panneau d'emploi du temps
             accueilEDT.setBounds(10, 200, widthEDT, heightEDT);
@@ -688,7 +781,13 @@ public class Fenetre extends JFrame implements ActionListener{
         loginPassword = new JPasswordField();
         loginVoirPassword = new JCheckBox("Voir le mot de passe",false);
         loginBoutonValider = new JButton("Se connecter");
+<<<<<<< Updated upstream
         
+=======
+        loginLogoEce = new JLabel( new ImageIcon(imageEce));
+        loginLogoInseecU = new JLabel(new ImageIcon(imageInseecU));
+
+>>>>>>> Stashed changes
         //On retire les éventuels ActionListeners
         loginBoutonValider.removeActionListener(this);
         
@@ -698,6 +797,15 @@ public class Fenetre extends JFrame implements ActionListener{
         loginTitre.setFont(new Font("Sans Serif", Font.BOLD, 32));
         loginTitre.setBounds(largeur/2 - 87, hauteur/2 - 250, 175, 50);
         panneauLogin.add(loginTitre);
+<<<<<<< Updated upstream
+=======
+
+        //logos
+        loginLogoEce.setBounds(largeur/2 - 200,   800, 400,100);
+        loginLogoInseecU.setBounds(largeur/2 - 100,   100, 200, 125);
+        panneauLogin.add(loginLogoEce);
+        panneauLogin.add(loginLogoInseecU);
+>>>>>>> Stashed changes
         
         //message d'erreur
         loginErreurMessage.setForeground(Color.red);
@@ -725,7 +833,14 @@ public class Fenetre extends JFrame implements ActionListener{
         panneauLogin.add(loginVoirPassword);
         
         //Bouton de validation
+<<<<<<< Updated upstream
         loginBoutonValider.setBounds(largeur/2 - 125, hauteur/2 + 25, 250, 50);
+=======
+        loginBoutonValider.setBounds(largeur / 2 - 125, hauteur / 2 + 25, 250, 50);
+        loginBoutonValider.setBackground(vertEce);
+        loginBoutonValider.setForeground(Color.WHITE);
+        loginBoutonValider.setFont(new Font("Sans Serif", Font.BOLD, 30) );
+>>>>>>> Stashed changes
         panneauLogin.add(loginBoutonValider);
         
         loginBoutonValider.addActionListener(this);
@@ -833,10 +948,29 @@ public class Fenetre extends JFrame implements ActionListener{
         panneauRecherche.add(rechercheChoixEtudiant);
 
         //Boutons de recherche
+<<<<<<< Updated upstream
         panneauRecherche.add(boutonRechercherSalle);
         panneauRecherche.add(boutonRechercherEnseignant);
         panneauRecherche.add(boutonRechercherEtudiant);
         
+=======
+        boutonRechercherSalle.setBounds(largeur / 2 - 600, hauteur / 2, 175, 50);
+        boutonRechercherSalle.setBackground(vertEce);
+        boutonRechercherSalle.setForeground(Color.WHITE);
+        panneauRecherche.add(boutonRechercherSalle);
+
+        boutonRechercherEnseignant.setBounds(largeur / 2 - 125, hauteur / 2, 200, 50);
+        boutonRechercherEnseignant.setBackground(vertEce);
+        boutonRechercherEnseignant.setForeground(Color.WHITE);
+        panneauRecherche.add(boutonRechercherEnseignant);
+
+
+        boutonRechercherEtudiant.setBounds(largeur / 2 + 393, hauteur / 2, 175, 50);
+        boutonRechercherEtudiant.setBackground(vertEce);
+        boutonRechercherEtudiant.setForeground(Color.WHITE);
+        panneauRecherche.add(boutonRechercherEtudiant);
+
+>>>>>>> Stashed changes
         //Ré-activation des ActionListeners
         rechercheChoixSite.addActionListener(this);
         rechercheChoixPromotion.addActionListener(this);
@@ -1162,6 +1296,7 @@ public class Fenetre extends JFrame implements ActionListener{
         panneauModifSeance.add(modifAddProfSocket);
 
         //Boutons de gestion des enseignants
+<<<<<<< Updated upstream
 
         panneauModifSeance.add(modifBoutonAjouterEnseignant);
 
@@ -1169,14 +1304,24 @@ public class Fenetre extends JFrame implements ActionListener{
         //modif esthétiques ici (update: manque une couleur?)
         modifBoutonAjouterEnseignant.setBounds(largeur/2 + 156, hauteur/10 + 6*(hauteur/10) - 10, 400, 20);
         modifBoutonAjouterEnseignant.setBackground(vert1);
+=======
+        modifBoutonAjouterEnseignant.setBounds(largeur / 2 + 156, hauteur / 10 + 6 * (hauteur / 10) - 10, 400, 20);
+        modifBoutonAjouterEnseignant.setBackground(vertEce);
+>>>>>>> Stashed changes
         modifBoutonAjouterEnseignant.setForeground(Color.WHITE);
         
         panneauModifSeance.add(modifBoutonAjouterEnseignant);
+<<<<<<< Updated upstream
         
                
         //modif esthétiques ici (update: manque une couleur?)
         modifBoutonSupprimerEnseignantSelection.setBounds(largeur/2 + 156, hauteur/10 + 6*(hauteur/10) + 10, 400, 20);
         modifBoutonSupprimerEnseignantSelection.setBackground(vert1);
+=======
+
+        modifBoutonSupprimerEnseignantSelection.setBounds(largeur / 2 + 156, hauteur / 10 + 6 * (hauteur / 10) + 10, 400, 20);
+        modifBoutonSupprimerEnseignantSelection.setBackground(vertEce);
+>>>>>>> Stashed changes
         modifBoutonSupprimerEnseignantSelection.setForeground(Color.WHITE);
                 
 
@@ -1240,28 +1385,44 @@ public class Fenetre extends JFrame implements ActionListener{
         panneauModifSeance.add(modifAddGroupeSocket);
         
         //Boutons de gestion des groupes
+<<<<<<< Updated upstream
 
         panneauModifSeance.add(modifBoutonAjouterGroupe);
               
         //modif esthétiques ici (update: manque une couleur?)
         modifBoutonAjouterGroupe.setBounds(largeur/2 + 156, hauteur/10 + 7*(hauteur/10) - 10, 300, 20);
         modifBoutonAjouterGroupe.setBackground(vert1);
+=======
+        modifBoutonAjouterGroupe.setBounds(largeur / 2 + 156, hauteur / 10 + 7 * (hauteur / 10) - 10, 300, 20);
+        modifBoutonAjouterGroupe.setBackground(vertEce);
+>>>>>>> Stashed changes
         modifBoutonAjouterGroupe.setForeground(Color.WHITE);
         
         panneauModifSeance.add(modifBoutonAjouterGroupe);
+<<<<<<< Updated upstream
         
                 //modif esthétiques ici (update: manque une couleur?)
         modifBoutonSupprimerGroupeSelection.setBounds(largeur/2 + 156,hauteur/10 + 7*(hauteur/10) + 10, 300, 20);
         modifBoutonSupprimerGroupeSelection.setBackground(vert1);
+=======
+
+        modifBoutonSupprimerGroupeSelection.setBounds(largeur / 2 + 156, hauteur / 10 + 7 * (hauteur / 10) + 10, 300, 20);
+        modifBoutonSupprimerGroupeSelection.setBackground(vertEce);
+>>>>>>> Stashed changes
         modifBoutonSupprimerGroupeSelection.setForeground(Color.WHITE);
         
         panneauModifSeance.add(modifBoutonSupprimerGroupeSelection);
         
         //Bouton d'enregistrement
+<<<<<<< Updated upstream
         
                 //modif esthétiques ici (update: manque une couleur?)
         modifBoutonEnregistrer.setBounds(largeur/2 - 50, hauteur/10 + 8*(hauteur/10), 100, 50);    
         modifBoutonEnregistrer.setBackground(vert1);
+=======
+        modifBoutonEnregistrer.setBounds(largeur / 2 - 50, hauteur / 10 + 8 * (hauteur / 10), 100, 50);
+        modifBoutonEnregistrer.setBackground(vertEce);
+>>>>>>> Stashed changes
         modifBoutonEnregistrer.setForeground(Color.WHITE);
         
         panneauModifSeance.add(modifBoutonEnregistrer);
@@ -1538,7 +1699,155 @@ public class Fenetre extends JFrame implements ActionListener{
         fenetreDialogue.add(testDialogue);
         fenetreDialogue.setSize(500,500);
         fenetreDialogue.setTitle("Détails du cours");
+<<<<<<< Updated upstream
         //fenetreDialogue.setLocationRelativeTo(boutonCours); //Remplacer par un élément d'une arraylist de boutons
+=======
+
+        String tempContenuLabel;
+
+        //COMPOSANTS DE LA FENÊTRE DE DIALOGUE
+        try {
+            //Matière
+            JLabel dialogueMatiere = new JLabel("<html><b>Matière :</b> " + seance.getCours().getNom() + "<html>");
+            dialogueMatiere.setBounds(10, 10, largeurDialogue - 10, 25);
+            dialogueMatiere.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+            fenetreDialogue.add(dialogueMatiere);
+
+            //Enseignants
+            resultatEvent = statementEvent.executeQuery("SELECT id_enseignant FROM seance_enseignants WHERE id_seance =" + seance.getId());
+            tempContenuLabel = "<html><b>Enseignant(s) :</b> ";
+            while (resultatEvent.next()) {
+                tempContenuLabel += utilisateurDAO.find(resultatEvent.getInt("ID_ENSEIGNANT")).toString();
+                if (!resultatEvent.isLast()) {
+                    tempContenuLabel += ", ";
+                }
+            }
+            JLabel dialogueEnseignants = new JLabel(tempContenuLabel + "<html>");
+            dialogueEnseignants.setBounds(10, 45, largeurDialogue - 10, 25);
+            dialogueEnseignants.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+            fenetreDialogue.add(dialogueEnseignants);
+
+            //Public
+            resultatEvent = statementEvent.executeQuery("SELECT id_groupe FROM seance_groupes WHERE id_seance =" + seance.getId());
+            tempContenuLabel = "<html><b>Public :</b> ";
+            while (resultatEvent.next()) {
+                tempContenuLabel += groupeDAO.find(resultatEvent.getInt("ID_GROUPE")).getNom();
+                if (!resultatEvent.isLast()) {
+                    tempContenuLabel += ", ";
+                }
+            }
+            JLabel dialoguePublic = new JLabel(tempContenuLabel + "<html>");
+            dialoguePublic.setBounds(10, 80, largeurDialogue - 10, 25);
+            dialoguePublic.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+            fenetreDialogue.add(dialoguePublic);
+
+            //Date et heures
+            JLabel dialogueTime = new JLabel("<html><b>Le :</b> " + seance.getDate().getJour() + "/" + seance.getDate().getMois() + "/" + seance.getDate().getAnnee() + " "
+                    + "de " + seance.getHeureDebut().toString() + " à " + seance.getHeureFin().toString() + "<html>");
+            dialogueTime.setBounds(10, 115, largeurDialogue - 10, 25);
+            dialogueTime.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+            fenetreDialogue.add(dialogueTime);
+
+            //Lieu
+            resultatEvent = statementEvent.executeQuery("SELECT id_salle FROM seance_salles WHERE id_seance =" + seance.getId());
+            tempContenuLabel = "<html><b>Lieu :</b> ";
+            while (resultatEvent.next()) {
+                tempContenuLabel += salleDAO.find(resultatEvent.getInt("ID_Salle")).getNom() + " (" + salleDAO.find(resultatEvent.getInt("ID_Salle")).getSite().getNom() + ")";
+            }
+            JLabel dialogueLieu = new JLabel(tempContenuLabel + "<html>");
+            dialogueLieu.setBounds(10, 150, largeurDialogue - 10, 25);
+            dialogueLieu.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+            fenetreDialogue.add(dialogueLieu);
+
+            //Type de cours
+            JLabel dialogueTypeCours = new JLabel("<html><b>Type de cours :</b> " + seance.getTypeCours().toString() + "<html>");
+            dialogueTypeCours.setBounds(10, 185, largeurDialogue - 10, 25);
+            dialogueTypeCours.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+            fenetreDialogue.add(dialogueTypeCours);
+
+            //État de validation
+            switch (seance.getEtat()) {
+                case 1:
+                    tempContenuLabel = "<html><b>État de validation :</b> En cours de validation";
+                    break;
+                case 2:
+                    tempContenuLabel = "<html><b>État de validation :</b> Validé";
+                    break;
+                case 3:
+                    tempContenuLabel = "<html><b>État de validation :</b> Annulé";
+                    break;
+                default:
+                    tempContenuLabel = "<html><b>État de validation :</b> ERREUR LORS DU SWITCH DE L'ETAT DE LA SEANCE";
+                    break;
+            }
+            JLabel dialogueEtat = new JLabel(tempContenuLabel + "<html>");
+            dialogueEtat.setBounds(10, 220, largeurDialogue - 10, 25);
+            dialogueEtat.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+            fenetreDialogue.add(dialogueEtat);
+
+            if (connectedUser.getDroit() == 1) {
+                //Bouton modifier
+                JButton dialogueBoutonModifier = new JButton("<html><b>Modifier la séance</b><html>");
+                dialogueBoutonModifier.setBounds(5, 275, (largeurDialogue - 35) / 2, 40);
+                dialogueBoutonModifier.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+                dialogueBoutonModifier.setBackground(vertEce);
+                dialogueBoutonModifier.setForeground(Color.WHITE);
+                fenetreDialogue.add(dialogueBoutonModifier);
+                dialogueBoutonModifier.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+
+                        try {
+                            seanceSelection = seance;
+                            remplirModifSeance();
+                            cardLayout.show(global, "ModifSeance");
+                            fenetreDialogue.dispose();
+                        } catch (SQLException ex) {
+                            System.out.println(ex.toString());
+                        }
+                    }
+                });
+
+                //Bouton supprimer
+                JButton dialogueBoutonSupprimer = new JButton("<html><b>Supprimer la séance</b><html>");
+                dialogueBoutonSupprimer.setBounds(5 + (largeurDialogue - 35) / 2 + 10, 275, (largeurDialogue - 35) / 2, 40);
+                dialogueBoutonSupprimer.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+                dialogueBoutonSupprimer.setBackground(Color.RED);
+                dialogueBoutonSupprimer.setForeground(Color.WHITE);
+                fenetreDialogue.add(dialogueBoutonSupprimer);
+                dialogueBoutonSupprimer.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        try {
+                            seanceDAO.delete(seance);
+                            global.remove(panneauEDTGrille);
+                            panneauEDTGrille = new JPanel();
+                            remplirEDTGrille(typeEDT);
+                            global.add(panneauEDTGrille, "EDTGrille");
+                            cardLayout.show(global, "EDTGrille");
+                            fenetreDialogue.dispose();
+                        } catch (SQLException ex) {
+                            System.out.println(ex.toString());
+                        }
+                    }
+                });
+            }
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
+
+        switch(formeEDT){
+            case "grille":
+                fenetreDialogue.setLocationRelativeTo(EDTGrilleListeCours.get(numeroBoutonCours));
+                break;
+            case "liste":
+                fenetreDialogue.setLocationRelativeTo(EDTListeListeCours.get(numeroBoutonCours));
+                break;
+            default:
+                System.out.println("Erreur lors du renseignement de la forme de l'EDT pour un cours");
+        }
+        
+>>>>>>> Stashed changes
         fenetreDialogue.setVisible(true);
         
         //fenetreDialogue.dispose(); pour fermer la fenetre
