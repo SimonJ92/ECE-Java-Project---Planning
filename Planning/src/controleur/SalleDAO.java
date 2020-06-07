@@ -14,6 +14,10 @@ import modele.Site;
  */
 public class SalleDAO extends DAO<Salle>{
 
+    /**
+     *Constructeur
+     * @param connexion
+     */
     public SalleDAO(Connexion connexion) {
         super(connexion);
     }

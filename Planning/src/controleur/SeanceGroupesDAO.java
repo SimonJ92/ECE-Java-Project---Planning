@@ -15,6 +15,10 @@ import modele.SeanceGroupes;
  */
 public class SeanceGroupesDAO extends DAO<SeanceGroupes>{
 
+    /**
+     *Constructeur
+     * @param connexion
+     */
     public SeanceGroupesDAO(Connexion connexion) {
         super(connexion);
     }

@@ -19,6 +19,10 @@ import modele.TypeCours;
  */
 public class SeanceDAO extends DAO<Seance>{
 
+    /**
+     *Constructeur
+     * @param connexion
+     */
     public SeanceDAO(Connexion connexion) {
         super(connexion);
     }

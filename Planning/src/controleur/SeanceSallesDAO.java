@@ -15,6 +15,10 @@ import modele.SeanceSalles;
  */
 public class SeanceSallesDAO extends DAO<SeanceSalles>{
 
+    /**
+     *Constructeur
+     * @param connexion
+     */
     public SeanceSallesDAO(Connexion connexion) {
         super(connexion);
     }

@@ -13,6 +13,10 @@ import modele.Utilisateur;
  */
 public class UtilisateurDAO extends DAO<Utilisateur>{
 
+    /**
+     *Constructeur
+     * @param connexion
+     */
     public UtilisateurDAO(Connexion connexion) {
         super(connexion);
     }

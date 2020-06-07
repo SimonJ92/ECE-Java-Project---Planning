@@ -9,7 +9,7 @@ import controleur.*;
 import vue.*;
 import java.sql.SQLException;
 
-/**
+/**Classe où l'on va lancer l'application
  *
  * @author simon
  */

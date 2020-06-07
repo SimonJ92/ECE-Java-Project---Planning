@@ -21,6 +21,17 @@ public class Seance {
     private Cours cours;
     private TypeCours typeCours;
     
+    /**
+     *Constructeur
+     * @param id
+     * @param semaine
+     * @param date
+     * @param heureDebut
+     * @param heureFin
+     * @param etat
+     * @param cours
+     * @param typeCours
+     */
     public Seance(int id, int semaine, MyDate date, MyHour heureDebut, MyHour heureFin, int etat, Cours cours, TypeCours typeCours){
         this.id = id;
         this.semaine = semaine;
@@ -32,6 +43,9 @@ public class Seance {
         this.typeCours = typeCours;
     }
     
+    /**
+     *Constructeur par défaut
+     */
     public Seance(){
         this.date = new MyDate();
         this.heureDebut = new MyHour();
@@ -40,66 +54,130 @@ public class Seance {
         this.typeCours = new TypeCours();
     }
     
+    /**
+     *
+     * @param id
+     */
     public void setId(int id){
         this.id = id;
     }
     
+    /**
+     *
+     * @param semaine
+     */
     public void setSemaine(int semaine){
         this.semaine = semaine;
     }
     
+    /**
+     *
+     * @param date
+     */
     public void setDate(MyDate date){
         this.date = date;
     }
     
+    /**
+     *
+     * @param heureDebut
+     */
     public void setHeureDebut(MyHour heureDebut){
         this.heureDebut = heureDebut;
     }
     
+    /**
+     *
+     * @param heureFin
+     */
     public void setHeureFin(MyHour heureFin){
         this.heureFin = heureFin;
     }
     
+    /**
+     *
+     * @param etat
+     */
     public void setEtat(int etat){
         this.etat = etat;
     }
     
+    /**
+     *
+     * @param cours
+     */
     public void setCours(Cours cours){
         this.cours = cours;
     }
     
+    /**
+     *
+     * @param typeCours
+     */
     public void setTypeCours(TypeCours typeCours){
         this.typeCours = typeCours;
     }
     
+    /**
+     *
+     * @return int  l'id de la séance
+     */
     public int getId(){
         return this.id;
     }
     
+    /**
+     *
+     * @return int la semaine de ma séance
+     */
     public int getSemaine(){
         return this.semaine;
     }
     
+    /**
+     *
+     * @return MyDate la date de la séance
+     */
     public MyDate getDate(){
         return this.date;
     }
     
+    /**
+     *
+     * @return MyHour l'heure de début de la séance
+     */
     public MyHour getHeureDebut(){
         return this.heureDebut;
     }
     
+    /**
+     *
+     * @return MyHour l'heure de fin de la séance
+     */
     public MyHour getHeureFin(){
         return this.heureFin;
     }
     
+    /**
+     *
+     * @return int l'état de validation de la séance
+     */
     public int getEtat(){
         return this.etat;
     }
     
+    /**
+     *
+     * @return Cours le cours de la séance
+     */
     public Cours getCours(){
         return this.cours;
     }
     
+    /**
+     *
+     * @return TypeCours le type de cours de la séance
+     */
     public TypeCours getTypeCours(){
         return this.typeCours;
     }

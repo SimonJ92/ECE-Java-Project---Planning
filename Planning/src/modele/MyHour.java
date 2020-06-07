@@ -18,12 +18,21 @@ import java.util.TimeZone;
 public class MyHour implements Comparable<MyHour>{
     private Date date;
     
+    /**
+     *Constructeur
+     * @param heure
+     * @param minutes
+     * @throws ParseException
+     */
     public MyHour(int heure,int minutes) throws ParseException{
         String currentDateString = "01/01/2000 "+heure+":"+minutes;
         SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         date = sd.parse(currentDateString);
     }
     
+    /**
+     *Constructeur par défaut
+     */
     public MyHour(){
         this.date = new Date();
         try{
@@ -35,24 +44,42 @@ public class MyHour implements Comparable<MyHour>{
         }
     }
     
+    /**
+     *
+     * @return int l'heure
+     */
     public int getHeure(){
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"));
         cal.setTime(date);
         return cal.get(Calendar.HOUR_OF_DAY);
     }
     
+    /**
+     *
+     * @return int les minutes
+     */
     public int getMinutes(){
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"));
         cal.setTime(date);
         return cal.get(Calendar.MINUTE);
     }
     
+    /**
+     *
+     * @param heure
+     * @throws ParseException
+     */
     public void setHeure(int heure) throws ParseException{
         String currentDateString = "01/01/2000 "+heure+":"+getMinutes();
         SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         date = sd.parse(currentDateString);
     }
     
+    /**
+     *
+     * @param minutes
+     * @throws ParseException
+     */
     public void setMinutes(int minutes) throws ParseException{
         String currentDateString = "01/01/2000 "+getHeure()+":"+minutes;
         SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy HH:mm");

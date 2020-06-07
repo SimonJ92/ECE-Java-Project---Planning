@@ -12,6 +12,10 @@ import modele.Cours;
  */
 public class CoursDAO extends DAO<Cours>{
     
+    /**
+     *Constructeur
+     * @param connexion
+     */
     public CoursDAO(Connexion connexion){
         super(connexion);
     }

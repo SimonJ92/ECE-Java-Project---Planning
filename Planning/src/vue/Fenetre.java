@@ -25,7 +25,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 
 /**
- *
+ *Fenetre de l'appli
  * @author simon
  */
 public class Fenetre extends JFrame implements ActionListener {
@@ -222,6 +222,11 @@ public class Fenetre extends JFrame implements ActionListener {
     private JLabel recapTotalHeures;
     
     //Constructeur à appeler pour démarrer l'appli
+
+    /**
+     *Constructeur de la fenêtre : lance l'appli
+     * @param myConnexion
+     */
     public Fenetre(Connexion myConnexion) {
         try {
             //récupération de la connexion à la BDD
@@ -257,6 +262,11 @@ public class Fenetre extends JFrame implements ActionListener {
     }
 
     //Gestion du comportement dans l'appli
+
+    /**
+     *Réaction à un évènement dans l'application
+     * @param evt
+     */
     @Override
     public void actionPerformed(ActionEvent evt) {
         Object source = evt.getSource();
@@ -453,7 +463,9 @@ public class Fenetre extends JFrame implements ActionListener {
         }
     }
 
-    //initialise les DAOs
+    /**
+     * initialise les DAOs
+     */
     private void initDAO() {
         coursDAO = new CoursDAO(connexion);
         enseignantDAO = new EnseignantDAO(connexion);
@@ -470,7 +482,9 @@ public class Fenetre extends JFrame implements ActionListener {
         utilisateurDAO = new UtilisateurDAO(connexion);
     }
 
-    //initialise tous les panels (vides)
+    /**
+     * initialise tous les panels (vides)
+     */
     private void initPanels() {
         panneauAccueil = new JPanel();
         panneauLogin = new JPanel();
@@ -481,6 +495,10 @@ public class Fenetre extends JFrame implements ActionListener {
         panneauRecapCours = new JPanel();
     }
 
+    /**
+     * Initialise les composants au lancement de l'appli
+     * @throws SQLException 
+     */
     private void initComponent() throws SQLException {
         //Éléments de connexion BDD
         statementFenetre = connexion.getConnection().createStatement();
@@ -516,7 +534,13 @@ public class Fenetre extends JFrame implements ActionListener {
         global.add(panneauRecapCours, "RecapCours");
     }
 
-    //teste si un utilisateur avec cette addresse mail et ce mot de passe existe. Retourne l'utilisateur si oui, null si non
+    /**
+     * teste si un utilisateur avec cette addresse mail et ce mot de passe existe. Retourne l'utilisateur si oui, null si non
+     * @param email
+     * @param passwd
+     * @return Utilisateur l'Utilisateur qui s'est connecté, ou null si echec de connexion
+     * @throws SQLException 
+     */
     private Utilisateur login(String email, String passwd) throws SQLException {
         Utilisateur utilisateur = null;
         resultatFenetre = statementFenetre.executeQuery("SELECT * FROM utilisateur WHERE email = '" + email + "' AND passwd = '" + passwd + "'");
@@ -527,7 +551,10 @@ public class Fenetre extends JFrame implements ActionListener {
         return utilisateur;
     }
 
-    //TODO : ajouter un logo ?
+    /**
+     * Ajoute les barres de navigation sur le panel en paramètre
+     * @param panel 
+     */
     private void addMenuBars(JPanel panel) {
 
         //Initialisation des composants du panneau
@@ -687,6 +714,10 @@ public class Fenetre extends JFrame implements ActionListener {
         barreNav2BoutonCreer.addActionListener(this);
     }
 
+    /**
+     * Remplis le panneau d'accueil
+     * @throws SQLException 
+     */
     private void remplirAccueil() throws SQLException {
         panneauAccueil.removeAll();
         panneauAccueil.setLayout(null);
@@ -924,6 +955,9 @@ public class Fenetre extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     * Remplis le panneau de login
+     */
     private void remplirPanneauLogin() {
         panneauLogin.removeAll();
         panneauLogin.setLayout(null);
@@ -992,6 +1026,11 @@ public class Fenetre extends JFrame implements ActionListener {
         loginVoirPassword.addActionListener(this);
     }
 
+    /**
+     * Remplis la page d'emploi du temps en format grille
+     * @param typeEDT   "etudiant", "enseignant" ou "salle"
+     * @throws SQLException 
+     */
     private void remplirEDTGrille(String typeEDT) throws SQLException {
         panneauEDTGrille.removeAll();
         panneauEDTGrille.setLayout(null);
@@ -1201,6 +1240,11 @@ public class Fenetre extends JFrame implements ActionListener {
         });
     }
     
+    /**
+     * Remplis la page d'emploi du temps en format liste
+     * @param typeEDT   "etudiant", "enseignant" ou "salle"
+     * @throws SQLException 
+     */
     private void remplirEDTListe(String typeEDT) throws SQLException{
         panneauEDTListe.removeAll();
         panneauEDTListe.setLayout(null);
@@ -1471,14 +1515,17 @@ public class Fenetre extends JFrame implements ActionListener {
                         default:
                             System.out.println("Erreur lors du choix de type d'emploi du temps");
                     }
-                } catch (Exception ex) {
+                } catch (SQLException ex) {
                     System.out.println(ex.toString());
                 }
             }
         });
     }
     
-    
+    /**
+     * remplis le panneau de recherche
+     * @throws SQLException 
+     */
     private void remplirRecherche() throws SQLException {
         panneauRecherche.removeAll();
         panneauRecherche.setLayout(null);
@@ -1620,7 +1667,10 @@ public class Fenetre extends JFrame implements ActionListener {
         boutonRechercherEtudiant.addActionListener(this);
     }
     
-    //Correction bug redirection
+    /**
+     * Remplis le panneau de modification/création de séance
+     * @throws SQLException 
+     */
     private void remplirModifSeance() throws SQLException {
         panneauModifSeance.removeAll();
         panneauModifSeance.setLayout(null); //On définit un absolute Layout
@@ -1982,6 +2032,9 @@ public class Fenetre extends JFrame implements ActionListener {
         modifBoutonEnregistrer.addActionListener(this);
     }
 
+    /**
+     * Gère les jours d'une oombobox de la recherche en fonction des années et des mois
+     */
     private void modifFillDaysOfMonth() {
         modifChoixJour.removeAllItems();
         int limiteJours = 0;
@@ -2020,7 +2073,11 @@ public class Fenetre extends JFrame implements ActionListener {
         }
     }
 
-    //retourne le chiffre correspondant à la String de l'état passée en paramètre
+    /**
+     * retourne le chiffre correspondant à la String de l'état passée en paramètre
+     * @param etat
+     * @return 
+     */
     private int parseEtat(String etat) {
         switch (etat) {
             case "En cours de validation":
@@ -2034,6 +2091,11 @@ public class Fenetre extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     * vérifie la validité des informations pour ajouter une séance
+     * @throws SQLException
+     * @throws ParseException 
+     */
     private void modifEnregistrer() throws SQLException, ParseException {
         String messageErreur = "";
 
@@ -2176,7 +2238,10 @@ public class Fenetre extends JFrame implements ActionListener {
         modifErrorField.setText(messageErreur);
     }
 
-    //Utilisé pour la modification d'une séance ; update les liens de la séance avec groupes, enseignants et salles
+    /**
+     * Utilisé pour la modification d'une séance ; update les liens de la séance avec groupes, enseignants et salles
+     * @throws SQLException 
+     */
     private void gererTablesSeances() throws SQLException {
         //déletion de tous les séances_enseignants en rapport avec la séance
         statementEvent.executeUpdate("DELETE FROM seance_enseignants WHERE id_seance = " + seanceSelection.getId());
@@ -2201,7 +2266,10 @@ public class Fenetre extends JFrame implements ActionListener {
         seanceSallesDAO.create(new SeanceSalles(seanceSelection, (Salle) modifChoixSalle.getSelectedItem()));
     }
 
-    //TODO
+    /**
+     * remplis le panneau de recap des cours
+     * @throws SQLException 
+     */
     private void remplirRecapCours() throws SQLException {
         panneauRecapCours.removeAll();
         panneauRecapCours.setLayout(null);
@@ -2429,7 +2497,11 @@ public class Fenetre extends JFrame implements ActionListener {
         panneauRecapCours.add(recapTotalHeures);
     }
     
-    //Retourne le nom français du jour de la semaine en fonction d'une valeur DAY_OF_THE_WEEK d'un objet calendar
+    /**
+     * Retourne le nom français du jour de la semaine en fonction d'une valeur DAY_OF_THE_WEEK d'un objet calendar
+     * @param dayNumber
+     * @return 
+     */
     private String parseDayOfTheWeek(int dayNumber){
         switch(dayNumber){
             case 1:
@@ -2451,7 +2523,11 @@ public class Fenetre extends JFrame implements ActionListener {
         }
     }
     
-    //Retourne le nom français du mois de l'année en fonction d'une valeur MONTH d'un objet calendar
+    /**
+     * Retourne le nom français du mois de l'année en fonction d'une valeur MONTH d'un objet calendar
+     * @param monthNumber
+     * @return 
+     */
     private String parseMonth(int monthNumber){
         switch(monthNumber){
             case 0:
@@ -2483,12 +2559,21 @@ public class Fenetre extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     * Décrit le comportement des boutons de semaine sur les emplois du temps
+     */
     class SemaineEDT implements ActionListener {
 
         private final int numSemaine;
         private final String typeEDT;
         private final String formeEDT;
 
+        /**
+         * Constructeur
+         * @param numSemaine
+         * @param typeEDT
+         * @param formeEDT 
+         */
         public SemaineEDT(int numSemaine, String typeEDT, String formeEDT) {
             this.numSemaine = numSemaine;
             this.typeEDT = typeEDT;
@@ -2525,6 +2610,9 @@ public class Fenetre extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     * Décrit le comportement des boutons de cours dans les emplois du temps
+     */
     class CoursEDT implements ActionListener {
 
         private final Seance seance;
@@ -2532,6 +2620,13 @@ public class Fenetre extends JFrame implements ActionListener {
         private final String typeEDT;
         private final String formeEDT;
 
+        /**
+         * Constructeur
+         * @param seance
+         * @param numeroBoutonCours
+         * @param typeEDT
+         * @param formeEDT 
+         */
         public CoursEDT(Seance seance, int numeroBoutonCours, String typeEDT, String formeEDT) {
             this.seance = seance;
             this.numeroBoutonCours = numeroBoutonCours;
@@ -2547,6 +2642,9 @@ public class Fenetre extends JFrame implements ActionListener {
         }
     }
     
+    /**
+     * Décrit le comportement des panels de cours dans les emplois du temps en liste
+     */
     class CoursEDTListe extends MouseAdapter{
         
         private final Seance seance;
@@ -2554,6 +2652,13 @@ public class Fenetre extends JFrame implements ActionListener {
         private final String typeEDT;
         private final String formeEDT;
         
+        /**
+         * Constructeur
+         * @param seance
+         * @param numeroPanneauCours
+         * @param typeEDT
+         * @param formeEDT 
+         */
         public CoursEDTListe(Seance seance, int numeroPanneauCours, String typeEDT, String formeEDT){
             this.seance = seance;
             this.numeroPanneauCours = numeroPanneauCours;
@@ -2579,6 +2684,13 @@ public class Fenetre extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     * fonction appelée pour afficher une boite de dialogue lorsqu'no clique sur un cours
+     * @param seance
+     * @param numeroBoutonCours
+     * @param typeEDT
+     * @param formeEDT 
+     */
     private void dialogueCoursEDT(Seance seance, int numeroBoutonCours, String typeEDT, String formeEDT) {
         JDialog fenetreDialogue = new JDialog(this);
         fenetreDialogue.setLayout(null);

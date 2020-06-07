@@ -3,27 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
-            <file>file:/C:/Users/simon/OneDrive/Bureau/ECE-Java-Project---Planning/Planning/src/modele/SeanceGroupes.java</file>
-            <file>file:/C:/Users/simon/OneDrive/Bureau/ECE-Java-Project---Planning/Planning/src/modele/Promotion.java</file>
-            <file>file:/C:/Users/simon/OneDrive/Bureau/ECE-Java-Project---Planning/Planning/src/modele/Etudiant.java</file>
-            <file>file:/C:/Users/simon/OneDrive/Bureau/ECE-Java-Project---Planning/Planning/src/modele/LigneRecap.java</file>
-            <file>file:/C:/Users/simon/OneDrive/Bureau/ECE-Java-Project---Planning/Planning/src/modele/MyDate.java</file>
-            <file>file:/C:/Users/simon/OneDrive/Bureau/ECE-Java-Project---Planning/Planning/src/modele/MyHour.java</file>
-            <file>file:/C:/Users/simon/OneDrive/Bureau/ECE-Java-Project---Planning/Planning/src/modele/SeanceSalles.java</file>
-            <file>file:/C:/Users/simon/OneDrive/Bureau/ECE-Java-Project---Planning/Planning/src/modele/Site.java</file>
-            <file>file:/C:/Users/simon/OneDrive/Bureau/ECE-Java-Project---Planning/Planning/src/modele/Enseignant.java</file>
-            <file>file:/C:/Users/simon/OneDrive/Bureau/ECE-Java-Project---Planning/Planning/src/modele/Seance.java</file>
-            <file>file:/C:/Users/simon/OneDrive/Bureau/ECE-Java-Project---Planning/Planning/src/modele/Groupe.java</file>
-            <file>file:/C:/Users/simon/OneDrive/Bureau/ECE-Java-Project---Planning/Planning/src/modele/SeanceEnseignants.java</file>
-            <file>file:/C:/Users/simon/OneDrive/Bureau/ECE-Java-Project---Planning/Planning/src/modele/TypeCours.java</file>
-            <file>file:/C:/Users/simon/OneDrive/Bureau/ECE-Java-Project---Planning/Planning/src/modele/Utilisateur.java</file>
-            <file>file:/C:/Users/simon/OneDrive/Bureau/ECE-Java-Project---Planning/Planning/src/modele/Salle.java</file>
-=======
-            <file>file:/G:/Users/geelo/OneDrive/Documents/GitHub/ECE-Java-Project---Planning/Planning/src/planning/Planning.java</file>
-            <file>file:/G:/Users/geelo/OneDrive/Documents/GitHub/ECE-Java-Project---Planning/Planning/src/vue/Fenetre.java</file>
-            <file>file:/G:/Users/geelo/OneDrive/Documents/GitHub/ECE-Java-Project---Planning/Planning/src/modele/Seance.java</file>
->>>>>>> 0a16f2db00020b92bc2074d06ed39a195314c0c3
+            <file>file:/C:/Users/simon/OneDrive/Bureau/ECE-Java-Project---Planning/Planning/src/vue/Fenetre.java</file>
         </group>
     </open-files>
 </project-private>

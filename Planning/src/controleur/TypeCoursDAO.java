@@ -13,6 +13,10 @@ import modele.TypeCours;
  */
 public class TypeCoursDAO extends DAO<TypeCours>{
     
+    /**
+     *Constructeur
+     * @param connexion
+     */
     public TypeCoursDAO(Connexion connexion){
         super(connexion);
     }

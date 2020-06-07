@@ -10,15 +10,24 @@ import modele.SeanceEnseignants;
 import modele.Utilisateur;
 
 /**
- *
+ *DAO de seanceEnseignants
  * @author simon
  */
 public class SeanceEnseignantsDAO extends DAO<SeanceEnseignants>{
 
+    /**
+     *Constructeur
+     * @param connexion
+     */
     public SeanceEnseignantsDAO(Connexion connexion) {
         super(connexion);
     }
 
+    /**
+     *
+     * @param obj    la SeanceEnseignant à créer
+     * @return bool le succès de l'opération
+     */
     @Override
     public boolean create(SeanceEnseignants obj) {
         try{
@@ -30,6 +39,11 @@ public class SeanceEnseignantsDAO extends DAO<SeanceEnseignants>{
         }
     }
 
+    /**
+     *
+     * @param obj   la SceanceEnseignants à supprimer
+     * @return bool le succès de l'opération
+     */
     @Override
     public boolean delete(SeanceEnseignants obj) {
         try{
@@ -41,16 +55,32 @@ public class SeanceEnseignantsDAO extends DAO<SeanceEnseignants>{
         }
     }
 
+    /**
+     *
+     * @param obj   la SceanceEnseignants à update
+     * @return bool le succès de l'opération
+     */
     @Override
     public boolean update(SeanceEnseignants obj) {
         throw new UnsupportedOperationException("This method isn't needed."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *Recherche par id
+     * @param id
+     * @return
+     */
     @Override
     public SeanceEnseignants find(int id) {
         throw new UnsupportedOperationException("The finding method requires 2 arguments."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *Recherche par id
+     * @param idSeance
+     * @param idUtilisateur
+     * @return
+     */
     @Override
     public SeanceEnseignants find(int idSeance, int idUtilisateur) {
         SeanceEnseignants seanceEnseignants = new SeanceEnseignants();

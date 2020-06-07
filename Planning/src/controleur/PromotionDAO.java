@@ -13,6 +13,10 @@ import modele.Promotion;
  */
 public class PromotionDAO extends DAO<Promotion>{
 
+    /**
+     *Constructeur
+     * @param connexion
+     */
     public PromotionDAO(Connexion connexion) {
         super(connexion);
     }

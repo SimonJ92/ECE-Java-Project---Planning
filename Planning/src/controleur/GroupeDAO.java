@@ -14,6 +14,10 @@ import modele.Promotion;
  */
 public class GroupeDAO extends DAO<Groupe>{
 
+    /**
+     *Constructeur
+     * @param connexion
+     */
     public GroupeDAO(Connexion connexion) {
         super(connexion);
     }

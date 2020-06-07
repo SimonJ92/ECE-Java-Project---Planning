@@ -12,19 +12,40 @@ package modele;
 public class Enseignant extends Utilisateur{
     private Cours cours;
     
+    /**
+     *Constructeur
+     * @param idUtilisateur
+     * @param cours
+     * @param email
+     * @param passwd
+     * @param nom
+     * @param prenom
+     * @param droit
+     */
     public Enseignant(int idUtilisateur, Cours cours, String email, String passwd, String nom, String prenom, int droit){
         super(idUtilisateur, email, passwd,nom,prenom,droit);
         this.cours = cours;
     }
     
+    /**
+     *Constructeur par défaut
+     */
     public Enseignant(){
         this.cours = new Cours();
     };
     
+    /**
+     *
+     * @param idUtilisateur
+     */
     public void setIdUtilisateur(int idUtilisateur){
         super.setId(idUtilisateur);
     }
     
+    /**
+     *
+     * @param cours
+     */
     public void setCours(Cours cours){
         this.cours = cours;
     }
@@ -54,10 +75,18 @@ public class Enseignant extends Utilisateur{
         super.setDroit(droit);
     }
     
+    /**
+     *
+     * @return int l'id de l'enseignant
+     */
     public int getIdUtilisateur(){
         return super.getId();
     }
     
+    /**
+     *
+     * @return Cours le cours de l'enseignant
+     */
     public Cours getCours(){
         return this.cours;
     }

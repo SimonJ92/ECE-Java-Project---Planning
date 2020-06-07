@@ -15,6 +15,10 @@ import javax.swing.JPanel;
  */
 public class PanneauEDTAccueil extends JPanel {
 
+    /**Dessine la grille de l'emploi du temps sur le panneau
+     *
+     * @param g
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);

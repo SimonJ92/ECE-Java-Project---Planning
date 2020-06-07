@@ -41,10 +41,18 @@ public class Cours {
         this.nom = nom;
     }
     
+    /**
+     *
+     * @return int l'id du 
+     */
     public int getId(){
         return this.id;
     }
     
+    /**
+     *
+     * @return String le nom du cours
+     */
     public String getNom(){
         return this.nom;
     }

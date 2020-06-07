@@ -6,32 +6,56 @@
 package modele;
 
 /**
- *
+ *Représente un type de cours
  * @author simon
  */
 public class TypeCours {
     private int id = 0;
     private String nom = "";
     
+    /**
+     *Constructeur
+     * @param id
+     * @param nom
+     */
     public TypeCours(int id, String nom){
         this.id = id;
         this.nom = nom;
     }
     
+    /**
+     *Constructeur par défaut
+     */
     public TypeCours()  {};
     
+    /**
+     *
+     * @param id
+     */
     public void setId(int id){
         this.id = id;
     }
     
+    /**
+     *
+     * @param nom
+     */
     public void setNom(String nom){
         this.nom = nom;
     }
     
+    /**
+     *
+     * @return int l'id du type de cours
+     */
     public int getId(){
         return this.id;
     }
     
+    /**
+     *
+     * @return String le nom du type de cours
+     */
     public String getNom(){
         return this.nom;
     }

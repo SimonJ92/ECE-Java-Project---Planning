@@ -13,24 +13,50 @@ public class Etudiant extends Utilisateur{
     private int numero = 0;
     private Groupe groupe;
     
+    /**
+     *Constructeur
+     * @param idUtilisateur
+     * @param numero
+     * @param groupe
+     * @param email
+     * @param passwd
+     * @param nom
+     * @param prenom
+     * @param droit
+     */
     public Etudiant(int idUtilisateur, int numero, Groupe groupe, String email, String passwd, String nom, String prenom, int droit){
         super(idUtilisateur, email, passwd,nom,prenom,droit);
         this.numero = numero;
         this.groupe = groupe;
     }
     
+    /**
+     *Constructeur par défaut
+     */
     public Etudiant(){
         this.groupe = new Groupe();
     };
     
+    /**
+     *
+     * @param idUtilisateur
+     */
     public void setIdUtilisateur(int idUtilisateur){
         super.setId(idUtilisateur);
     }
     
+    /**
+     *
+     * @param numero
+     */
     public void setNumero(int numero){
         this.numero = numero;
     }
     
+    /**
+     *
+     * @param groupe
+     */
     public void setGroupe(Groupe groupe){
         this.groupe = groupe;
     }
@@ -60,14 +86,26 @@ public class Etudiant extends Utilisateur{
         super.setDroit(droit);
     }
     
+    /**
+     *
+     * @return int l'id de l'utilisateur
+     */
     public int getIdUtilisateur(){
         return super.getId();
     }
     
+    /**
+     *
+     * @return int le numéro de l'étudiant
+     */
     public int getNumero(){
         return this.numero;
     }
     
+    /**
+     *
+     * @return Groupe le groupe de l'étudiant
+     */
     public Groupe getGroupe(){
         return this.groupe;
     }

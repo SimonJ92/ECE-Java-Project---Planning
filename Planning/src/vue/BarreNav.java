@@ -16,11 +16,19 @@ import javax.swing.JMenuBar;
 public class BarreNav extends JMenuBar{
     Color backgroundColor;
     
+    /**Constructeur
+     *
+     * @param couleur   la couleur de la barre de navigation
+     */
     public BarreNav(Color couleur){
         backgroundColor = couleur;
         setBorder(BorderFactory.createEmptyBorder());
     }
     
+    /**Dessine la barre de navigation avec la couleur choisie
+     *
+     * @param g
+     */
     @Override
     protected void paintComponent(Graphics g){
         super.paintComponent(g);

@@ -12,6 +12,10 @@ import modele.Site;
  */
 public class SiteDAO extends DAO<Site>{
     
+    /**
+     *Constructeur
+     * @param connexion
+     */
     public SiteDAO(Connexion connexion){
         super(connexion);
     }
