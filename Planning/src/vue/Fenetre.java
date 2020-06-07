@@ -540,7 +540,7 @@ public class Fenetre extends JFrame implements ActionListener {
         barreNav1.setFont(new Font("Sans Serif", Font.BOLD, 16));
         //logo ece 
         barreNav1Logo.setBounds(1, 1, 48, 48);
-        barreNav1.add(barreNav1Logo);   /// pense à replacer le bouton home à coté de ton baille ensuite
+        barreNav1.add(barreNav1Logo);  
 
         //bouton de retour à la page d'accueil
         barreNav1BoutonHome.setBounds(55, 5, 40, 40);
