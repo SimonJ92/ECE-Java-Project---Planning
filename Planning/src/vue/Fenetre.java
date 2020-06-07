@@ -328,6 +328,7 @@ public class Fenetre extends JFrame implements ActionListener {
             System.out.println(e.toString());
         }
         
+        
         //RECHERCHE
         try {
             //adaptation de la page à la modification du choix du site
@@ -1478,7 +1479,8 @@ public class Fenetre extends JFrame implements ActionListener {
             }
         });
     }
-
+    
+    //Ajout design pour page recherche
     private void remplirRecherche() throws SQLException {
         panneauRecherche.removeAll();
         panneauRecherche.setLayout(null);
