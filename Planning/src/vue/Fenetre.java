@@ -30,6 +30,9 @@ public class Fenetre extends JFrame implements ActionListener {
 
     //images
     private BufferedImage navBarHomeIcon;
+    private BufferedImage navBarLogoEce;
+    private BufferedImage imageEce;
+    private BufferedImage imageInseecU;
 
     //Éléments de connexion à la base de données
     private Connexion connexion;
@@ -66,11 +69,25 @@ public class Fenetre extends JFrame implements ActionListener {
     private JPanel panneauModifSeance;
     private JPanel panneauRecapCours;
 
-    //couleurs du thème:
-    Color vert1 = new Color(31, 160, 85);
-    Color rouge1 = new Color(199, 44, 72);
-    Color bleu1 = new Color(135,206,250);   //lightskyblue
-
+   //couleurs du thème (de quoi faire un arc en ciel <3 ):
+    Color vertEce = new Color(4, 115, 123); //comme sur le logo..                         / POLICE BLANCHE
+    Color vert1 = new Color(154,205,50);    //vert clair                                  / POLICE NOIRE
+    Color vert2 = new Color(107,142,35);    //olive                                       / LES DEUX
+    Color rouge1 = new Color(178,34,34);    //rouge brique                                / POLICE BLANCHE
+    Color rouge2 = new Color(220,20,60);    //crimson, en gros écarlate quoi..            / LES DEUX
+    Color bleu1 = new Color(135,206,250);   //lightskyblue, bleu ciel pour les billingues / POLICE NOIRE
+    Color bleu2 = new Color(65,105,225);    //bleu royal                                  / POLICE BLANCHE
+    Color jaune1 = new Color(255,255,102);  //poussin clair                               / POLICE NOIRE
+    Color jaune2 = new Color(255,215,0);    //or                                          / POLICE NOIRE
+    Color rose1 = new Color(240,128,128);   //corail clair                                / LES DEUX
+    Color rose2 = new Color(255,160,122);   //saumon clair                                / POLICE NOIRE
+    Color orange1 = new Color(255,165,0);   //orange classique                            / LES DEUX
+    Color orange2 = new Color(255,69,0);    //orange sanguine                             / POLICE BLANCHE
+    Color violet1 = new Color(186,85,211);  //orchidée moyenne                            / LES DEUX
+    Color violet2 = new Color(199,21,133);  //fuushia foncé                               / POLICE BLANCHE
+    Color marron1 = new Color(210,105,30);  //chocolat (dolce en vrai mdr)                / LES DEUX
+    Color marron2 = new Color(188,143,143); // marron rosé, c'était beau en vrai...       / LES DEUX 
+    
     //connexion utilisateur
     private Utilisateur connectedUser;
 
@@ -91,6 +108,7 @@ public class Fenetre extends JFrame implements ActionListener {
     private JButton barreNav2BoutonRecap;
     private JButton barreNav2BoutonRecherche;
     private JButton barreNav2BoutonCreer;
+    private JLabel barreNav1Logo;
 
     //Accueil
     private JLabel accueilLabelConnectedUser;
@@ -99,6 +117,8 @@ public class Fenetre extends JFrame implements ActionListener {
     private ArrayList<JButton> accueilEDTListeCours;
     private MyDate accueilDateJour;
     private JLabel[] accueilEDTLabelsHeures;    //15 label pour les heures
+    private JLabel accueilLogoEce;
+    private JLabel accueilLogoInseecU;
 
     //Panneau Login
     private JLabel loginTitre;
@@ -109,6 +129,8 @@ public class Fenetre extends JFrame implements ActionListener {
     private JPasswordField loginPassword;
     private JCheckBox loginVoirPassword;
     private JButton loginBoutonValider;
+    private JLabel loginLogoEce;
+    private JLabel loginLogoInseecU;
 
     //Emploi du temps - Grille
     private JComboBox EDTGrilleChoixTypeEDT;
@@ -198,7 +220,10 @@ public class Fenetre extends JFrame implements ActionListener {
 
             //Initialisation des images
             navBarHomeIcon = ImageIO.read(new File("src/packageImages/home-icon.png")); //icone pour le bouton vers l'accueil
-
+            navBarLogoEce = ImageIO.read(new File("src/packageImages/logo_ECE_Paris_3.jpg"));
+            imageEce = ImageIO.read(new File("src/packageImages/logo_ece.png"));
+            imageInseecU = ImageIO.read(new File("src/packageImages/logo_Inseec_U.png"));
+            
             //initialisation des différents panels et leurs composants
             initComponent();
 
@@ -493,8 +518,9 @@ public class Fenetre extends JFrame implements ActionListener {
         barreNav1 = new BarreNav(Color.WHITE);
         barreNav1BoutonHome = new JButton(new ImageIcon(navBarHomeIcon));
         barreNav1BoutonDeco = new JButton("Déconnexion");
+        barreNav1Logo = new JLabel(new ImageIcon(navBarLogoEce)); 
+        
         barreNav2 = new BarreNav(Color.BLACK);
-
         barreNav2BoutonEDT = new JButton("Emploi du temps");
         barreNav2BoutonRecap = new JButton("Récapitulatif des cours");
         barreNav2BoutonRecherche = new JButton("Recherche");
@@ -512,11 +538,15 @@ public class Fenetre extends JFrame implements ActionListener {
         barreNav1.setLayout(null);
         barreNav1.setBounds(0, 0, largeur, 50);
         barreNav1.setFont(new Font("Sans Serif", Font.BOLD, 16));
+        //logo ece 
+        barreNav1Logo.setBounds(1, 1, 48, 48);
+        barreNav1.add(barreNav1Logo);   /// pense à replacer le bouton home à coté de ton baille ensuite
 
         //bouton de retour à la page d'accueil
-        barreNav1BoutonHome.setBounds(100, 5, 40, 40);
+        barreNav1BoutonHome.setBounds(55, 5, 40, 40);
         barreNav1BoutonHome.setContentAreaFilled(false);
         barreNav1BoutonHome.setBorder(BorderFactory.createEmptyBorder());
+        
         barreNav1BoutonHome.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -656,7 +686,9 @@ public class Fenetre extends JFrame implements ActionListener {
         accueilEDTListeCours = new ArrayList<>();
         accueilDateJour = new MyDate();
         accueilEDTLabelsHeures = new JLabel[15];    //15 label pour les heures
-
+        accueilLogoEce = new JLabel(new ImageIcon(imageEce));
+        accueilLogoInseecU = new JLabel(new ImageIcon(imageInseecU));
+        
         //On retire les éventuels ActionListeners
         //...
         
@@ -665,6 +697,12 @@ public class Fenetre extends JFrame implements ActionListener {
         accueilLabelConnectedUser.setFont(new Font("Sans Serif", Font.BOLD, 32));
         accueilLabelConnectedUser.setBounds(largeur / 2 - 250, 300, 500, 50);
         panneauAccueil.add(accueilLabelConnectedUser);
+        
+        //logos
+        accueilLogoEce.setBounds(largeur - 410, 225, 400, 100);
+        accueilLogoInseecU.setBounds(largeur - 210, 100, 200, 125);
+        panneauAccueil.add(accueilLogoEce);
+        panneauAccueil.add(accueilLogoInseecU);
 
         if (connectedUser.getDroit() == 3 || connectedUser.getDroit() == 4) {  //Si l'utilisateur connecté est un prof ou un élève, on affiche son emploi du temps du jour
             //Panneau d'emploi du temps
@@ -791,7 +829,9 @@ public class Fenetre extends JFrame implements ActionListener {
         loginPassword = new JPasswordField();
         loginVoirPassword = new JCheckBox("Voir le mot de passe", false);
         loginBoutonValider = new JButton("Se connecter");
-
+        loginLogoEce = new JLabel( new ImageIcon(imageEce));
+        loginLogoInseecU = new JLabel(new ImageIcon(imageInseecU));
+        
         //On retire les éventuels ActionListeners
         loginBoutonValider.removeActionListener(this);
 
@@ -800,6 +840,12 @@ public class Fenetre extends JFrame implements ActionListener {
         loginTitre.setFont(new Font("Sans Serif", Font.BOLD, 32));
         loginTitre.setBounds(largeur / 2 - 87, hauteur / 2 - 250, 175, 50);
         panneauLogin.add(loginTitre);
+        
+        //logos
+        loginLogoEce.setBounds(largeur/2 - 200,   800, 400,100);
+        loginLogoInseecU.setBounds(largeur/2 - 100,   100, 200, 125);
+        panneauLogin.add(loginLogoEce);
+        panneauLogin.add(loginLogoInseecU);
 
         //message d'erreur
         loginErreurMessage.setForeground(Color.red);
@@ -828,6 +874,9 @@ public class Fenetre extends JFrame implements ActionListener {
 
         //Bouton de validation
         loginBoutonValider.setBounds(largeur / 2 - 125, hauteur / 2 + 25, 250, 50);
+        loginBoutonValider.setBackground(vertEce);
+        loginBoutonValider.setForeground(Color.WHITE);
+        loginBoutonValider.setFont(new Font("Sans Serif", Font.BOLD, 30) );
         panneauLogin.add(loginBoutonValider);
 
         //Ré-activation des ActionListeners
@@ -1439,15 +1488,21 @@ public class Fenetre extends JFrame implements ActionListener {
         panneauRecherche.add(rechercheLabelEtudiant);
 
         //Boutons de recherche
-        panneauRecherche.add(boutonRechercherSalle);
+        boutonRechercherSalle.setBackground(vertEce);
+        boutonRechercherSalle.setForeground(Color.WHITE);
         boutonRechercherSalle.setBounds(largeur / 2 - 600, hauteur / 2, 175, 50);
-
-        panneauRecherche.add(boutonRechercherEnseignant);
+        panneauRecherche.add(boutonRechercherSalle);
+        
+        boutonRechercherEnseignant.setBackground(vertEce);
+        boutonRechercherEnseignant.setForeground(Color.WHITE);
         boutonRechercherEnseignant.setBounds(largeur / 2 - 125, hauteur / 2, 200, 50);
-
-        panneauRecherche.add(boutonRechercherEtudiant);
+        panneauRecherche.add(boutonRechercherEnseignant);
+        
+        boutonRechercherEtudiant.setBackground(vertEce);
+        boutonRechercherEtudiant.setForeground(Color.WHITE);
         boutonRechercherEtudiant.setBounds(largeur / 2 + 393, hauteur / 2, 175, 50);
-
+        panneauRecherche.add(boutonRechercherEtudiant);
+        
         //Ré-activation des ActionListeners
         rechercheChoixSite.addActionListener(this);
         rechercheChoixPromotion.addActionListener(this);
@@ -2331,6 +2386,8 @@ public class Fenetre extends JFrame implements ActionListener {
                 JButton dialogueBoutonModifier = new JButton("<html><b>Modifier la séance</b><html>");
                 dialogueBoutonModifier.setBounds(5, 275, (largeurDialogue - 35) / 2, 40);
                 dialogueBoutonModifier.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+                dialogueBoutonModifier.setBackground(vertEce);
+                dialogueBoutonModifier.setForeground(Color.WHITE);
                 fenetreDialogue.add(dialogueBoutonModifier);
                 dialogueBoutonModifier.addActionListener(new ActionListener() {
                     @Override
@@ -2351,6 +2408,8 @@ public class Fenetre extends JFrame implements ActionListener {
                 JButton dialogueBoutonSupprimer = new JButton("<html><b>Supprimer la séance</b><html>");
                 dialogueBoutonSupprimer.setBounds(5 + (largeurDialogue - 35) / 2 + 10, 275, (largeurDialogue - 35) / 2, 40);
                 dialogueBoutonSupprimer.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+                dialogueBoutonSupprimer.setBackground(Color.RED);
+                dialogueBoutonSupprimer.setForeground(Color.WHITE);
                 fenetreDialogue.add(dialogueBoutonSupprimer);
                 dialogueBoutonSupprimer.addActionListener(new ActionListener() {
                     @Override
